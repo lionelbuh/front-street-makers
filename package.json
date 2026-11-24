@@ -1,0 +1,16 @@
+{
+  "name": "temecula-homegrown",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Temecula Homegrown: a free illustrated marketplace for small local businesses in Temecula and Murrieta.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "engines": { "node": ">=22.5" },
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "serve": "node tools/build.mjs && node tools/serve.mjs",
+    "test": "node --test --no-warnings tests/*.test.mjs",
+    "test:e2e": "node tools/build.mjs && node tests/e2e/smoke.mjs",
+    "check": "npm test && npm run test:e2e"
+  }
+}
