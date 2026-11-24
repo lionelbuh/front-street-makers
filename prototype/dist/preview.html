@@ -1,0 +1,2173 @@
+<title>Temecula Homegrown</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Temecula Homegrown: an illustrated artisan market on Old Town Front Street. Phase 1 visual prototype.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Young+Serif&display=swap">
+<style>
+/* Layout concept: an editorial frame (masthead, short intro, notes) around one
+   full-bleed illustrated street that scrolls sideways. The street is the page. */
+:root {
+  --bg: #ecede4;
+  --surface: #f8f8f2;
+  --ink: #24221d;
+  --muted: #5f5f53;
+  --line: #d3d3c4;
+  --accent: #8f6210;
+  --accent-soft: #e8d6ae;
+  --cat-home: #4c6a47;
+  --cat-micro: #6e2c46;
+  --chip-ink: #fbf8f0;
+  --focus: #b5791a;
+
+  --sky-1: #8fbad0;
+  --sky-2: #e4dcc4;
+  --sky-3: #f2d3a0;
+  --mtn-far: #aab6bb;
+  --mtn: #8f9ea2;
+  --hill-back: #bfae78;
+  --hill: #a99d5e;
+  --vine: #6b7a3c;
+  --oak: #66713f;
+  --oak-near: #56633a;
+  --cloud: rgba(255, 255, 255, 0.72);
+  --star-o: 0;
+  --street: #c9ad88;
+  --glass: #5e7780;
+  --arch-letter: #f4e6c6;
+  --tint: rgba(16, 22, 52, 0);
+  --lights-o: 0;
+  --stall-filter: none;
+  --fg-filter: none;
+
+  --display: 'Young Serif', 'Iowan Old Style', Georgia, serif;
+  --body: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif;
+  --street-h: clamp(380px, calc(100vh - 300px), 760px);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141619; --surface: #1e2125; --ink: #ece7dc; --muted: #a8a698; --line: #33373c;
+    --accent: #e2b052; --accent-soft: #3a3222; --cat-home: #93b68a; --cat-micro: #d790ac; --chip-ink: #17181a; --focus: #e2b052;
+    --sky-1: #2a3d74; --sky-2: #7b6f9a; --sky-3: #e09a6a;
+    --mtn-far: #6c6f8e; --mtn: #575d7a; --hill-back: #77704e; --hill: #686442; --vine: #464c2c; --oak: #444a2c; --oak-near: #3b4027;
+    --cloud: rgba(220, 200, 230, 0.28); --star-o: 0.9; --street: #b19676; --glass: #3d3f45; --arch-letter: #ffd98c;
+    --tint: rgba(14, 18, 48, 0.5); --lights-o: 1; --stall-filter: brightness(.82) saturate(.9); --fg-filter: brightness(.62) saturate(.85);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141619; --surface: #1e2125; --ink: #ece7dc; --muted: #a8a698; --line: #33373c;
+  --accent: #e2b052; --accent-soft: #3a3222; --cat-home: #93b68a; --cat-micro: #d790ac; --chip-ink: #17181a; --focus: #e2b052;
+  --sky-1: #2a3d74; --sky-2: #7b6f9a; --sky-3: #e09a6a;
+  --mtn-far: #6c6f8e; --mtn: #575d7a; --hill-back: #77704e; --hill: #686442; --vine: #464c2c; --oak: #444a2c; --oak-near: #3b4027;
+  --cloud: rgba(220, 200, 230, 0.28); --star-o: 0.9; --street: #b19676; --glass: #3d3f45; --arch-letter: #ffd98c;
+  --tint: rgba(14, 18, 48, 0.5); --lights-o: 1; --stall-filter: brightness(.82) saturate(.9); --fg-filter: brightness(.62) saturate(.85);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 1rem/1.55 var(--body);
+}
+.wrap {
+  max-width: 1180px;
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+/* ---------- masthead ---------- */
+.site-head { border-bottom: 1px solid var(--line); background: var(--surface); }
+.site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; min-width: 0; }
+.brand-mark { width: 44px; height: 44px; flex: none; color: var(--ink); }
+.brand-name { display: block; font-family: var(--display); font-size: 1.35rem; line-height: 1.1; }
+.brand-tag { display: block; font-size: .8rem; color: var(--muted); letter-spacing: .02em; }
+.phase {
+  font-size: .72rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+  padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted);
+}
+
+/* ---------- intro ---------- */
+.intro { padding-block: clamp(18px, 3vw, 30px) clamp(14px, 2vw, 22px); display: grid; gap: 8px 48px; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: end; }
+.intro .eyebrow { grid-column: 1 / -1; }
+.eyebrow { margin: 0; font-size: .76rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.intro h1 { font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.08; max-width: 24ch; }
+.lede { margin: 0; color: var(--muted); max-width: 60ch; font-size: 1.05rem; }
+
+/* ---------- the street ---------- */
+.market { position: relative; }
+.street {
+  position: relative;
+  height: var(--street-h);
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted) transparent;
+  cursor: grab;
+  border-block: 1px solid var(--line);
+  -webkit-overflow-scrolling: touch;
+}
+.street:focus-visible { outline-offset: -4px; }
+.street.dragging { cursor: grabbing; user-select: none; }
+.street.dragging .stall { pointer-events: none; }
+.track {
+  position: relative;
+  height: 100%;
+  width: calc(var(--street-h) * 7140 / 720);
+  background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 46%, var(--sky-3) 60%, var(--sky-3) 100%);
+}
+.layer { position: absolute; inset: 0; }
+.layer > svg { display: block; width: 100%; height: 100%; }
+.layer-parallax { will-change: transform; }
+.tint { background: var(--tint); pointer-events: none; }
+.lights { opacity: var(--lights-o); pointer-events: none; transition: opacity .6s; }
+.stalls { pointer-events: none; }
+.foreground { pointer-events: none; filter: var(--fg-filter); }
+.grain { pointer-events: none; opacity: .5; mix-blend-mode: multiply; background-size: 180px 180px; }
+
+/* street illustration classes */
+.mtn-far { fill: var(--mtn-far); } .mtn { fill: var(--mtn); }
+.hill-back { fill: var(--hill-back); } .hill { fill: var(--hill); }
+.vine-row { fill: var(--vine); }
+.oak { fill: var(--oak); } .oak-near { fill: var(--oak-near); }
+.cloud { fill: var(--cloud); }
+.star { fill: #fff; opacity: var(--star-o); }
+.street, .street-p { fill: var(--street); }
+.glass { fill: var(--glass); }
+.shine { fill: #fff; opacity: .13; }
+.lit { fill: #f2b85e; opacity: .5; }
+.lamp-glass { fill: #ece2c6; }
+.bulb { fill: #f4ecd2; }
+.sign-paint { font-family: var(--display); }
+.sign-small { font-family: var(--body); font-weight: 700; }
+.arch-letters { font-family: var(--display); fill: var(--arch-letter); }
+.arch-sky { fill: var(--sky-2); }
+
+/* ---------- stall component ---------- */
+.stall {
+  position: absolute;
+  padding: 0; margin: 0; border: 0; background: none;
+  pointer-events: auto;
+  cursor: pointer;
+  transform-origin: 50% 100%;
+  transition: transform .25s ease;
+  filter: var(--stall-filter);
+  -webkit-tap-highlight-color: transparent;
+}
+.stall svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.stall:hover { transform: translateY(-1.2%) scale(1.015); }
+.stall:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; border-radius: 6px; }
+.stall--open { opacity: .92; }
+.stall-name { font-family: var(--display); fill: #3b2f25; }
+.stall-small { font-family: var(--body); font-weight: 700; }
+.chalk { font-family: var(--body); font-weight: 600; fill: #f1ede2; }
+.flame { fill: #f2a33a; }
+.demo-chip { fill: #24221d; }
+.demo-chip-text { fill: #f4e6c6; }
+.stall-lantern { fill: #f1ddb0; }
+.lantern-glow { fill: url(#halo); opacity: var(--lights-o); }
+
+/* "walk in" hint over the gateway */
+.enter-hint {
+  position: absolute;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  top: calc(var(--street-h) - 64px);
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 16px 10px 18px;
+  border: 0; border-radius: 999px;
+  background: var(--ink); color: var(--bg);
+  font-weight: 600; cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+  transition: opacity .3s, transform .3s;
+}
+.enter-hint span { display: inline-block; animation: nudge 1.6s ease-in-out infinite; }
+body.past-gate .enter-hint { opacity: 0; transform: translateY(8px); pointer-events: none; }
+@keyframes nudge { 50% { transform: translateX(4px); } }
+
+/* ---------- controls ---------- */
+.controls { display: grid; grid-template-columns: auto minmax(0, 15rem) minmax(0, 1fr) auto; align-items: center; gap: 14px; padding-block: 14px 6px; }
+.step {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--surface);
+  font-size: 1.15rem; cursor: pointer;
+}
+.step:hover { border-color: var(--ink); }
+.now { display: grid; min-width: 0; }
+.now-label { font-size: .7rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+#now-name { font-family: var(--display); font-size: 1.12rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.map {
+  position: relative; height: 26px; cursor: pointer;
+  background: linear-gradient(var(--line), var(--line)) 0 50% / 100% 2px no-repeat;
+}
+.map-window { position: absolute; top: 0; bottom: 0; border: 2px solid var(--ink); border-radius: 6px; background: rgba(127, 127, 110, .08); }
+.map-dot { position: absolute; top: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: var(--muted); }
+.map-dot--home { background: var(--cat-home); }
+.map-dot--micro { background: var(--cat-micro); }
+.map-dot--open { background: transparent; border: 1.5px dashed var(--muted); }
+.map-arch { position: absolute; top: 50%; width: 16px; height: 12px; margin: -9px 0 0 -8px; border: 2.5px solid var(--ink); border-bottom: 0; border-radius: 10px 10px 0 0; }
+.help { margin: 0; font-size: .85rem; color: var(--muted); padding-block: 0 8px; }
+
+/* ---------- list alternative + legend ---------- */
+.alt { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 32px; align-items: start; padding-block: 18px 8px; }
+.alt details { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); min-width: 0; }
+.alt summary { cursor: pointer; padding: 14px 16px; font-weight: 600; }
+.stall-list { list-style: none; margin: 0; padding: 0 8px 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 4px; }
+.list-item {
+  width: 100%; text-align: left; display: grid; gap: 2px 8px; grid-template-columns: minmax(0, 1fr) auto;
+  padding: 10px; border: 0; border-radius: 8px; background: none; cursor: pointer;
+}
+.list-item:hover { background: var(--bg); }
+.list-name { font-weight: 600; }
+.list-type { grid-column: 1 / -1; font-size: .85rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: .85rem; color: var(--muted); padding-top: 12px; }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+.chip {
+  display: inline-block; justify-self: start; align-self: center;
+  font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 4px 9px; border-radius: 4px; color: var(--chip-ink); background: var(--muted); white-space: nowrap;
+}
+.chip--home { background: var(--cat-home); }
+.chip--micro { background: var(--cat-micro); }
+.chip--open { background: var(--accent); }
+
+/* ---------- prototype notes ---------- */
+.notes { padding-block: 36px 56px; display: grid; gap: 18px; }
+.notes h2 { font-size: 1.5rem; }
+.note-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px 28px; }
+.note-grid div { min-width: 0; border-top: 2px solid var(--ink); padding-top: 12px; }
+.note-grid h3 { font-family: var(--body); font-weight: 700; font-size: .95rem; margin-bottom: 4px; }
+.note-grid p { margin: 0; color: var(--muted); font-size: .93rem; max-width: 60ch; }
+
+/* ---------- profile dialog ---------- */
+.profile {
+  width: min(720px, calc(100% - 32px));
+  max-height: min(88vh, 900px);
+  padding: 0; border: 0; border-radius: 14px;
+  background: var(--surface); color: var(--ink);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .35);
+  overflow: hidden;
+}
+.profile::backdrop { background: rgba(18, 14, 8, .55); }
+.dialog-inner { max-height: min(88vh, 900px); overflow-y: auto; padding: 22px clamp(18px, 4vw, 34px) 22px; display: grid; gap: 14px; }
+#profile-body { display: grid; gap: 14px; }
+#profile-body > p { margin: 0; max-width: 62ch; }
+.profile-close {
+  justify-self: end; border: 1px solid var(--line); background: var(--bg); border-radius: 999px;
+  padding: 6px 14px; cursor: pointer; font-weight: 600; font-size: .9rem;
+  position: sticky; top: 0; z-index: 1;
+}
+.demo-banner { font-size: .82rem; font-weight: 600; padding: 8px 12px; border-radius: 6px; background: var(--accent-soft); color: var(--ink); }
+.profile-head { display: grid; gap: 6px; }
+.profile-head h2 { font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 1.1; }
+.profile-type { margin: 0; color: var(--muted); }
+.profile-summary { font-size: 1.12rem; }
+.photos { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: auto auto; gap: 8px; }
+.photo { position: relative; margin: 0; border-radius: 8px; overflow: hidden; border: 2px dashed var(--line); min-width: 0; }
+.photo svg { display: block; width: 100%; height: 100%; aspect-ratio: 4 / 3; opacity: .55; filter: grayscale(.35); }
+.photo--0 { grid-row: span 2; }
+.photo--0 svg { aspect-ratio: auto; min-height: 220px; }
+.photo figcaption {
+  position: absolute; left: 8px; bottom: 8px; right: 8px;
+  font-size: .75rem; font-weight: 600; background: var(--surface); color: var(--ink); padding: 4px 8px; border-radius: 4px; width: fit-content; max-width: calc(100% - 16px);
+}
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px 20px; margin: 0; }
+.facts dt { font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.facts dd { margin: 2px 0 0; }
+.links { display: flex; flex-wrap: wrap; gap: 8px; }
+.link-pill {
+  display: inline-flex; align-items: baseline; gap: 6px; padding: 9px 14px; border-radius: 999px;
+  background: var(--ink); color: var(--bg); font-weight: 600; font-size: .92rem; opacity: .9;
+}
+.link-pill small { font-weight: 500; opacity: .7; font-size: .72rem; }
+.profile-note { font-size: .85rem; color: var(--muted); }
+.cats { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.cats li { display: grid; gap: 6px; }
+.profile-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-top: 1px solid var(--line); padding-top: 14px; }
+.profile-nav button { border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 8px 14px; cursor: pointer; font-weight: 600; }
+#profile-pos { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* ---------- small screens ---------- */
+@media (max-width: 640px) {
+  :root { --street-h: clamp(340px, 60vh, 560px); }
+  .phase { display: none; }
+  .intro { grid-template-columns: 1fr; }
+  .controls { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .map { grid-column: 1 / -1; grid-row: 2; }
+  .alt { grid-template-columns: 1fr; }
+  .profile { width: 100%; max-width: 100%; margin: auto 0 0; border-radius: 16px 16px 0 0; max-height: 92vh; }
+  .dialog-inner { max-height: 92vh; padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px)); }
+  .photos { grid-template-columns: 1fr 1fr; }
+  .photo--0 { grid-column: 1 / -1; grid-row: auto; }
+  .photo--0 svg { min-height: 0; aspect-ratio: 16 / 9; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stall, .enter-hint, .lights { transition: none; }
+  .enter-hint span { animation: none; }
+  .stall:hover { transform: none; }
+}
+
+</style>
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Temecula Homegrown, home">
+      <svg class="brand-mark" viewBox="0 0 44 44" aria-hidden="true">
+        <path d="M6,40 V16 M38,40 V16" stroke="currentColor" stroke-width="3.2" fill="none"/>
+        <path d="M6,16 Q22,0 38,16" stroke="currentColor" stroke-width="3.2" fill="none"/>
+        <path d="M9,22 Q22,9 35,22" stroke="currentColor" stroke-width="1.6" fill="none"/>
+        <path d="M13,40 V31 L22,24 L31,31 V40" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round"/>
+        <path d="M22,40 V34" stroke="currentColor" stroke-width="2.4"/>
+      </svg>
+      <span>
+        <span class="brand-name">Temecula Homegrown</span>
+        <span class="brand-tag">Small businesses. Big dreams. Local roots.</span>
+      </span>
+    </a>
+    <span class="phase">Phase 1 · visual prototype</span>
+  </div>
+</header>
+
+<main id="top">
+  <section class="intro wrap">
+    <p class="eyebrow">Today's market · <span id="today">Tuesday, November 24</span></p>
+    <h1>Stroll Front Street and meet the people who make things here.</h1>
+    <p class="lede">Pass under the arch, wander the stalls and open one to meet the maker. <span id="stall-count">10</span> demo stalls are set up today.</p>
+  </section>
+
+  <section class="market" aria-label="Illustrated marketplace">
+    <div id="street" class="street" tabindex="0" role="region"
+         aria-label="Front Street marketplace" aria-describedby="street-help">
+      <div id="track" class="track">
+        <div id="layer-mountains" class="layer layer-parallax"></div>
+        <div id="layer-hills" class="layer layer-parallax"></div>
+        <div id="layer-architecture" class="layer"></div>
+        <div class="layer tint"></div>
+        <div id="layer-lights" class="layer lights"></div>
+        <div id="layer-foreground" class="layer foreground"></div>
+        <div id="layer-stalls" class="layer stalls"></div>
+        <div id="layer-grain" class="layer grain"></div>
+      </div>
+    </div>
+    <button id="enter" type="button" class="enter-hint">Walk in <span aria-hidden="true">→</span></button>
+
+    <div class="controls wrap">
+      <button id="prev" type="button" class="step" aria-label="Previous stall">←</button>
+      <div class="now"><span class="now-label">Now passing</span><span id="now-name">The gateway arch</span></div>
+      <div id="map" class="map" aria-hidden="true"><span id="map-window" class="map-window"></span></div>
+      <button id="next" type="button" class="step" aria-label="Next stall">→</button>
+    </div>
+    <p id="street-help" class="help wrap">Scroll, drag or swipe sideways. With a keyboard, use the arrow keys to jump between stalls, or Tab through them.</p>
+  </section>
+
+  <section class="alt wrap" aria-label="Today's stalls as a list">
+    <details>
+      <summary>Prefer a list? See today's stalls</summary>
+      <ul id="stall-list" class="stall-list"></ul>
+    </details>
+    <div class="legend">
+      <span><i style="background:var(--cat-home)"></i>Home-Based Business</span>
+      <span><i style="background:var(--cat-micro)"></i>Independent Micro-Business</span>
+    </div>
+  </section>
+
+  <section class="notes wrap" aria-labelledby="notes-title">
+    <h2 id="notes-title">About this prototype</h2>
+    <div class="note-grid">
+      <div>
+        <h3>Demo content only</h3>
+        <p>Every stall is a labeled sample. No real businesses, names or photos are used. Real photos, supplied by each approved business, will appear in the profile frames.</p>
+      </div>
+      <div>
+        <h3>Street and stalls are separate</h3>
+        <p>The architecture is one illustration; each stall is its own component drawn from a business record. Adding, moving or editing a business never touches the street.</p>
+      </div>
+      <div>
+        <h3>The directory stays close</h3>
+        <p>The list above opens the same profiles. In Phase 2 it grows into the full searchable directory with category filters.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="profile" class="profile">
+  <div class="dialog-inner">
+    <button id="profile-close" type="button" class="profile-close">Close</button>
+    <div id="profile-body"></div>
+    <nav id="profile-nav" class="profile-nav" aria-label="Browse stalls">
+      <button id="profile-prev" type="button">← Previous stall</button>
+      <span id="profile-pos"></span>
+      <button id="profile-next" type="button">Next stall →</button>
+    </nav>
+  </div>
+</dialog>
+
+<script>
+/*
+ * DEMO CONTENT ONLY.
+ * Every record below is a fictional placeholder used to demonstrate the stall
+ * component. Names deliberately start with "Sample" so they can never be
+ * mistaken for real Temecula businesses. No real photos are used: the profile
+ * shows labeled placeholder frames where a business's own photos will go.
+ *
+ * In Phase 2 these records come from the approved-business database. The shape
+ * below is the contract between the data and the stall component.
+ */
+(function () {
+  'use strict';
+  const TH = (window.TH = window.TH || {});
+
+  // category: 'home'  = Home-Based Business
+  //           'micro' = Independent Micro-Business
+  // display:  which illustrated goods the stall shows (bakery, candles, ...)
+  // roof:     'awning' (striped canvas) or 'gable' (wooden roof)
+  // colors:   [awning stripe A, awning stripe B, counter cloth]
+  TH.DEMO_BUSINESSES = [
+    {
+      id: 'demo-sourdough',
+      name: 'Sample Sourdough Co.',
+      category: 'home',
+      type: 'Home bakery · Cottage Food',
+      display: 'bakery',
+      roof: 'awning',
+      colors: ['#C8902E', '#F2E6CC', '#7C4A2A'],
+      chalk: 'Fresh loaves',
+      summary: 'Naturally leavened loaves, focaccia and seasonal bakes from a home kitchen.',
+      description:
+        'This is a demonstration listing. A real home bakery would describe its breads, how ordering works, and its Cottage Food registration in its own words here.',
+      area: 'Temecula · porch pickup by arrangement',
+      links: { website: true, instagram: true, facebook: false, email: true }
+    },
+    {
+      id: 'demo-candles',
+      name: 'Sample Candle Studio',
+      category: 'home',
+      type: 'Candles & home fragrance',
+      display: 'candles',
+      roof: 'gable',
+      colors: ['#6F8A6A', '#EDE6D2', '#55704F'],
+      chalk: 'Hand-poured',
+      summary: 'Small-batch soy candles poured in a spare-room studio.',
+      description:
+        'This is a demonstration listing showing how a home-based maker could present scents, materials and where to order.',
+      area: 'Murrieta · ships within the valley',
+      links: { website: true, instagram: true, facebook: true, email: false }
+    },
+    {
+      id: 'demo-jewelry',
+      name: 'Sample Silver Jewelry',
+      category: 'micro',
+      type: 'Independent artisan · by appointment',
+      display: 'jewelry',
+      roof: 'awning',
+      colors: ['#6B2D45', '#E9D9DC', '#3E2430'],
+      chalk: 'Studio visits',
+      summary: 'Hand-forged rings and pendants from a one-person bench studio.',
+      description:
+        'This is a demonstration listing for an owner-operated studio without a retail storefront. Visits would be by appointment only.',
+      area: 'Old Town Temecula area · appointments only',
+      links: { website: true, instagram: true, facebook: false, email: true }
+    },
+    {
+      id: 'demo-honey',
+      name: 'Sample Honey & Jam',
+      category: 'home',
+      type: 'Cottage Food · preserves',
+      display: 'honey',
+      roof: 'gable',
+      colors: ['#D9A23A', '#F4EAD0', '#9B6A1E'],
+      chalk: 'Local honey',
+      summary: 'Wildflower honey and small-batch fruit preserves.',
+      description:
+        'This is a demonstration listing. A real producer would explain its products, seasons and how to buy.',
+      area: 'De Luz & Temecula · market pickup',
+      links: { website: false, instagram: true, facebook: true, email: true }
+    },
+    {
+      id: 'demo-ceramics',
+      name: 'Sample Ceramics Studio',
+      category: 'micro',
+      type: 'Small workshop · classes',
+      display: 'ceramics',
+      roof: 'awning',
+      colors: ['#4E6E7E', '#E4E7E1', '#2F4954'],
+      chalk: 'Wheel classes',
+      summary: 'Functional stoneware and small wheel-throwing classes.',
+      description:
+        'This is a demonstration listing for a small independent workshop that sells pieces and teaches classes.',
+      area: 'Temecula · studio address shared on booking',
+      links: { website: true, instagram: true, facebook: true, email: true }
+    },
+    {
+      id: 'demo-soap',
+      name: 'Sample Soap Works',
+      category: 'home',
+      type: 'Handmade soaps',
+      display: 'soap',
+      roof: 'gable',
+      colors: ['#A9798B', '#F1E6E6', '#7D5263'],
+      chalk: 'Cold-process',
+      summary: 'Cold-process soaps cured for six weeks in a home workshop.',
+      description:
+        'This is a demonstration listing showing how a handmade-products business could describe its ingredients and ordering.',
+      area: 'Menifee & Temecula · local delivery',
+      links: { website: true, instagram: true, facebook: false, email: false }
+    },
+    {
+      id: 'demo-succulents',
+      name: 'Sample Succulent Garden',
+      category: 'home',
+      type: 'Home-based grower',
+      display: 'plants',
+      roof: 'awning',
+      colors: ['#5C7F48', '#EEF0DE', '#3F5B33'],
+      chalk: 'Drought-wise',
+      summary: 'Propagated succulents and drought-tolerant arrangements.',
+      description:
+        'This is a demonstration listing for a small home-based producer growing plants in a backyard nursery.',
+      area: 'Wildomar · pickup by arrangement',
+      links: { website: false, instagram: true, facebook: true, email: true }
+    },
+    {
+      id: 'demo-leather',
+      name: 'Sample Leather Workshop',
+      category: 'micro',
+      type: 'Maker · custom orders',
+      display: 'leather',
+      roof: 'gable',
+      colors: ['#8A5A3B', '#EADCC8', '#5E3B26'],
+      chalk: 'Made to order',
+      summary: 'Hand-stitched wallets, belts and bags made to order.',
+      description:
+        'This is a demonstration listing for an independent maker who works from a small shared workshop.',
+      area: 'Temecula Valley · custom orders',
+      links: { website: true, instagram: true, facebook: false, email: true }
+    },
+    {
+      id: 'demo-quilts',
+      name: 'Sample Quilt Corner',
+      category: 'home',
+      type: 'Handmade textiles & gifts',
+      display: 'textiles',
+      roof: 'awning',
+      colors: ['#B5563F', '#F3E5D2', '#7E3A2A'],
+      chalk: 'Personalized',
+      summary: 'Patchwork quilts, table runners and personalized baby gifts.',
+      description:
+        'This is a demonstration listing for a home-based business making personalized handmade gifts.',
+      area: 'Murrieta · ships locally',
+      links: { website: true, instagram: false, facebook: true, email: true }
+    },
+    {
+      id: 'demo-watercolor',
+      name: 'Sample Watercolor Studio',
+      category: 'micro',
+      type: 'Artist · pop-up',
+      display: 'art',
+      roof: 'gable',
+      colors: ['#3F5E8C', '#E6E8EE', '#2C4266'],
+      chalk: 'Valley prints',
+      summary: 'Original watercolors and prints of valley landscapes.',
+      description:
+        'This is a demonstration listing for an independent artist who sells at pop-ups and online.',
+      area: 'Temecula & Fallbrook · pop-up events',
+      links: { website: true, instagram: true, facebook: true, email: false }
+    }
+  ];
+
+  TH.CATEGORY = {
+    home: { label: 'Home-Based Business', short: 'Home-based' },
+    micro: { label: 'Independent Micro-Business', short: 'Micro-business' }
+  };
+})();
+
+</script>
+<script>
+/*
+ * STREET SCENE — the illustrated architecture of Old Town Temecula.
+ *
+ * This file knows nothing about businesses. It draws:
+ *   - two parallax landscape layers (mountains + vineyard hills, balloons)
+ *   - the architecture layer: the ironwork gateway arch with a perspective
+ *     view down Front Street, then the long elevation of storefronts
+ *   - a "lights" layer used for the evening (dark theme) scene
+ * and it publishes a list of empty stall SLOTS (TH.STREET.slots) where the
+ * marketplace places independent stall components.
+ *
+ * Everything is drawn in one coordinate space: W x H "street units".
+ */
+(function () {
+  'use strict';
+  const TH = (window.TH = window.TH || {});
+
+  const H = 720;
+  const BASE = 470; // bottom of building facades / top of boardwalk
+  const WALK_H = 18;
+  const GATE_W = 1500; // width of the gateway (perspective) panel
+  const SLOT_COUNT = 12;
+  const SLOT_START = 1880;
+  const SLOT_GAP = 400;
+  const STALL_W = 240;
+  const STALL_H = 320;
+  const STALL_BOTTOM = 706;
+  const W = SLOT_START + (SLOT_COUNT - 1) * SLOT_GAP + 860; // 7140
+
+  TH.STREET = {
+    W, H, BASE, GATE_W, STALL_W, STALL_H, STALL_BOTTOM,
+    slots: Array.from({ length: SLOT_COUNT }, (_, i) => ({ index: i, x: SLOT_START + i * SLOT_GAP }))
+  };
+
+  /* ---------- tiny SVG helpers ---------- */
+  const n = (v) => Math.round(v * 10) / 10;
+  const rect = (x, y, w, h, a = '') => `<rect x="${n(x)}" y="${n(y)}" width="${n(w)}" height="${n(h)}" ${a}/>`;
+  const poly = (pts, a = '') => `<polygon points="${pts.map((p) => n(p[0]) + ',' + n(p[1])).join(' ')}" ${a}/>`;
+  const line = (x1, y1, x2, y2, a = '') => `<line x1="${n(x1)}" y1="${n(y1)}" x2="${n(x2)}" y2="${n(y2)}" ${a}/>`;
+  const circ = (cx, cy, r, a = '') => `<circle cx="${n(cx)}" cy="${n(cy)}" r="${n(r)}" ${a}/>`;
+  const ell = (cx, cy, rx, ry, a = '') => `<ellipse cx="${n(cx)}" cy="${n(cy)}" rx="${n(rx)}" ry="${n(ry)}" ${a}/>`;
+
+  function rng(seed) {
+    let a = seed >>> 0;
+    return function () {
+      a |= 0; a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  const IRON = '#2a2826';
+  const IRON_HI = '#4b4640';
+  const WOOD = '#7a5a3e';
+  const WOOD_DK = '#5a4130';
+  const WOOD_LT = '#a07a55';
+  const TRIM = '#efe6d2';
+
+  // lights collected while drawing, rendered in the evening layer
+  let LIGHTS = [];
+
+  /* =====================================================================
+     LANDSCAPE (parallax layers)
+     ===================================================================== */
+  function ridge(r, y0, amp, step, w) {
+    const pts = [];
+    const p1 = r() * 6, p2 = r() * 6, p3 = r() * 6;
+    for (let x = -20; x <= w + 20; x += step) {
+      const y = y0 + Math.sin(x / 520 + p1) * amp + Math.sin(x / 190 + p2) * amp * 0.38 + Math.sin(x / 75 + p3) * amp * 0.08;
+      pts.push([x, y]);
+    }
+    return pts;
+  }
+  const ridgePath = (pts) => `M${pts.map((p) => n(p[0]) + ',' + n(p[1])).join(' L')} L${W + 20},${H} L-20,${H} Z`;
+
+  function balloon(x, y, s, c1, c2) {
+    let g = `<g transform="translate(${x},${y}) scale(${s})">`;
+    const env = 'M0,-46 C30,-46 40,-20 34,0 C28,18 12,30 8,40 L-8,40 C-12,30 -28,18 -34,0 C-40,-20 -30,-46 0,-46 Z';
+    g += `<path d="${env}" fill="${c1}"/>`;
+    g += `<path d="M0,-46 C14,-46 18,-20 15,0 C12,18 6,30 4,40 L-4,40 C-6,30 -12,18 -15,0 C-18,-20 -14,-46 0,-46 Z" fill="${c2}"/>`;
+    g += `<path d="M0,-46 C4,-30 4,10 0,40" stroke="${c1}" stroke-width="3" fill="none"/>`;
+    g += line(-8, 40, -5, 52, 'stroke="#5a4a3a" stroke-width="1"') + line(8, 40, 5, 52, 'stroke="#5a4a3a" stroke-width="1"');
+    g += rect(-6, 52, 12, 9, 'fill="#7a5a3e"');
+    return g + '</g>';
+  }
+
+  TH.renderMountains = function (svg) {
+    const r = rng(11);
+    let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">`;
+    // stars (evening only)
+    for (let i = 0; i < 90; i++) s += circ(r() * W, r() * 230, r() * 1.4 + 0.4, 'class="star"');
+    // clouds
+    for (let i = 0; i < 9; i++) {
+      const cx = 300 + i * 790 + r() * 200, cy = 70 + r() * 90;
+      s += `<g class="cloud">${ell(cx, cy, 90, 18)}${ell(cx - 40, cy - 8, 45, 16)}${ell(cx + 30, cy - 12, 55, 20)}</g>`;
+    }
+    s += `<path class="mtn-far" d="${ridgePath(ridge(r, 300, 34, 24, W))}"/>`;
+    s += `<path class="mtn" d="${ridgePath(ridge(r, 330, 28, 20, W))}"/>`;
+    // hot-air balloons: a Temecula Valley signature
+    s += balloon(980, 150, 0.9, '#c8573f', '#e9c46a');
+    s += balloon(2500, 110, 0.7, '#3f6c8c', '#e8dcc0');
+    s += balloon(3900, 170, 0.8, '#6b2d45', '#d9a23a');
+    s += balloon(5600, 120, 0.65, '#5c7f48', '#f0e6c8');
+    svg.innerHTML = s + '</svg>';
+  };
+
+  TH.renderHills = function (svg) {
+    const r = rng(29);
+    let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="vines" width="16" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-8)">
+          <rect width="16" height="2.4" y="3" class="vine-row"/>
+        </pattern>
+        <pattern id="vines2" width="14" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(10)">
+          <rect width="14" height="2.2" y="3" class="vine-row"/>
+        </pattern>
+      </defs>`;
+    const back = ridge(r, 355, 24, 18, W);
+    const front = ridge(r, 392, 20, 18, W);
+    s += `<path class="hill-back" d="${ridgePath(back)}"/>`;
+    s += `<path d="${ridgePath(back)}" fill="url(#vines2)" opacity=".55"/>`;
+    s += `<path class="hill" d="${ridgePath(front)}"/>`;
+    s += `<path d="${ridgePath(front)}" fill="url(#vines)" opacity=".6"/>`;
+    // oaks on the crests
+    for (let i = 0; i < 70; i++) {
+      const p = back[Math.floor(r() * back.length)];
+      const sz = 4 + r() * 6;
+      s += `<g class="oak">${ell(p[0], p[1] - sz * 0.4, sz * 1.5, sz)}${ell(p[0] + sz, p[1] - sz * 0.2, sz, sz * 0.7)}</g>`;
+    }
+    for (let i = 0; i < 50; i++) {
+      const p = front[Math.floor(r() * front.length)];
+      const sz = 6 + r() * 7;
+      s += `<g class="oak oak-near">${ell(p[0], p[1] - sz * 0.3, sz * 1.6, sz)}${ell(p[0] - sz, p[1], sz, sz * 0.7)}</g>`;
+    }
+    svg.innerHTML = s + '</svg>';
+  };
+
+  /* =====================================================================
+     ELEVATION BUILDING KIT
+     ===================================================================== */
+
+  function win(x, y, w, h, o = {}) {
+    const t = o.trim || TRIM;
+    let s = '';
+    if (o.arch) {
+      const r = w / 2;
+      const outer = `M${n(x - 5)},${n(y + h + 4)} L${n(x - 5)},${n(y + r)} A${n(r + 5)},${n(r + 5)} 0 0 1 ${n(x + w + 5)},${n(y + r)} L${n(x + w + 5)},${n(y + h + 4)} Z`;
+      const inner = `M${n(x)},${n(y + h)} L${n(x)},${n(y + r)} A${n(r)},${n(r)} 0 0 1 ${n(x + w)},${n(y + r)} L${n(x + w)},${n(y + h)} Z`;
+      s += `<path d="${outer}" fill="${t}"/>`;
+      s += `<path d="${inner}" class="glass"/>`;
+      s += rect(x + w / 2 - 4, y - 8, 8, 10, `fill="${t}"`); // keystone
+      LIGHTS.push(`<path d="${inner}" class="lit"/>`);
+    } else {
+      s += rect(x - 7, y - 11, w + 14, 7, `fill="${t}"`); // head trim
+      s += rect(x - 4, y - 4, w + 8, h + 8, `fill="${t}"`);
+      s += rect(x, y, w, h, 'class="glass"');
+      LIGHTS.push(rect(x, y, w, h, 'class="lit"'));
+    }
+    s += poly([[x + w * 0.15, y + h], [x + w * 0.55, y], [x + w * 0.8, y], [x + w * 0.4, y + h]], 'class="shine"');
+    s += rect(x + w / 2 - 1.5, y + (o.arch ? w / 2 : 0), 3, h - (o.arch ? w / 2 : 0), `fill="${t}"`);
+    s += rect(x, y + h * 0.52, w, 3, `fill="${t}"`);
+    s += rect(x - 7, y + h + 3, w + 14, 5, `fill="${t}"`); // sill
+    if (o.flowers) s += flowerBox(x - 6, y + h + 8, w + 12, o.flowerColor);
+    return s;
+  }
+
+  function flowerBox(x, y, w, color) {
+    let s = rect(x, y, w, 10, `fill="${WOOD}"`);
+    const cols = [color || '#c8423b', '#e7a1a6', '#f2efe4'];
+    for (let i = 0; i < w / 7; i++) {
+      const fx = x + 3 + i * 7;
+      s += ell(fx, y - 1, 5, 4, 'fill="#5b7a43"');
+    }
+    for (let i = 0; i < w / 6; i++) {
+      const fx = x + 3 + i * 6;
+      s += circ(fx, y - 3 - (i % 2) * 2, 2.6, `fill="${cols[i % 3]}"`);
+    }
+    // trailing ivy
+    for (let i = 0; i < 3; i++) {
+      const fx = x + w * (0.2 + i * 0.3);
+      s += `<path d="M${n(fx)},${n(y + 9)} q3,8 -1,16" stroke="#5b7a43" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    }
+    return s;
+  }
+
+  function door(x, y, w, h, color) {
+    let s = rect(x - 4, y - 6, w + 8, h + 6, `fill="${TRIM}"`);
+    s += rect(x, y, w, h, `fill="${color || WOOD}"`);
+    s += rect(x + 6, y + 6, w - 12, h * 0.46, 'class="glass"');
+    LIGHTS.push(rect(x + 6, y + 6, w - 12, h * 0.46, 'class="lit"'));
+    s += rect(x + 6, y + h * 0.6, w - 12, h * 0.3, 'fill="rgba(0,0,0,.12)"');
+    s += circ(x + w - 7, y + h * 0.56, 2, 'fill="#d9b36a"');
+    return s;
+  }
+
+  function storefront(x, w, top, color) {
+    // display windows either side of a recessed door, with kickplates
+    const dw = 42;
+    const dx = x + w / 2 - dw / 2;
+    let s = rect(x + 6, top, w - 12, BASE - top, `fill="${shade(color, -0.08)}"`);
+    s += rect(x + 6, top, w - 12, 18, `fill="${TRIM}"`); // transom bar
+    const gl = [[x + 16, dx - 10], [dx + dw + 10, x + w - 16]];
+    gl.forEach(([a, b]) => {
+      if (b - a < 20) return;
+      s += rect(a - 3, top + 22, b - a + 6, BASE - top - 44, `fill="${TRIM}"`);
+      s += rect(a, top + 25, b - a, BASE - top - 52, 'class="glass"');
+      LIGHTS.push(rect(a, top + 25, b - a, BASE - top - 52, 'class="lit"'));
+      const m = Math.max(1, Math.round((b - a) / 40));
+      for (let i = 1; i < m; i++) s += rect(a + ((b - a) / m) * i - 1.5, top + 25, 3, BASE - top - 52, `fill="${TRIM}"`);
+      s += poly([[a + 6, BASE - 27], [a + (b - a) * 0.45, top + 25], [a + (b - a) * 0.6, top + 25], [a + 22, BASE - 27]], 'class="shine"');
+      s += rect(a - 3, BASE - 22, b - a + 6, 22, `fill="${shade(color, -0.2)}"`); // kickplate
+      s += rect(a + 3, BASE - 18, b - a - 6, 14, `fill="${shade(color, -0.1)}"`);
+    });
+    s += door(dx, top + 22, dw, BASE - top - 22, shade(color, -0.35));
+    return s;
+  }
+
+  function porch(x, w, y, o = {}) {
+    let s = '';
+    // shade under the porch roof
+    s += rect(x, y + 10, w, 70, 'fill="url(#porchShade)"');
+    // roof edge and fascia
+    s += rect(x - 10, y - 9, w + 20, 9, `fill="${o.roof || '#8c8579'}"`);
+    s += rect(x - 10, y - 9, w + 20, 2, 'fill="rgba(255,255,255,.25)"');
+    s += rect(x - 8, y, w + 16, 11, `fill="${o.fascia || WOOD_LT}"`);
+    const count = Math.max(2, Math.round(w / 115) + 1);
+    for (let i = 0; i < count; i++) {
+      const px = x - 3 + ((w - 2) / (count - 1)) * i;
+      s += rect(px, y + 11, 7, BASE - y - 11, `fill="${o.post || WOOD_LT}"`);
+      s += rect(px - 0.5, y + 11, 2, BASE - y - 11, 'fill="rgba(0,0,0,.18)"');
+      if (i > 0) s += poly([[px, y + 11], [px - 14, y + 11], [px, y + 25]], `fill="${o.post || WOOD_LT}"`);
+      if (i < count - 1) s += poly([[px + 7, y + 11], [px + 21, y + 11], [px + 7, y + 25]], `fill="${o.post || WOOD_LT}"`);
+    }
+    if (o.balcony) {
+      const by = y - 9;
+      s += rect(x - 8, by - 34, w + 16, 5, `fill="${o.post || WOOD_LT}"`);
+      for (let bx = x - 4; bx < x + w + 6; bx += 9) s += rect(bx, by - 30, 3, 30, `fill="${o.post || WOOD_LT}"`);
+      s += rect(x - 8, by - 4, w + 16, 4, `fill="${o.post || WOOD_LT}"`);
+    }
+    return s;
+  }
+
+  function signBand(x, y, w, h, text, color, ink) {
+    let s = rect(x, y, w, h, `fill="${color}"`);
+    s += rect(x + 3, y + 3, w - 6, h - 6, `fill="none" stroke="${ink}" stroke-opacity=".35" stroke-width="1.2"`);
+    if (text) {
+      const fs = Math.min(h * 0.55, (w * 0.82) / (text.length * 0.66));
+      s += `<text x="${n(x + w / 2)}" y="${n(y + h / 2 + fs * 0.36)}" text-anchor="middle" font-size="${n(fs)}" class="sign-paint" fill="${ink}">${text}</text>`;
+    }
+    return s;
+  }
+
+  function shade(hex, amt) {
+    const c = hex.replace('#', '');
+    const v = [0, 2, 4].map((i) => parseInt(c.substr(i, 2), 16));
+    const out = v.map((ch) => {
+      const t = amt < 0 ? 0 : 255;
+      return Math.round(ch + (t - ch) * Math.abs(amt));
+    });
+    return '#' + out.map((ch) => ch.toString(16).padStart(2, '0')).join('');
+  }
+
+  /* --- building types --- */
+
+  function falseFront(x, w, o) {
+    const stories = o.stories || 1;
+    const bodyTop = BASE - (stories === 2 ? 250 : 170);
+    const pTop = bodyTop - (o.parapetH || 48);
+    let outline;
+    if (o.parapet === 'stepped') {
+      outline = [[x, pTop + 30], [x + w * 0.18, pTop + 30], [x + w * 0.18, pTop + 15], [x + w * 0.34, pTop + 15], [x + w * 0.34, pTop], [x + w * 0.66, pTop], [x + w * 0.66, pTop + 15], [x + w * 0.82, pTop + 15], [x + w * 0.82, pTop + 30], [x + w, pTop + 30]];
+    } else if (o.parapet === 'peak') {
+      outline = [[x, pTop + 34], [x + w * 0.3, pTop + 34], [x + w / 2, pTop], [x + w * 0.7, pTop + 34], [x + w, pTop + 34]];
+    } else {
+      outline = [[x, pTop], [x + w, pTop]];
+    }
+    const pts = [[x, BASE], ...outline, [x + w, BASE]];
+    let s = poly(pts, `fill="${o.color}"`);
+    s += poly(pts, 'fill="url(#clap)"');
+    // corner boards
+    s += rect(x, outline[0][1], 6, BASE - outline[0][1], `fill="${shade(o.color, 0.25)}"`);
+    s += rect(x + w - 6, outline[outline.length - 1][1], 6, BASE - outline[outline.length - 1][1], `fill="${shade(o.color, -0.15)}"`);
+    // cornice along the top outline
+    s += `<polyline points="${outline.map((p) => n(p[0]) + ',' + n(p[1])).join(' ')}" fill="none" stroke="${o.trim || TRIM}" stroke-width="8" stroke-linejoin="miter"/>`;
+    if (o.parapet !== 'peak' && o.parapet !== 'stepped') {
+      for (let bx = x + 10; bx < x + w - 8; bx += 22) s += rect(bx, pTop + 4, 6, 10, `fill="${o.trim || TRIM}"`);
+    }
+    const porchY = BASE - 128;
+    // sign band
+    const signY = stories === 2 ? pTop + 34 : bodyTop - 6;
+    s += signBand(x + w * 0.12, signY, w * 0.76, 34, o.sign, o.signColor || TRIM, o.signInk || '#3b2f25');
+    if (stories === 2) {
+      const n2 = Math.max(2, Math.round(w / 95));
+      const ww = 34;
+      for (let i = 0; i < n2; i++) {
+        const wx = x + (w / n2) * (i + 0.5) - ww / 2;
+        s += win(wx, bodyTop + 52, ww, 62, { flowers: o.flowers, flowerColor: o.flowerColor });
+      }
+    }
+    s += storefront(x + 4, w - 8, porchY + 8, o.color);
+    s += porch(x, w, porchY, { roof: o.roof, balcony: o.balcony });
+    return s;
+  }
+
+  function hotel(x, w, o) {
+    const top = BASE - 290;
+    let s = '';
+    // hipped roof peeking above
+    s += poly([[x - 8, top + 8], [x + 40, top - 42], [x + w - 40, top - 42], [x + w + 8, top + 8]], `fill="${o.roof || '#6d5d52'}"`);
+    s += poly([[x - 8, top + 8], [x + 40, top - 42], [x + w - 40, top - 42], [x + w + 8, top + 8]], 'fill="url(#shingle)"');
+    s += rect(x + w * 0.72, top - 74, 22, 40, 'fill="#8e5a45"');
+    s += rect(x + w * 0.72 - 3, top - 78, 28, 6, 'fill="#6b4334"');
+    s += rect(x, top, w, BASE - top, `fill="${o.color}"`);
+    s += rect(x, top, w, BASE - top, 'fill="url(#clap)"');
+    s += rect(x - 6, top, w + 12, 9, `fill="${TRIM}"`);
+    s += rect(x, top + 9, w, 6, 'fill="rgba(0,0,0,.12)"');
+    // upper floor: doors onto the balcony
+    const n2 = Math.max(3, Math.round(w / 82));
+    for (let i = 0; i < n2; i++) {
+      const wx = x + (w / n2) * (i + 0.5) - 17;
+      s += win(wx, top + 38, 34, 72, { flowers: o.flowers && i % 2 === 0, flowerColor: o.flowerColor });
+    }
+    s += storefront(x + 4, w - 8, BASE - 120, o.color);
+    s += porch(x, w, BASE - 128, { balcony: true, roof: o.porchRoof || '#7c756c' });
+    s += signBand(x + w * 0.22, BASE - 128 - 41, w * 0.56, 28, o.sign, o.signColor || '#3b2f25', o.signInk || TRIM);
+    // upper porch roof
+    s += rect(x - 10, top + 14, w + 20, 7, 'fill="#7c756c"');
+    const c = Math.max(2, Math.round(w / 115) + 1);
+    for (let i = 0; i < c; i++) {
+      const px = x - 3 + ((w - 2) / (c - 1)) * i;
+      s += rect(px, top + 21, 6, BASE - 128 - 9 - (top + 21), `fill="${WOOD_LT}"`);
+    }
+    return s;
+  }
+
+  function brick(x, w, o) {
+    const stories = o.stories || 2;
+    const top = BASE - (stories === 2 ? 270 : 200);
+    const pTop = top - 40;
+    const outline = o.parapet === 'stepped'
+      ? [[x, pTop + 22], [x + w * 0.28, pTop + 22], [x + w * 0.28, pTop], [x + w * 0.72, pTop], [x + w * 0.72, pTop + 22], [x + w, pTop + 22]]
+      : [[x, pTop], [x + w, pTop]];
+    const pts = [[x, BASE], ...outline, [x + w, BASE]];
+    let s = poly(pts, `fill="${o.color}"`);
+    s += poly(pts, 'fill="url(#bricks)"');
+    s += `<polyline points="${outline.map((p) => n(p[0]) + ',' + n(p[1])).join(' ')}" fill="none" stroke="${o.trim || '#d8c7a6'}" stroke-width="9"/>`;
+    // corbel table
+    for (let bx = x + 6; bx < x + w - 6; bx += 14) s += rect(bx, top - 10, 8, 8, `fill="${shade(o.color, -0.18)}"`);
+    s += rect(x, top - 2, w, 6, `fill="${o.trim || '#d8c7a6'}"`);
+    // pilasters
+    s += rect(x, top, 12, BASE - top, `fill="${shade(o.color, 0.1)}"`);
+    s += rect(x + w - 12, top, 12, BASE - top, `fill="${shade(o.color, -0.12)}"`);
+    if (o.plaque) {
+      const fs = Math.min(18, (w * 0.5) / (o.plaque.length * 0.62));
+      s += rect(x + w / 2 - w * 0.26, top - 34, w * 0.52, 24, `fill="${o.trim || '#d8c7a6'}"`);
+      s += `<text x="${n(x + w / 2)}" y="${n(top - 16)}" text-anchor="middle" font-size="${n(fs)}" class="sign-paint" fill="#4a3426">${o.plaque}</text>`;
+    }
+    if (stories === 2) {
+      const n2 = Math.max(3, Math.round(w / 90));
+      for (let i = 0; i < n2; i++) {
+        const wx = x + (w / n2) * (i + 0.5) - 17;
+        s += win(wx, top + 30, 34, 78, { arch: true, trim: o.trim || '#d8c7a6', flowers: o.flowers, flowerColor: o.flowerColor });
+      }
+    }
+    s += storefront(x + 12, w - 24, BASE - 132, '#4b3b30');
+    // striped canvas awning, a European touch
+    if (o.awning) s += canvasAwning(x + 14, BASE - 140, w - 28, o.awning);
+    return s;
+  }
+
+  function canvasAwning(x, y, w, colors) {
+    let s = poly([[x, y], [x + w, y], [x + w + 8, y + 34], [x - 8, y + 34]], `fill="${colors[0]}"`);
+    const stripes = Math.round(w / 18);
+    for (let i = 0; i < stripes; i += 2) {
+      const a = i / stripes, b = (i + 1) / stripes;
+      s += poly([[x + w * a, y], [x + w * b, y], [x - 8 + (w + 16) * b, y + 34], [x - 8 + (w + 16) * a, y + 34]], `fill="${colors[1]}"`);
+    }
+    // scalloped valance
+    const sw = (w + 16) / stripes;
+    for (let i = 0; i < stripes; i++) {
+      const sx = x - 8 + sw * i;
+      s += `<path d="M${n(sx)},${n(y + 34)} h${n(sw)} v6 q${n(-sw / 2)},12 ${n(-sw)},0 Z" fill="${i % 2 ? colors[1] : colors[0]}"/>`;
+    }
+    s += rect(x - 8, y + 34, w + 16, 2, 'fill="rgba(0,0,0,.15)"');
+    s += rect(x + 2, y + 46, w - 4, 26, 'fill="url(#porchShade)"');
+    return s;
+  }
+
+  function mission(x, w, o) {
+    const top = BASE - 200;
+    const d = `M${x},${BASE} L${x},${top} L${n(x + w * 0.22)},${top} C${n(x + w * 0.26)},${top - 30} ${n(x + w * 0.34)},${top - 52} ${n(x + w * 0.5)},${top - 56} C${n(x + w * 0.66)},${top - 52} ${n(x + w * 0.74)},${top - 30} ${n(x + w * 0.78)},${top} L${x + w},${top} L${x + w},${BASE} Z`;
+    let s = `<path d="${d}" fill="${o.color}"/>`;
+    const cap = `M${x - 4},${top} L${n(x + w * 0.22)},${top} C${n(x + w * 0.26)},${top - 30} ${n(x + w * 0.34)},${top - 52} ${n(x + w * 0.5)},${top - 56} C${n(x + w * 0.66)},${top - 52} ${n(x + w * 0.74)},${top - 30} ${n(x + w * 0.78)},${top} L${x + w + 4},${top}`;
+    s += `<path d="${cap}" fill="none" stroke="#a4513a" stroke-width="8" stroke-linejoin="round"/>`;
+    s += `<path d="${cap}" fill="none" stroke="#c8735a" stroke-width="2" transform="translate(0,-3)"/>`;
+    // quatrefoil window in the parapet
+    const qx = x + w / 2, qy = top - 22;
+    s += `<g fill="#6a4a35">${circ(qx - 6, qy, 7)}${circ(qx + 6, qy, 7)}${circ(qx, qy - 6, 7)}${circ(qx, qy + 6, 7)}</g>`;
+    // stucco mottling
+    const r = rng(Math.round(x));
+    for (let i = 0; i < 18; i++) s += ell(x + r() * w, top + r() * (BASE - top), 10 + r() * 20, 4 + r() * 6, 'fill="rgba(120,90,60,.06)"');
+    // arcade
+    const arches = Math.max(2, Math.round(w / 110));
+    const aw = (w - 30) / arches;
+    for (let i = 0; i < arches; i++) {
+      const ax = x + 15 + aw * i + 10, awi = aw - 20;
+      const r2 = awi / 2;
+      const ay = BASE - 150;
+      s += `<path d="M${n(ax)},${BASE} L${n(ax)},${n(ay + r2)} A${n(r2)},${n(r2)} 0 0 1 ${n(ax + awi)},${n(ay + r2)} L${n(ax + awi)},${BASE} Z" fill="#5a4334"/>`;
+      s += `<path d="M${n(ax + 8)},${BASE} L${n(ax + 8)},${n(ay + r2 + 6)} A${n(r2 - 8)},${n(r2 - 8)} 0 0 1 ${n(ax + awi - 8)},${n(ay + r2 + 6)} L${n(ax + awi - 8)},${BASE} Z" class="glass"/>`;
+      LIGHTS.push(`<path d="M${n(ax + 8)},${BASE} L${n(ax + 8)},${n(ay + r2 + 6)} A${n(r2 - 8)},${n(r2 - 8)} 0 0 1 ${n(ax + awi - 8)},${n(ay + r2 + 6)} L${n(ax + awi - 8)},${BASE} Z" class="lit"/>`);
+    }
+    if (o.sign) s += `<text x="${n(x + w / 2)}" y="${top + 28}" text-anchor="middle" font-size="16" class="sign-paint" fill="#6a4a35" letter-spacing="3">${o.sign}</text>`;
+    // tile-roofed wall lantern
+    s += flowerBox(x + 18, BASE - 168, 48, '#c8423b');
+    s += flowerBox(x + w - 66, BASE - 168, 48, '#e7a1a6');
+    return s;
+  }
+
+  function tree(x, w, seed, opts = {}) {
+    const r = rng(seed);
+    const cx = x + w / 2;
+    const top = opts.top || 190;
+    let s = `<path d="M${n(cx - 10)},${BASE + 4} C${n(cx - 6)},${BASE - 60} ${n(cx - 16)},${BASE - 120} ${n(cx - 30)},${top + 90} L${n(cx - 20)},${top + 86} C${n(cx - 4)},${BASE - 130} ${n(cx + 2)},${BASE - 80} ${n(cx + 8)},${BASE - 60} C${n(cx + 18)},${BASE - 130} ${n(cx + 34)},${top + 110} ${n(cx + 44)},${top + 96} L${n(cx + 50)},${top + 104} C${n(cx + 30)},${BASE - 110} ${n(cx + 14)},${BASE - 40} ${n(cx + 12)},${BASE + 4} Z" fill="#5d4a3a"/>`;
+    const greens = ['#58683f', '#6b7c4b', '#7f8f58', '#4a5a37'];
+    for (let i = 0; i < 46; i++) {
+      const a = r() * Math.PI * 2, rad = r();
+      const ex = cx + Math.cos(a) * rad * w * 0.44;
+      const ey = top + 70 + Math.sin(a) * rad * 70 - (1 - rad) * 20;
+      s += ell(ex, ey, 18 + r() * 22, 12 + r() * 14, `fill="${greens[Math.floor(r() * greens.length)]}"`);
+    }
+    // weeping strands (California pepper tree)
+    for (let i = 0; i < 14; i++) {
+      const sx = cx - w * 0.42 + r() * w * 0.84, sy = top + 90 + r() * 30;
+      s += `<path d="M${n(sx)},${n(sy)} q${n(-4 + r() * 8)},30 ${n(-2 + r() * 4)},${n(40 + r() * 30)}" stroke="#6b7c4b" stroke-width="${n(5 + r() * 4)}" fill="none" stroke-linecap="round"/>`;
+    }
+    return s;
+  }
+
+  function waterTower(x) {
+    let s = '';
+    const top = 110, tankH = 90, legTop = top + tankH, w = 120;
+    [0, 36, 84, 120].forEach((dx) => (s += line(x + dx * 0.9 + 6, legTop, x + dx, BASE - 40, `stroke="${WOOD_DK}" stroke-width="7"`)));
+    for (let y = legTop + 30; y < BASE - 60; y += 70) {
+      s += line(x + 6, y, x + 114, y + 60, `stroke="${WOOD_DK}" stroke-width="3"`);
+      s += line(x + 114, y, x + 6, y + 60, `stroke="${WOOD_DK}" stroke-width="3"`);
+    }
+    s += rect(x - 6, legTop - 4, w + 12, 8, `fill="${WOOD_DK}"`);
+    s += rect(x, top, w, tankH, `fill="${WOOD}"`);
+    for (let i = 1; i < 12; i++) s += rect(x + i * 10, top, 1.2, tankH, 'fill="rgba(0,0,0,.18)"');
+    [top + 16, top + 48, top + 78].forEach((y) => (s += rect(x - 2, y, w + 4, 3, `fill="${IRON_HI}"`)));
+    s += poly([[x - 10, top + 2], [x + w / 2, top - 44], [x + w + 10, top + 2]], 'fill="#6d5d52"');
+    s += circ(x + w / 2, top - 48, 4, `fill="${IRON}"`);
+    return s;
+  }
+
+  function lampPost(x, y = STALL_BOTTOM, headY = 350) {
+    let s = rect(x - 9, y - 18, 18, 18, `fill="${IRON}"`);
+    s += rect(x - 5, y - 40, 10, 24, `fill="${IRON}"`);
+    s += rect(x - 2.5, headY + 26, 5, y - 40 - headY - 26, `fill="${IRON}"`);
+    s += rect(x - 6, headY + 22, 12, 6, `fill="${IRON}"`);
+    s += poly([[x - 13, headY + 22], [x + 13, headY + 22], [x + 9, headY], [x - 9, headY]], 'class="lamp-glass"');
+    s += poly([[x - 15, headY], [x + 15, headY], [x, headY - 14]], `fill="${IRON}"`);
+    s += circ(x, headY - 16, 3, `fill="${IRON}"`);
+    LIGHTS.push(circ(x, headY + 11, 40, 'fill="url(#halo)"'));
+    LIGHTS.push(poly([[x - 13, headY + 22], [x + 13, headY + 22], [x + 9, headY], [x - 9, headY]], 'fill="#ffe2a3"'));
+    return s;
+  }
+
+  function stringLights(x1, y1, x2, y2, sag, count) {
+    const cx = (x1 + x2) / 2, cy = (y1 + y2) / 2 + sag;
+    let s = `<path d="M${n(x1)},${n(y1)} Q${n(cx)},${n(cy)} ${n(x2)},${n(y2)}" stroke="#2d2a26" stroke-width="1.6" fill="none"/>`;
+    for (let i = 1; i < count; i++) {
+      const t = i / count;
+      const bx = (1 - t) * (1 - t) * x1 + 2 * t * (1 - t) * cx + t * t * x2;
+      const by = (1 - t) * (1 - t) * y1 + 2 * t * (1 - t) * cy + t * t * y2;
+      s += line(bx, by, bx, by + 6, 'stroke="#2d2a26" stroke-width="1.2"');
+      s += ell(bx, by + 10, 3.6, 5, 'class="bulb"');
+      LIGHTS.push(circ(bx, by + 10, 15, 'fill="url(#halo)"'));
+      LIGHTS.push(ell(bx, by + 10, 3.4, 4.6, 'fill="#fff1c9"'));
+    }
+    return s;
+  }
+
+  function planter(x, color) {
+    let s = rect(x - 18, BASE - 2, 36, 22, `fill="${WOOD}"`);
+    s += rect(x - 18, BASE + 3, 36, 3, `fill="${IRON_HI}"`);
+    s += rect(x - 18, BASE + 13, 36, 3, `fill="${IRON_HI}"`);
+    for (let i = 0; i < 7; i++) s += ell(x - 15 + i * 5, BASE - 6 - (i % 2) * 4, 7, 6, 'fill="#5b7a43"');
+    for (let i = 0; i < 6; i++) s += circ(x - 13 + i * 5.2, BASE - 10 - (i % 2) * 5, 2.8, `fill="${color}"`);
+    return s;
+  }
+
+  function wagonWheel(x, y, r) {
+    let s = circ(x, y, r, `fill="none" stroke="${WOOD_DK}" stroke-width="5"`);
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI * 2;
+      s += line(x, y, x + Math.cos(a) * r, y + Math.sin(a) * r, `stroke="${WOOD_DK}" stroke-width="2.4"`);
+    }
+    return s + circ(x, y, 5, `fill="${WOOD_DK}"`);
+  }
+
+  function bench(x) {
+    let s = rect(x, BASE - 22, 70, 5, `fill="${WOOD_LT}"`);
+    s += rect(x, BASE - 38, 70, 5, `fill="${WOOD_LT}"`);
+    s += rect(x + 4, BASE - 38, 4, 38, `fill="${IRON}"`) + rect(x + 62, BASE - 38, 4, 38, `fill="${IRON}"`);
+    return s;
+  }
+
+  /* =====================================================================
+     GATEWAY: the ironwork arch, framing a perspective view of Front Street
+     ===================================================================== */
+  const VP = [750, 362];
+  const FOCAL = 300;
+  const PLANE = 700;
+  const GROUND = 328;
+  function P(side, u, v, off = 0) {
+    const k = FOCAL / (FOCAL + u);
+    return [VP[0] + side * (PLANE - off) * k, VP[1] + (GROUND - v) * k];
+  }
+  const quad = (side, u1, u2, v1, v2, off, a) => poly([P(side, u1, v1, off), P(side, u2, v1, off), P(side, u2, v2, off), P(side, u1, v2, off)], a);
+
+  function perspectiveStreet() {
+    let s = '';
+    const far = 6000;
+    // road + boardwalks
+    s += poly([[-200, H], [GATE_W + 200, H], P(1, -160, 0, 120), P(1, far, 0, 120), P(-1, far, 0, 120), P(-1, -160, 0, 120)], 'class="street-p"');
+    [-1, 1].forEach((side) => {
+      s += poly([P(side, -160, 0, 0), P(side, far, 0, 0), P(side, far, 0, 120), P(side, -160, 0, 120)], 'fill="#9c7c5a"');
+      // plank lines
+      for (let u = -150; u < 2600; u += 30) s += poly([P(side, u, 0, 0), P(side, u + 3, 0, 0), P(side, u + 3, 0, 120), P(side, u, 0, 120)], 'fill="rgba(60,40,25,.18)"');
+    });
+
+    const r = rng(7);
+    const palette = ['#c9b48a', '#8e9f8a', '#b86f52', '#d8cdb6', '#7e8c93', '#c99a5b', '#a6553f', '#e3d6b8'];
+    const signs = ['', 'HOTEL', '', 'GOODS', '', '', 'SALOON', '', '', ''];
+    [-1, 1].forEach((side) => {
+      const blds = [];
+      let u = -170;
+      let i = 0;
+      while (u < 3400) {
+        const len = 240 + r() * 220;
+        blds.push({ u1: u, u2: u + len, h: 190 + r() * 120, color: palette[Math.floor(r() * palette.length)], two: r() > 0.45, kind: r(), sign: signs[(i + (side > 0 ? 3 : 0)) % signs.length] });
+        u += len + (r() > 0.75 ? 40 : 0);
+        i++;
+      }
+      // painter's order: far to near
+      blds.reverse().forEach((b) => {
+        const { u1, u2, h } = b;
+        const um = (u1 + u2) / 2;
+        // facade with false-front top
+        let top;
+        if (b.kind < 0.33) top = [P(side, u1, h), P(side, um, h + 34), P(side, u2, h)];
+        else if (b.kind < 0.6) top = [P(side, u1, h), P(side, u1 + (u2 - u1) * 0.3, h), P(side, u1 + (u2 - u1) * 0.3, h + 18), P(side, u1 + (u2 - u1) * 0.7, h + 18), P(side, u1 + (u2 - u1) * 0.7, h), P(side, u2, h)];
+        else top = [P(side, u1, h), P(side, u2, h)];
+        s += poly([P(side, u1, 0), ...top, P(side, u2, 0)], `fill="${b.color}"`);
+        // side shading so facades read as receding
+        s += poly([P(side, u1, 0), ...top, P(side, u2, 0)], 'fill="rgba(40,25,15,.10)"');
+        // cornice
+        s += `<polyline points="${top.map((p) => n(p[0]) + ',' + n(p[1])).join(' ')}" fill="none" stroke="${TRIM}" stroke-width="${n(6 * FOCAL / (FOCAL + um))}"/>`;
+        // sign band
+        if (b.sign) {
+          s += quad(side, u1 + 30, u2 - 30, h - 14, h - 46, 0, 'fill="#3b2f25"');
+        } else {
+          s += quad(side, u1 + 30, u2 - 30, h - 14, h - 44, 0, `fill="${TRIM}"`);
+        }
+        // upper windows
+        if (b.two && h > 230) {
+          const nw = Math.max(2, Math.round((u2 - u1) / 90));
+          for (let j = 0; j < nw; j++) {
+            const a = u1 + ((u2 - u1) / nw) * (j + 0.3), c = u1 + ((u2 - u1) / nw) * (j + 0.7);
+            s += quad(side, a - 4, c + 4, 222, 154, 0, `fill="${TRIM}"`);
+            s += quad(side, a, c, 218, 158, 0, 'class="glass"');
+            if (u1 > 200) LIGHTS.push(quad(side, a, c, 218, 158, 0, 'class="lit"'));
+          }
+        }
+        // storefront windows
+        s += quad(side, u1 + 20, u2 - 20, 110, 20, 0, 'fill="#4a3a2e"');
+        const segs = Math.max(2, Math.round((u2 - u1) / 110));
+        for (let j = 0; j < segs; j++) {
+          const a = u1 + 24 + ((u2 - u1 - 48) / segs) * j, c = a + (u2 - u1 - 48) / segs - 10;
+          s += quad(side, a, c, 104, 28, 0, 'class="glass"');
+          if (u1 > 200) LIGHTS.push(quad(side, a, c, 104, 28, 0, 'class="lit"'));
+        }
+        // porch roof between facade and porch line
+        s += poly([P(side, u1, 128, 0), P(side, u2, 128, 0), P(side, u2, 120, 90), P(side, u1, 120, 90)], 'fill="#8c8579"');
+        s += poly([P(side, u1, 120, 90), P(side, u2, 120, 90), P(side, u2, 110, 90), P(side, u1, 110, 90)], `fill="${WOOD_LT}"`);
+        // porch posts
+        for (let pu = u1 + 10; pu < u2; pu += 120) {
+          const a = P(side, pu, 110, 86), bb = P(side, pu, 0, 86);
+          const k = FOCAL / (FOCAL + pu);
+          s += rect(a[0] - 3 * k, a[1], 6 * k, bb[1] - a[1], `fill="${WOOD_LT}"`);
+        }
+      });
+    });
+
+    // decorative market awnings along the street (the market beyond the gate)
+    const awnColors = [['#c8902e', '#f2e6cc'], ['#6b2d45', '#e9d9dc'], ['#4e6e7e', '#e4e7e1'], ['#5c7f48', '#eef0de'], ['#b5563f', '#f3e5d2']];
+    [-1, 1].forEach((side) => {
+      for (let k2 = 0, u = 2400; u > 160; u -= 300, k2++) {
+        const u1 = u, u2 = u + 170;
+        const [c1, c2] = awnColors[(k2 + (side > 0 ? 2 : 0)) % awnColors.length];
+        s += quad(side, u1 + 6, u1 + 12, 150, 0, 130, `fill="${WOOD_DK}"`);
+        s += quad(side, u2 - 12, u2 - 6, 150, 0, 130, `fill="${WOOD_DK}"`);
+        s += quad(side, u1, u2, 88, 60, 140, `fill="${WOOD}"`);
+        s += quad(side, u1, u2, 60, 12, 146, `fill="${c1}"`);
+        const st = 6;
+        for (let j = 0; j < st; j++) {
+          const a = u1 + ((u2 - u1) / st) * j, b = a + (u2 - u1) / st;
+          s += poly([P(side, a, 176, 118), P(side, b, 176, 118), P(side, b, 150, 150), P(side, a, 150, 150)], `fill="${j % 2 ? c2 : c1}"`);
+        }
+      }
+    });
+
+    // string lights across the street
+    for (let u = 2200; u >= 100; u -= 420) {
+      const a = P(-1, u, 250, 60), b = P(1, u, 250, 60);
+      const k = FOCAL / (FOCAL + u);
+      s += stringLights(a[0], a[1], b[0], b[1], 60 * k, Math.max(8, Math.round(18 * k + 6)));
+    }
+    return s;
+  }
+
+  // ---- ironwork silhouettes (stylised, original drawing) ----
+  const HORSE = 'M10,30 C20,22 45,24 62,24 L70,14 C73,8 78,3 84,4 L86,0 L88,5 L98,15 L96,21 L87,20 C82,24 78,30 76,36 L74,44 L79,57 L83,70 L78,70 L72,58 L66,47 L62,49 L64,70 L59,70 L56,50 L30,48 L26,60 L30,70 L25,70 L19,58 L18,47 L14,51 L12,70 L7,70 L8,48 C4,42 4,34 10,30 Z M10,32 C2,36 -1,48 2,58 L6,50 C6,42 8,38 12,36 Z';
+  const RIDER = 'M42,24 C42,14 44,6 50,4 C48,0 52,-4 56,-2 C60,-2 61,3 58,6 L62,7 L58,10 C62,16 62,22 60,28 L66,40 L60,40 L54,30 L46,30 Z M44,-6 L64,-6 L62,-9 L58,-9 C57,-14 51,-14 50,-9 L46,-9 Z';
+  const STEER = 'M14,24 C20,16 60,16 70,20 L78,14 C84,8 92,6 100,2 C94,8 88,12 86,16 L90,22 L86,34 L80,32 L74,34 L74,50 L76,62 L71,62 L68,48 L62,44 L30,44 L26,50 L27,62 L22,62 L20,46 L16,50 L15,62 L10,62 L11,44 C6,40 8,30 14,24 Z M76,15 C70,8 62,4 54,2 C62,8 68,12 72,18 Z M12,26 C4,30 2,40 4,48 L7,42 C7,36 9,32 13,30 Z';
+
+  function coach(x, y, s) {
+    let g = `<g transform="translate(${x},${y}) scale(${s})" fill="${IRON}">`;
+    g += '<path d="M14,14 L106,14 L100,56 L20,56 Z"/>';
+    g += '<path d="M10,8 L110,8 L110,14 L10,14 Z M30,0 L70,0 L72,8 L28,8 Z"/>'; // roof + luggage
+    g += '<path d="M106,22 L128,22 L132,34 L104,40 Z"/>'; // driver's box
+    g += '<path d="M116,4 C116,-2 124,-2 124,4 L126,22 L114,22 Z M112,-2 L128,-2 L126,-5 L114,-5 Z"/>'; // driver
+    g += '<path d="M124,10 L170,20" stroke="' + IRON + '" stroke-width="2" fill="none"/>'; // reins
+    g += '<path d="M128,46 L170,50" stroke="' + IRON + '" stroke-width="4" fill="none"/>'; // pole
+    g += '</g>';
+    // wheels as open ironwork
+    [[x + 34 * s, y + 66 * s, 16 * s], [x + 98 * s, y + 68 * s, 13 * s]].forEach(([cx, cy, r]) => {
+      g += circ(cx, cy, r, `fill="none" stroke="${IRON}" stroke-width="${n(3.5 * s)}"`);
+      for (let i = 0; i < 10; i++) {
+        const a = (i / 10) * Math.PI * 2;
+        g += line(cx, cy, cx + Math.cos(a) * r, cy + Math.sin(a) * r, `stroke="${IRON}" stroke-width="${n(1.8 * s)}"`);
+      }
+    });
+    // window cut-outs
+    g += rect(x + 30 * s, y + 20 * s, 22 * s, 14 * s, 'class="arch-sky"') + rect(x + 64 * s, y + 20 * s, 22 * s, 14 * s, 'class="arch-sky"');
+    return g;
+  }
+
+  function grapes(x, y, s, flip) {
+    let g = `<g transform="translate(${x},${y}) scale(${flip ? -s : s},${s})" fill="${IRON}">`;
+    const pts = [[0, 0], [8, 0], [16, 0], [4, 7], [12, 7], [8, 14], [0, 14], [16, 14], [4, 21], [12, 21], [8, 28]];
+    pts.forEach(([a, b]) => (g += circ(a, b + 10, 4.4)));
+    g += '<path d="M8,6 C8,0 10,-6 16,-8 C24,-10 30,-6 34,-14 C30,-2 22,-2 18,-2 C14,-2 12,2 12,8 Z"/>';
+    g += '<path d="M20,-6 C26,-22 46,-22 50,-8 C40,-14 30,-10 26,-2 Z"/>'; // leaf
+    g += `<path d="M34,-14 C40,-26 56,-22 52,-12 C50,-6 42,-8 44,-14" fill="none" stroke="${IRON}" stroke-width="2"/>`; // tendril
+    return g + '</g>';
+  }
+
+  function scroll(x, y, s, flip) {
+    return `<g transform="translate(${x},${y}) scale(${flip ? -s : s},${s})" fill="none" stroke="${IRON}" stroke-width="4" stroke-linecap="round">
+      <path d="M0,0 C30,0 48,-14 46,-34 C44,-48 28,-50 22,-40 C16,-30 26,-20 34,-26"/>
+      <path d="M0,-8 C14,-10 22,-20 20,-30"/></g>`;
+  }
+
+  function riverRock(x, y, w, h, seed) {
+    const r = rng(seed);
+    let s = rect(x, y, w, h, 'rx="6" fill="#857867"');
+    for (let row = 0; row < h / 14; row++) {
+      let cx = x + 4 + (row % 2) * 7;
+      while (cx < x + w - 4) {
+        const rw = 7 + r() * 8;
+        const tones = ['#9d907d', '#b3a48c', '#7f725f', '#c2b39a', '#a1876a'];
+        s += ell(Math.min(cx + rw / 2, x + w - rw / 2 - 1), y + 7 + row * 14, rw / 2, 6, `fill="${tones[Math.floor(r() * tones.length)]}" stroke="#5f5446" stroke-width="1"`);
+        cx += rw + 1.5;
+      }
+    }
+    s += rect(x - 4, y - 8, w + 8, 10, 'fill="#9a8c78"');
+    return s;
+  }
+
+  function gatewayArch() {
+    let s = '<g class="arch">';
+    const L = 236, R = 1264;
+    // pillars: river-rock bases with square iron columns
+    [L, R].forEach((cx, i) => {
+      s += riverRock(cx - 52, 600, 104, 106, 40 + i);
+      s += rect(cx - 16, 160, 32, 440, `fill="${IRON}"`);
+      s += rect(cx - 16, 160, 6, 440, `fill="${IRON_HI}"`);
+      for (let y = 200; y < 590; y += 60) s += rect(cx - 20, y, 40, 6, `fill="${IRON}"`);
+      // finial lantern
+      s += rect(cx - 22, 152, 44, 10, `fill="${IRON}"`);
+      s += poly([[cx - 14, 152], [cx + 14, 152], [cx + 10, 124], [cx - 10, 124]], 'class="lamp-glass"');
+      s += poly([[cx - 17, 124], [cx + 17, 124], [cx, 106]], `fill="${IRON}"`);
+      s += circ(cx, 103, 4, `fill="${IRON}"`);
+      LIGHTS.push(circ(cx, 138, 60, 'fill="url(#halo)"'));
+      LIGHTS.push(poly([[cx - 14, 152], [cx + 14, 152], [cx + 10, 124], [cx - 10, 124]], 'fill="#ffe2a3"'));
+    });
+    // top band (two arcs) with lettering
+    const upper = `M${L},206 Q750,-6 ${R},206`;
+    const lower = `M${L},262 Q750,46 ${R},262`;
+    s += `<path d="${upper} L${R},262 Q750,46 ${L},262 Z" fill="${IRON}"/>`;
+    s += `<path d="${upper}" fill="none" stroke="${IRON_HI}" stroke-width="3"/>`;
+    s += `<path id="archText" d="M${L},246 Q750,32 ${R},246" fill="none"/>`;
+    s += `<text class="arch-letters" font-size="35" letter-spacing="7"><textPath href="#archText" startOffset="50%" text-anchor="middle">OLD TOWN TEMECULA</textPath></text>`;
+    // crossbar
+    s += rect(L, 316, R - L, 12, `fill="${IRON}"`);
+    s += rect(L, 316, R - L, 3, `fill="${IRON_HI}"`);
+    // vertical pickets between arc and crossbar near the posts
+    for (let x = L + 22; x < L + 90; x += 16) {
+      const t = (x - L) / (R - L);
+      const y = (1 - t) * (1 - t) * 262 + 2 * t * (1 - t) * 46 + t * t * 262;
+      s += rect(x, y, 4, 316 - y, `fill="${IRON}"`);
+      s += rect(L + R - x - 4, y, 4, 316 - y, `fill="${IRON}"`);
+    }
+    // Old West scene standing on the crossbar
+    s += `<g fill="${IRON}">`;
+    s += `<path d="${STEER}" transform="translate(330,254)"/>`;
+    s += `<path d="${HORSE}" transform="translate(440,246)"/><path d="${RIDER}" transform="translate(440,246)"/>`;
+    s += '</g>';
+    s += coach(560, 238, 1.05);
+    s += `<g fill="${IRON}">`;
+    s += `<path d="${HORSE}" transform="translate(744,247) scale(.98)"/>`;
+    s += `<path d="${HORSE}" transform="translate(756,250) scale(.95)" opacity=".85"/>`;
+    s += `<path d="${HORSE}" transform="translate(852,247) scale(.98)"/>`;
+    s += `<path d="${HORSE}" transform="translate(864,250) scale(.95)" opacity=".85"/>`;
+    s += `<path d="${HORSE}" transform="translate(990,246)"/><path d="${RIDER}" transform="translate(990,246)"/>`;
+    s += '</g>';
+    s += grapes(1110, 262, 1.15, false);
+    s += grapes(1180, 270, 0.9, true);
+    s += scroll(L + 30, 314, 0.9, false) + scroll(R - 30, 314, 0.9, true);
+    // hanging market sign
+    s += line(620, 328, 628, 352, `stroke="${IRON}" stroke-width="2.4"`) + line(880, 328, 872, 352, `stroke="${IRON}" stroke-width="2.4"`);
+    s += rect(588, 350, 324, 70, `rx="6" fill="${WOOD_DK}"`);
+    s += rect(594, 356, 312, 58, `rx="4" fill="#efe3c8"`);
+    s += `<text x="750" y="389" text-anchor="middle" class="sign-paint" font-size="29" fill="#3b2f25">Homegrown Market</text>`;
+    s += `<text x="750" y="407" text-anchor="middle" class="sign-small" font-size="9.6" fill="#6b4a32" letter-spacing="1.3">SMALL BUSINESSES · BIG DREAMS · LOCAL ROOTS</text>`;
+    return s + '</g>';
+  }
+
+  /* =====================================================================
+     ASSEMBLE
+     ===================================================================== */
+  const FG_W = 1900;
+  TH.renderStreet = function (archSvg, lightsSvg, fgSvg) {
+    LIGHTS = [];
+    let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <pattern id="clap" width="40" height="10" patternUnits="userSpaceOnUse">
+        <rect y="8.6" width="40" height="1.4" fill="rgba(40,25,15,.16)"/><rect y="0" width="40" height="1" fill="rgba(255,255,255,.10)"/>
+      </pattern>
+      <pattern id="bricks" width="26" height="13" patternUnits="userSpaceOnUse">
+        <rect y="5.8" width="26" height="1.2" fill="rgba(235,220,195,.35)"/><rect y="12" width="26" height="1.2" fill="rgba(235,220,195,.35)"/>
+        <rect x="0" y="0" width="1.2" height="6" fill="rgba(235,220,195,.35)"/><rect x="13" y="6.5" width="1.2" height="6" fill="rgba(235,220,195,.35)"/>
+        <rect x="3" y="1.5" width="8" height="3" fill="rgba(80,30,20,.10)"/><rect x="16" y="8" width="7" height="3" fill="rgba(255,230,200,.07)"/>
+      </pattern>
+      <pattern id="shingle" width="12" height="8" patternUnits="userSpaceOnUse">
+        <path d="M0,8 q6,-6 12,0" fill="none" stroke="rgba(0,0,0,.18)" stroke-width="1"/>
+      </pattern>
+      <pattern id="planks" width="22" height="${WALK_H}" patternUnits="userSpaceOnUse">
+        <rect width="1.5" height="${WALK_H}" fill="rgba(40,25,15,.25)"/>
+      </pattern>
+      <pattern id="pavers" width="44" height="22" patternUnits="userSpaceOnUse">
+        <path d="M0,0.5 H44 M0,11.5 H44 M0.5,0 V11 M22.5,11 V22" stroke="rgba(70,50,35,.14)" stroke-width="1" fill="none"/>
+      </pattern>
+      <linearGradient id="porchShade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#1e140c" stop-opacity=".38"/><stop offset="1" stop-color="#1e140c" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="streetFade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#3a2a1c" stop-opacity=".18"/><stop offset=".4" stop-color="#3a2a1c" stop-opacity="0"/>
+      </linearGradient>
+    </defs>`;
+
+    /* --- gateway panel --- */
+    s += `<g class="gateway">${perspectiveStreet()}</g>`;
+
+    /* --- elevation street --- */
+    const x0 = GATE_W - 120;
+    // ground: boardwalk + street
+    s += rect(x0, BASE, W - x0, WALK_H, 'fill="#9c7c5a"');
+    s += rect(x0, BASE, W - x0, WALK_H, 'fill="url(#planks)"');
+    s += rect(x0, BASE + WALK_H - 3, W - x0, 3, `fill="${WOOD_DK}"`);
+    s += rect(x0, BASE + WALK_H, W - x0, H - BASE - WALK_H, 'class="street"');
+    s += rect(x0, BASE + WALK_H, W - x0, H - BASE - WALK_H, 'fill="url(#pavers)"');
+    s += rect(x0, BASE + WALK_H, W - x0, H - BASE - WALK_H, 'fill="url(#streetFade)"');
+    // blend the seam between the perspective road and the elevation street
+    s += rect(GATE_W - 150, 620, 300, 100, 'class="street"');
+
+    s += waterTower(4390);
+    s += waterTower(6600);
+
+    const seq = [
+      ['hotel', 460, { color: '#e3d6b8', sign: 'HOTEL', flowers: true, flowerColor: '#c8423b' }],
+      ['ff', 300, { color: '#8e9f8a', parapet: 'stepped', sign: 'FEED & SEED' }],
+      ['tree', 140],
+      ['brick', 420, { color: '#9a4a36', plaque: 'MERCANTILE', awning: ['#2f5a4a', '#e9e1cc'], flowers: true, flowerColor: '#f2efe4' }],
+      ['ff', 280, { color: '#b86f52', parapet: 'peak', sign: 'SADDLERY' }],
+      ['mission', 360, { color: '#e6d7bc', sign: 'MERCADO' }],
+      ['ff', 320, { color: '#7e8c93', stories: 2, sign: 'DRY GOODS', flowers: true, flowerColor: '#e7a1a6', balcony: false }],
+      ['brick', 300, { color: '#a5583f', stories: 1, parapet: 'stepped', plaque: 'BANK', awning: ['#6b2d45', '#efe4d4'] }],
+      ['tree', 160],
+      ['hotel', 440, { color: '#c99a5b', sign: 'BOARDING HOUSE', flowers: true, flowerColor: '#e7a1a6', signColor: '#efe6d2', signInk: '#4a3426' }],
+      ['ff', 300, { color: '#d8cdb6', parapet: 'stepped', sign: 'BARBER' }],
+      ['brick', 380, { color: '#8f4634', plaque: 'ODD FELLOWS HALL', awning: ['#c8902e', '#f2e6cc'], flowers: true, flowerColor: '#c8423b' }],
+      ['ff', 280, { color: '#8e9f8a', parapet: 'peak', stories: 2, sign: 'GENERAL STORE', flowers: true }],
+      ['tree', 200],
+      ['mission', 320, { color: '#eadbc0', sign: '' }]
+    ];
+    let x = GATE_W;
+    let seed = 3;
+    seq.forEach(([type, w, o]) => {
+      if (type === 'hotel') s += hotel(x, w, o);
+      else if (type === 'ff') s += falseFront(x, w, o);
+      else if (type === 'brick') s += brick(x, w, o);
+      else if (type === 'mission') s += mission(x, w, o);
+      else if (type === 'tree') s += tree(x - 30, w + 60, seed++ * 17);
+      x += w;
+    });
+    // end of the street: open lot with oaks
+    s += tree(x + 60, 260, 91, { top: 150 });
+    s += tree(x + 360, 220, 92, { top: 175 });
+
+    // boardwalk props in the gaps between stalls
+    TH.STREET.slots.forEach((slot, i) => {
+      const gx = slot.x + SLOT_GAP / 2;
+      if (i % 3 === 0) s += planter(gx - 40, ['#c8423b', '#e7a1a6', '#f2c14e'][i % 3]);
+      if (i % 4 === 1) s += bench(gx - 60);
+      if (i === 6) s += wagonWheel(gx + 40, BASE - 30, 30);
+    });
+    s += planter(SLOT_START - 200, '#c8423b');
+
+    // lamp posts between stalls, with festoon lights strung between them
+    const lamps = [SLOT_START - SLOT_GAP / 2];
+    TH.STREET.slots.forEach((slot) => lamps.push(slot.x + SLOT_GAP / 2));
+    lamps.forEach((lx, i) => {
+      s += lampPost(lx);
+      if (i < lamps.length - 1) s += stringLights(lx, 340, lamps[i + 1], 340, 30, 14);
+    });
+
+    // end-of-market signpost
+    const ex = W - 330;
+    s += rect(ex, 440, 8, 266, `fill="${WOOD_DK}"`);
+    s += rect(ex - 110, 460, 230, 76, `rx="4" fill="${WOOD_LT}"`);
+    s += rect(ex - 104, 466, 218, 64, `rx="3" fill="#efe3c8"`);
+    s += `<text x="${ex + 5}" y="493" text-anchor="middle" class="sign-paint" font-size="17" fill="#3b2f25">End of today's market</text>`;
+    s += `<text x="${ex + 5}" y="516" text-anchor="middle" class="sign-small" font-size="10" fill="#6b4a32" letter-spacing="1.6">EVERY BUSINESS IS IN THE DIRECTORY</text>`;
+
+    s += '</svg>';
+    archSvg.innerHTML = s;
+
+    /* --- foreground: the arch and the seam tree sit above the evening lights --- */
+    let fg = `<svg viewBox="0 0 ${FG_W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">`;
+    // seam: large pepper tree + wooden way-sign
+    fg += tree(GATE_W - 150, 280, 55, { top: 120 });
+    fg += rect(GATE_W + 96, 470, 8, 236, `fill="${WOOD_DK}"`);
+    fg += poly([[GATE_W + 40, 520], [GATE_W + 190, 520], [GATE_W + 210, 540], [GATE_W + 190, 560], [GATE_W + 40, 560]], `fill="${WOOD_LT}"`);
+    fg += `<text x="${GATE_W + 118}" y="547" text-anchor="middle" class="sign-paint" font-size="17" fill="#3b2f25">Front Street →</text>`;
+
+    fg += gatewayArch();
+    fgSvg.innerHTML = fg + '</svg>';
+    fgSvg.style.width = (FG_W / W) * 100 + '%';
+    fgSvg.style.right = 'auto';
+
+    lightsSvg.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs><radialGradient id="halo"><stop offset="0" stop-color="#ffd27a" stop-opacity=".75"/><stop offset=".35" stop-color="#ffb24a" stop-opacity=".25"/><stop offset="1" stop-color="#ff9a3a" stop-opacity="0"/></radialGradient></defs>
+      ${LIGHTS.join('')}</svg>`;
+  };
+})();
+
+</script>
+<script>
+/*
+ * STALL COMPONENT — one market stall, drawn from one business record.
+ *
+ * TH.renderStall(business) returns a self-contained SVG (viewBox 240 x 320).
+ * It has no knowledge of the street: the marketplace decides where it stands.
+ * Changing a business record changes only its stall.
+ *
+ * The goods on the counter are illustrated, never photographs. Real photos
+ * supplied by each business appear in its profile (Phase 2).
+ */
+(function () {
+  'use strict';
+  const TH = (window.TH = window.TH || {});
+  const n = (v) => Math.round(v * 10) / 10;
+  const rect = (x, y, w, h, a = '') => `<rect x="${n(x)}" y="${n(y)}" width="${n(w)}" height="${n(h)}" ${a}/>`;
+  const circ = (cx, cy, r, a = '') => `<circle cx="${n(cx)}" cy="${n(cy)}" r="${n(r)}" ${a}/>`;
+  const ell = (cx, cy, rx, ry, a = '') => `<ellipse cx="${n(cx)}" cy="${n(cy)}" rx="${n(rx)}" ry="${n(ry)}" ${a}/>`;
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  const WOOD = '#8a6644', WOOD_DK = '#5e4430', WOOD_LT = '#b38a60';
+  const COUNTER_Y = 226; // top of the counter: goods stand on this line
+  const SHELF_Y = 166;
+
+  /* ---------------- goods ---------------- */
+  const goods = {
+    bakery() {
+      let s = '';
+      // basket of baguettes
+      s += `<path d="M34,${COUNTER_Y} L40,${COUNTER_Y - 26} L92,${COUNTER_Y - 26} L98,${COUNTER_Y} Z" fill="#b08a52"/>`;
+      for (let i = 0; i < 4; i++) s += rect(36, COUNTER_Y - 24 + i * 6, 60, 1.4, 'fill="rgba(60,40,20,.3)"');
+      [[46, -60, -8], [58, -66, 4], [70, -58, 12], [82, -54, 20]].forEach(([x, y, r]) => {
+        s += `<rect x="${x - 6}" y="${COUNTER_Y + y}" width="12" height="44" rx="6" fill="#d49a52" transform="rotate(${r} ${x} ${COUNTER_Y - 26})"/>`;
+        s += `<path d="M${x - 2},${COUNTER_Y + y + 10} l4,-3 M${x - 2},${COUNTER_Y + y + 20} l4,-3 M${x - 2},${COUNTER_Y + y + 30} l4,-3" stroke="#a66a2e" stroke-width="1.6" transform="rotate(${r} ${x} ${COUNTER_Y - 26})"/>`;
+      });
+      // round loaves on a board
+      s += rect(104, COUNTER_Y - 5, 74, 5, `fill="${WOOD_LT}"`);
+      [[118, 16], [141, 18], [164, 15]].forEach(([x, r]) => {
+        s += ell(x, COUNTER_Y - 5 - r * 0.62, r, r * 0.72, 'fill="#c98943"');
+        s += ell(x - r * 0.25, COUNTER_Y - 5 - r * 0.85, r * 0.5, r * 0.25, 'fill="#e0ad6c" opacity=".7"');
+        s += `<path d="M${x - r * 0.5},${COUNTER_Y - 5 - r * 0.8} q${r * 0.5},-6 ${r},0" stroke="#f1d4a3" stroke-width="2" fill="none"/>`;
+      });
+      // cake stand
+      s += rect(194, COUNTER_Y - 30, 4, 30, 'fill="#e9e2d6"') + ell(196, COUNTER_Y - 30, 18, 3, 'fill="#e9e2d6"') + ell(196, COUNTER_Y - 1, 10, 2.5, 'fill="#e9e2d6"');
+      s += `<path d="M181,${COUNTER_Y - 32} L181,${COUNTER_Y - 52} Q196,${COUNTER_Y - 60} 211,${COUNTER_Y - 52} L211,${COUNTER_Y - 32} Z" fill="#f1ddb7"/>`;
+      s += `<path d="M181,${COUNTER_Y - 52} Q196,${COUNTER_Y - 60} 211,${COUNTER_Y - 52} q-4,6 -8,0 q-4,6 -7,0 q-4,6 -8,0 q-4,6 -8,0 Z" fill="#fbf4e6"/>`;
+      s += circ(196, COUNTER_Y - 60, 3, 'fill="#b5302a"');
+      return s;
+    },
+    bakeryShelf() {
+      let s = '';
+      [44, 74, 104, 134, 164, 194].forEach((x, i) => {
+        s += rect(x - 10, SHELF_Y - 22, 20, 22, 'rx="3" fill="rgba(255,255,255,.55)" stroke="rgba(90,60,40,.35)"');
+        s += ell(x, SHELF_Y - 8, 7, 5, `fill="${i % 2 ? '#c98943' : '#e0b06a'}"`);
+      });
+      return s;
+    },
+    candles(c) {
+      let s = '';
+      const cols = ['#f1e8d4', '#d9c7a6', '#b9c9b2', '#e7c9c2', '#f1e8d4', '#c8b9a0'];
+      const hs = [46, 62, 38, 54, 30, 44];
+      hs.forEach((h, i) => {
+        const x = 34 + i * 18 + (i > 2 ? 4 : 0);
+        s += rect(x, COUNTER_Y - h, 14, h, `rx="2" fill="${cols[i]}"`);
+        s += rect(x + 2, COUNTER_Y - h, 3, h, 'fill="rgba(255,255,255,.35)"');
+        s += line2(x + 7, COUNTER_Y - h, x + 7, COUNTER_Y - h - 4);
+        s += `<path d="M${x + 7},${COUNTER_Y - h - 16} q5,8 0,11 q-5,-3 0,-11 Z" class="flame"/>`;
+      });
+      // jar candles with labels
+      [[160, '#e8dcc6'], [182, '#d1dcc9'], [204, '#ead2cb']].forEach(([x, col]) => {
+        s += rect(x - 10, COUNTER_Y - 30, 20, 30, 'rx="3" fill="rgba(220,230,232,.75)" stroke="rgba(80,90,90,.35)"');
+        s += rect(x - 9, COUNTER_Y - 20, 18, 19, `fill="${col}"`);
+        s += rect(x - 8, COUNTER_Y - 16, 16, 9, `fill="${c[2]}"`);
+        s += rect(x - 11, COUNTER_Y - 34, 22, 5, 'rx="1.5" fill="#b08a52"');
+      });
+      return s;
+    },
+    candlesShelf(c) {
+      let s = '';
+      for (let i = 0; i < 7; i++) {
+        const x = 40 + i * 26;
+        s += rect(x - 8, SHELF_Y - 22, 16, 22, 'rx="2" fill="rgba(220,230,232,.7)" stroke="rgba(80,90,90,.3)"');
+        s += rect(x - 7, SHELF_Y - 12, 14, 8, `fill="${i % 2 ? c[0] : '#e9dcc4'}"`);
+      }
+      return s;
+    },
+    jewelry(c) {
+      let s = '';
+      // velvet trays
+      [[30, 70], [106, 64]].forEach(([x, w]) => {
+        s += rect(x, COUNTER_Y - 10, w, 10, `fill="${c[2]}"`);
+        s += rect(x + 3, COUNTER_Y - 9, w - 6, 6, 'fill="rgba(0,0,0,.25)"');
+        for (let i = 0; i < w / 10 - 1; i++) {
+          s += circ(x + 9 + i * 10, COUNTER_Y - 9, 3.2, `fill="none" stroke="${i % 3 ? '#d8d8d4' : '#d9b36a'}" stroke-width="1.8"`);
+        }
+      });
+      // display bust with necklace
+      s += `<path d="M184,${COUNTER_Y} L180,${COUNTER_Y - 18} C170,${COUNTER_Y - 30} 172,${COUNTER_Y - 52} 186,${COUNTER_Y - 58} L188,${COUNTER_Y - 76} L204,${COUNTER_Y - 76} L206,${COUNTER_Y - 58} C220,${COUNTER_Y - 52} 222,${COUNTER_Y - 30} 212,${COUNTER_Y - 18} L208,${COUNTER_Y} Z" fill="${c[2]}"/>`;
+      s += `<path d="M186,${COUNTER_Y - 58} Q196,${COUNTER_Y - 34} 206,${COUNTER_Y - 58}" stroke="#e1e1dc" stroke-width="1.6" fill="none"/>`;
+      s += `<path d="M196,${COUNTER_Y - 44} l-4,7 l4,6 l4,-6 Z" fill="#9fc3d1" stroke="#e1e1dc" stroke-width="1"/>`;
+      // small mirror
+      s += ell(184 - 26, COUNTER_Y - 30, 10, 14, `fill="#c6d3d6" stroke="${WOOD_LT}" stroke-width="3"`) + rect(156, COUNTER_Y - 16, 4, 16, `fill="${WOOD_LT}"`);
+      return s;
+    },
+    jewelryShelf(c) {
+      let s = '';
+      [50, 90, 130, 170].forEach((x) => {
+        s += rect(x - 12, SHELF_Y - 14, 24, 14, `fill="${c[2]}"`);
+        s += `<path d="M${x - 12},${SHELF_Y - 14} l3,-10 h18 l3,10" fill="${c[0]}"/>`;
+        s += circ(x, SHELF_Y - 8, 3, 'fill="none" stroke="#d9b36a" stroke-width="1.8"');
+      });
+      // hanging earrings on a card
+      s += rect(190, SHELF_Y - 30, 20, 30, 'fill="#f4efe6"');
+      [196, 204].forEach((x) => (s += circ(x, SHELF_Y - 14, 3, 'fill="none" stroke="#d9b36a" stroke-width="1.6"') + rect(x - 0.5, SHELF_Y - 24, 1, 8, 'fill="#d9b36a"')));
+      return s;
+    },
+    ceramics(c) {
+      let s = '';
+      const pots = [
+        [52, 50, 18, '#c9d1cf'], [90, 38, 22, c[0]], [130, 56, 15, '#d9cbb5'], [166, 34, 20, '#8fa7a8']
+      ];
+      pots.forEach(([x, h, r, col]) => {
+        s += `<path d="M${x - r * 0.45},${COUNTER_Y - h} C${x - r * 0.45},${COUNTER_Y - h * 0.8} ${x - r * 1.2},${COUNTER_Y - h * 0.55} ${x - r},${COUNTER_Y - h * 0.15} Q${x - r * 0.8},${COUNTER_Y} ${x},${COUNTER_Y} Q${x + r * 0.8},${COUNTER_Y} ${x + r},${COUNTER_Y - h * 0.15} C${x + r * 1.2},${COUNTER_Y - h * 0.55} ${x + r * 0.45},${COUNTER_Y - h * 0.8} ${x + r * 0.45},${COUNTER_Y - h} Z" fill="${col}"/>`;
+        s += ell(x, COUNTER_Y - h, r * 0.48, 2.5, 'fill="rgba(0,0,0,.25)"');
+        s += `<path d="M${x - r * 0.8},${COUNTER_Y - h * 0.45} Q${x},${COUNTER_Y - h * 0.35} ${x + r * 0.8},${COUNTER_Y - h * 0.45}" stroke="rgba(255,255,255,.4)" stroke-width="2" fill="none"/>`;
+      });
+      // stacked bowls
+      [0, 1, 2].forEach((i) => (s += `<path d="M${188 - i},${COUNTER_Y - 6 - i * 7} q14,${10} 28,0 Z" fill="${i % 2 ? '#d9cbb5' : c[0]}"/>`));
+      return s;
+    },
+    ceramicsShelf(c) {
+      let s = '';
+      [44, 72, 100, 128, 156, 184].forEach((x, i) => {
+        s += rect(x - 9, SHELF_Y - 18, 18, 18, `rx="3" fill="${i % 2 ? '#d9cbb5' : c[0]}"`);
+        s += `<path d="M${x + 9},${SHELF_Y - 14} q8,4 0,10" stroke="${i % 2 ? '#d9cbb5' : c[0]}" stroke-width="3" fill="none"/>`;
+      });
+      return s;
+    },
+    soap(c) {
+      let s = rect(30, COUNTER_Y - 24, 76, 24, `fill="${WOOD_LT}"`) + rect(30, COUNTER_Y - 24, 76, 4, `fill="${WOOD}"`);
+      s += `<text x="68" y="${COUNTER_Y - 7}" text-anchor="middle" font-size="8" class="stall-small" fill="${WOOD_DK}" letter-spacing="1.5">HANDMADE</text>`;
+      const cols = ['#e9dcc8', '#c9b3c4', '#b9c9b2', '#f0d9b6', '#d9c1b9'];
+      let k = 0;
+      for (let row = 0; row < 3; row++) {
+        for (let i = 0; i < 4 - row; i++) {
+          const x = 116 + i * 24 + row * 12, y = COUNTER_Y - 14 - row * 14;
+          s += rect(x, y, 22, 13, `rx="2" fill="${cols[k++ % cols.length]}"`);
+          s += rect(x + 7, y, 8, 13, 'fill="#c4a57a"');
+        }
+      }
+      // pump bottles
+      [[44, 20], [60, 20], [76, 20], [92, 20]].forEach(([x], i) => {
+        s += rect(x - 6, COUNTER_Y - 46, 12, 22, `rx="3" fill="${i % 2 ? '#d8e3df' : '#efe6d8'}"`);
+        s += rect(x - 2, COUNTER_Y - 52, 4, 6, 'fill="#3a3632"') + rect(x - 2, COUNTER_Y - 53, 7, 2, 'fill="#3a3632"');
+        s += rect(x - 5, COUNTER_Y - 40, 10, 8, `fill="${c[0]}"`);
+      });
+      return s;
+    },
+    soapShelf(c) {
+      let s = '';
+      for (let i = 0; i < 6; i++) {
+        const x = 34 + i * 30;
+        s += rect(x, SHELF_Y - 12, 24, 12, `rx="2" fill="${i % 2 ? c[1] : '#e1cdb6'}"`);
+        s += rect(x + 8, SHELF_Y - 12, 8, 12, `fill="${c[0]}" opacity=".7"`);
+      }
+      return s;
+    },
+    plants() {
+      let s = '';
+      [[46, 1.1], [82, 0.9], [118, 1.2], [156, 0.85], [192, 1.05]].forEach(([x, k], i) => {
+        const pw = 26 * k, ph = 22 * k;
+        s += `<path d="M${x - pw / 2},${COUNTER_Y - ph} L${x + pw / 2},${COUNTER_Y - ph} L${x + pw * 0.38},${COUNTER_Y} L${x - pw * 0.38},${COUNTER_Y} Z" fill="#b8643f"/>`;
+        s += rect(x - pw / 2 - 2, COUNTER_Y - ph - 4, pw + 4, 6, 'fill="#a5583a"');
+        // rosette
+        const greens = ['#7f9c6a', '#9db487', '#6b8a5a'];
+        for (let j = 0; j < 9; j++) {
+          const a = Math.PI + (j / 8) * Math.PI;
+          const lx = x + Math.cos(a) * 11 * k, ly = COUNTER_Y - ph - 4 + Math.sin(a) * 11 * k;
+          s += `<ellipse cx="${n(lx)}" cy="${n(ly)}" rx="${n(8 * k)}" ry="${n(3.6 * k)}" fill="${greens[(j + i) % 3]}" transform="rotate(${n((a * 180) / Math.PI)} ${n(lx)} ${n(ly)})"/>`;
+        }
+        s += ell(x, COUNTER_Y - ph - 8 * k, 6 * k, 5 * k, 'fill="#a9c193"');
+        if (i % 2 === 0) s += circ(x + 4, COUNTER_Y - ph - 18 * k, 2.6, 'fill="#e98a6a"');
+      });
+      return s;
+    },
+    plantsShelf() {
+      let s = '';
+      for (let i = 0; i < 7; i++) {
+        const x = 40 + i * 26;
+        s += `<path d="M${x - 8},${SHELF_Y - 12} h16 l-3,12 h-10 Z" fill="#c07650"/>`;
+        s += ell(x, SHELF_Y - 15, 8, 5, `fill="${i % 2 ? '#7f9c6a' : '#9db487'}"`);
+      }
+      // trailing plant
+      s += `<path d="M206,${SHELF_Y - 6} q6,20 -2,40 M200,${SHELF_Y - 6} q-4,18 2,34" stroke="#6b8a5a" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="5 2"/>`;
+      return s;
+    },
+    textiles(c) {
+      let s = '';
+      // folded stack
+      const cols = [c[0], '#e9dcc4', '#7c8f9c', '#d6a04a', c[2], '#efe6d8'];
+      cols.forEach((col, i) => {
+        const y = COUNTER_Y - 9 - i * 9;
+        s += rect(34, y, 74, 9, `rx="3" fill="${col}"`);
+        s += rect(34, y + 3, 74, 1, 'fill="rgba(255,255,255,.4)" stroke-dasharray="3 2"');
+      });
+      // rolled runners
+      [[132, '#e9dcc4'], [154, c[0]], [176, '#7c8f9c'], [198, '#d6a04a']].forEach(([x, col]) => {
+        s += rect(x - 9, COUNTER_Y - 18, 18, 18, `rx="9" fill="${col}"`);
+        s += circ(x, COUNTER_Y - 9, 5, 'fill="rgba(0,0,0,.15)"');
+      });
+      return s;
+    },
+    textilesShelf(c) {
+      // patchwork quilt hung on the backdrop instead of a shelf
+      let s = '';
+      const cols = [c[0], '#efe6d8', '#7c8f9c', '#d6a04a', '#e9dcc4', c[2]];
+      for (let r = 0; r < 4; r++) for (let q = 0; q < 6; q++) s += rect(54 + q * 22, 112 + r * 22, 22, 22, `fill="${cols[(r * 2 + q) % cols.length]}" stroke="rgba(255,255,255,.35)" stroke-width="1"`);
+      s += rect(50, 108, 140, 4, `fill="${WOOD_DK}"`);
+      return { back: true, svg: s };
+    },
+    art() {
+      let s = '';
+      // easel with a landscape painting
+      s += `<path d="M58,${COUNTER_Y} L76,${COUNTER_Y - 92} L94,${COUNTER_Y}" stroke="${WOOD_DK}" stroke-width="4" fill="none"/>`;
+      s += rect(46, COUNTER_Y - 88, 60, 46, `fill="${WOOD_LT}"`);
+      s += rect(50, COUNTER_Y - 84, 52, 38, 'fill="#e9edf0"');
+      s += `<path d="M50,${COUNTER_Y - 58} q12,-10 26,-4 q14,-10 26,0 V${COUNTER_Y - 46} H50 Z" fill="#9db487"/>`;
+      s += `<path d="M50,${COUNTER_Y - 52} q16,-8 30,0 q12,-6 22,-2 V${COUNTER_Y - 46} H50 Z" fill="#c9a86a"/>`;
+      s += circ(90, COUNTER_Y - 74, 5, 'fill="#e9b36a"');
+      s += rect(46, COUNTER_Y - 42, 60, 4, `fill="${WOOD_DK}"`);
+      // print crate
+      s += rect(126, COUNTER_Y - 30, 84, 30, `fill="${WOOD}"`);
+      ['#c8d6e0', '#e8d9c0', '#b9c9b2', '#e7c9c2'].forEach((col, i) => (s += rect(132 + i * 19, COUNTER_Y - 46 + i * 2, 17, 22, `fill="${col}" stroke="#fff" stroke-width="1.5"`)));
+      s += rect(126, COUNTER_Y - 18, 84, 3, `fill="${WOOD_DK}"`);
+      return s;
+    },
+    artShelf() {
+      let s = '';
+      [[48, 30, 36, '#c8d6e0'], [92, 40, 30, '#e8d9c0'], [146, 30, 40, '#b9c9b2'], [188, 26, 26, '#e7c9c2']].forEach(([x, w, h, col]) => {
+        s += rect(x - w / 2 - 3, 112, w + 6, h + 6, `fill="${WOOD_DK}"`);
+        s += rect(x - w / 2, 115, w, h, `fill="${col}"`);
+        s += `<path d="M${x - w / 2},${115 + h * 0.7} q${w / 3},-8 ${w / 2},-2 q${w / 4},-6 ${w / 2},0 V${115 + h} H${x - w / 2} Z" fill="rgba(80,110,70,.45)"/>`;
+      });
+      return { back: true, svg: s };
+    },
+    honey(c) {
+      let s = '';
+      for (let i = 0; i < 5; i++) {
+        const x = 40 + i * 22, h = i % 2 ? 30 : 36;
+        s += rect(x - 9, COUNTER_Y - h, 18, h, `rx="4" fill="${i % 2 ? '#d9922e' : '#e6a93a'}" opacity=".92"`);
+        s += rect(x - 6, COUNTER_Y - h + 4, 3, h - 8, 'fill="rgba(255,255,255,.35)"');
+        s += rect(x - 7, COUNTER_Y - h * 0.62, 14, 10, 'fill="#f4ead0"');
+        // gingham lid cover
+        s += `<path d="M${x - 12},${COUNTER_Y - h + 1} q12,-12 24,0 l-2,3 h-20 Z" fill="#c34b3c"/>`;
+        s += rect(x - 10, COUNTER_Y - h + 1, 20, 2, 'fill="#f4ead0"');
+      }
+      // honeycomb frame + dipper
+      s += rect(154, COUNTER_Y - 44, 56, 44, `fill="${WOOD_LT}"`);
+      s += rect(158, COUNTER_Y - 40, 48, 36, 'fill="#e1a83c"');
+      for (let r = 0; r < 4; r++) for (let q = 0; q < 6; q++) s += circ(162 + q * 8 + (r % 2) * 4, COUNTER_Y - 36 + r * 9, 3.4, 'fill="none" stroke="#b67a1f" stroke-width="1.2"');
+      return s;
+    },
+    honeyShelf() {
+      let s = '';
+      ['#7b2a3a', '#c34b3c', '#5a2c4a', '#d77a2f', '#7b2a3a', '#c34b3c'].forEach((col, i) => {
+        const x = 42 + i * 30;
+        s += rect(x - 9, SHELF_Y - 20, 18, 20, `rx="3" fill="${col}"`);
+        s += rect(x - 10, SHELF_Y - 23, 20, 4, 'fill="#d9b36a"');
+        s += rect(x - 6, SHELF_Y - 14, 12, 7, 'fill="#f4ead0"');
+      });
+      return s;
+    },
+    leather(c) {
+      let s = '';
+      // wallets & belt coils
+      [[44, '#8a5a3b'], [70, '#5e3b26'], [96, '#a8744c']].forEach(([x, col]) => {
+        s += rect(x - 11, COUNTER_Y - 16, 22, 16, `rx="2" fill="${col}"`);
+        s += rect(x - 9, COUNTER_Y - 14, 18, 12, 'rx="1.5" fill="none" stroke="rgba(255,235,200,.5)" stroke-dasharray="2 1.5"');
+      });
+      [[136, '#5e3b26'], [168, '#8a5a3b']].forEach(([x, col]) => {
+        s += circ(x, COUNTER_Y - 14, 14, `fill="none" stroke="${col}" stroke-width="7"`);
+        s += circ(x, COUNTER_Y - 14, 6, `fill="none" stroke="${col}" stroke-width="6"`);
+      });
+      s += rect(190, COUNTER_Y - 22, 20, 14, 'fill="none" stroke="#c9a86a" stroke-width="3"');
+      return s;
+    },
+    leatherShelf(c) {
+      // bags hung from a rail on the backdrop
+      let s = rect(40, 114, 160, 4, `fill="${WOOD_DK}"`);
+      [[64, 36, 34, '#8a5a3b'], [112, 42, 40, '#5e3b26'], [162, 34, 30, '#a8744c']].forEach(([x, w, h, col]) => {
+        s += `<path d="M${x - w * 0.3},${132} Q${x},${104} ${x + w * 0.3},${132}" stroke="${col}" stroke-width="3.5" fill="none"/>`;
+        s += rect(x - w / 2, 130, w, h, `rx="5" fill="${col}"`);
+        s += rect(x - w / 2, 130, w, h * 0.36, `rx="5" fill="rgba(0,0,0,.18)"`);
+        s += rect(x - 3, 130 + h * 0.3, 6, 6, 'fill="#c9a86a"');
+      });
+      return { back: true, svg: s };
+    }
+  };
+  function line2(x1, y1, x2, y2) { return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#3a3632" stroke-width="1.2"/>`; }
+
+  /* ---------------- roofs ---------------- */
+  function awningRoof(c) {
+    let s = '';
+    const stripes = 10;
+    const top = [22, 228], bot = [0, 240], yT = 70, yB = 104;
+    for (let i = 0; i < stripes; i++) {
+      const a = i / stripes, b = (i + 1) / stripes;
+      const tx1 = top[0] + (top[1] - top[0]) * a, tx2 = top[0] + (top[1] - top[0]) * b;
+      const bx1 = bot[0] + (bot[1] - bot[0]) * a, bx2 = bot[0] + (bot[1] - bot[0]) * b;
+      s += `<polygon points="${n(tx1)},${yT} ${n(tx2)},${yT} ${n(bx2)},${yB} ${n(bx1)},${yB}" fill="${i % 2 ? c[1] : c[0]}"/>`;
+      s += `<path d="M${n(bx1)},${yB} H${n(bx2)} v4 q${n(-(bx2 - bx1) / 2)},13 ${n(-(bx2 - bx1))},0 Z" fill="${i % 2 ? c[1] : c[0]}"/>`;
+    }
+    s += rect(20, yT - 4, 210, 5, `fill="${WOOD_DK}"`);
+    s += `<polygon points="22,${yT} 228,${yT} 240,${yB} 0,${yB}" fill="url(#awnShade)"/>`;
+    return s;
+  }
+  function gableRoof() {
+    let s = '';
+    s += '<polygon points="-4,110 120,46 244,110 232,116 120,58 8,116" fill="#6d5d52"/>';
+    s += '<polygon points="8,116 120,58 232,116" fill="#8a7867"/>';
+    s += '<polygon points="8,116 120,58 232,116" fill="url(#stallShingle)"/>';
+    s += '<polygon points="-4,110 120,46 244,110 238,114 120,54 2,114" fill="#4f433b"/>';
+    s += rect(116, 40, 8, 12, `fill="${WOOD_DK}"`);
+    return s;
+  }
+
+  function categoryTag(cat) {
+    const home = cat === 'home';
+    const col = home ? 'var(--cat-home)' : 'var(--cat-micro)';
+    let s = `<g transform="translate(6,182)">`;
+    s += `<line x1="8" y1="-10" x2="11" y2="2" stroke="#3a3632" stroke-width="1"/>`;
+    s += `<rect x="0" y="0" width="22" height="26" rx="3" style="fill:${col}"/>`;
+    s += circ(11, 5, 1.8, 'fill="#f4efe6"');
+    if (home) s += '<path d="M5,20 V14 L11,9 L17,14 V20 Z" fill="none" stroke="#f4efe6" stroke-width="1.8" stroke-linejoin="round"/>';
+    else s += '<path d="M5,20 L14,11 M12,9 l4,4 l3,-3 l-4,-4 Z M6,11 l8,9" fill="none" stroke="#f4efe6" stroke-width="1.8" stroke-linecap="round"/>';
+    return s + '</g>';
+  }
+
+  function signboard(name, roof) {
+    const len = name.length;
+    const fs = Math.min(19, 280 / len);
+    if (roof === 'awning') {
+      let s = rect(50, 52, 4, 16, `fill="${WOOD_DK}"`) + rect(186, 52, 4, 16, `fill="${WOOD_DK}"`);
+      s += rect(26, 16, 188, 40, `rx="4" fill="${WOOD_DK}"`);
+      s += rect(31, 21, 178, 30, `rx="2.5" fill="#efe3c8"`);
+      s += `<text x="120" y="${n(36 + fs * 0.36)}" text-anchor="middle" class="stall-name" font-size="${n(fs)}">${esc(name)}</text>`;
+      return s;
+    }
+    let s = line2(58, 112, 58, 120) + line2(182, 112, 182, 120);
+    s += rect(34, 118, 172, 34, `rx="4" fill="${WOOD_DK}"`);
+    s += rect(39, 122, 162, 26, `rx="2.5" fill="#efe3c8"`);
+    s += `<text x="120" y="${n(135 + fs * 0.36)}" text-anchor="middle" class="stall-name" font-size="${n(Math.min(fs, 17))}">${esc(name)}</text>`;
+    return s;
+  }
+
+  /* ---------------- the stall ---------------- */
+  TH.renderStall = function (b) {
+    const c = b.colors;
+    const gable = b.roof === 'gable';
+    const backTop = gable ? 112 : 104;
+    const shelf = goods[b.display + 'Shelf'] ? goods[b.display + 'Shelf'](c) : '';
+    let s = `<svg viewBox="0 0 240 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="awnShade-${b.id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#000" stop-opacity=".12"/></linearGradient>
+      </defs>`;
+    s = s.replace(`awnShade-${b.id}`, 'awnShade'); // shared id is fine: identical definition
+    s += ell(120, 314, 124, 7, 'fill="rgba(30,20,10,.25)"');
+    // back posts + backdrop
+    s += rect(14, 66, 10, 244, `fill="${WOOD}"`) + rect(216, 66, 10, 244, `fill="${WOOD}"`);
+    s += rect(14, 66, 3, 244, 'fill="rgba(255,255,255,.15)"') + rect(223, 66, 3, 244, 'fill="rgba(0,0,0,.18)"');
+    s += rect(24, backTop, 192, COUNTER_Y - backTop, `fill="${c[1]}"`);
+    for (let x = 40; x < 216; x += 22) s += rect(x, backTop, 1.5, COUNTER_Y - backTop, 'fill="rgba(0,0,0,.06)"');
+    s += rect(24, backTop, 192, 26, 'fill="rgba(0,0,0,.12)"');
+    // shelf goods (or items hung on the backdrop)
+    if (shelf && shelf.back) s += shelf.svg;
+    else if (shelf) s += rect(28, SHELF_Y, 184, 6, `fill="${WOOD_LT}"`) + rect(28, SHELF_Y + 6, 184, 3, 'fill="rgba(0,0,0,.2)"') + shelf;
+    // roof
+    s += gable ? gableRoof() : awningRoof(c);
+    // lantern hanging under the roof
+    s += `<g transform="translate(196,${gable ? 114 : 112})">${line2(0, 0, 0, 8)}<rect x="-6" y="8" width="12" height="15" rx="2" class="stall-lantern"/><rect x="-7" y="6" width="14" height="3" fill="#2a2826"/><circle cx="0" cy="16" r="26" class="lantern-glow"/></g>`;
+    // counter goods, counter, cloth
+    s += goods[b.display](c);
+    s += rect(6, COUNTER_Y, 228, 10, `fill="${WOOD_LT}"`) + rect(6, COUNTER_Y + 8, 228, 2, 'fill="rgba(0,0,0,.2)"');
+    s += `<path d="M10,${COUNTER_Y + 10} H230 V${COUNTER_Y + 62} ${Array.from({ length: 11 }, (_, i) => `q-10,9 -20,0`).join(' ')} Z" fill="${c[2]}"/>`;
+    s += rect(10, COUNTER_Y + 10, 220, 6, 'fill="rgba(0,0,0,.18)"');
+    s += `<path d="M10,${COUNTER_Y + 26} H230" stroke="${c[1]}" stroke-opacity=".5" stroke-width="2" stroke-dasharray="6 4"/>`;
+    s += rect(18, COUNTER_Y + 68, 8, 16, `fill="${WOOD_DK}"`) + rect(214, COUNTER_Y + 68, 8, 16, `fill="${WOOD_DK}"`);
+    s += signboard(b.name, b.roof);
+    // demo ribbon
+    s += `<g transform="${gable ? 'translate(176,150)' : 'translate(186,10)'}"><rect width="38" height="14" rx="2" class="demo-chip"/><text x="19" y="10.2" text-anchor="middle" font-size="8.5" class="stall-small demo-chip-text" letter-spacing="1.4">DEMO</text></g>`;
+    s += categoryTag(b.category);
+    // little chalkboard on the ground
+    if (b.chalk) {
+      s += `<g transform="translate(184,262)"><path d="M4,52 L12,0 M44,52 L36,0" stroke="${WOOD_DK}" stroke-width="3"/><rect x="6" y="2" width="36" height="32" rx="2" fill="#2f3431" stroke="${WOOD_LT}" stroke-width="3"/>`;
+      const words = b.chalk.split(' ');
+      words.slice(0, 2).forEach((w, i) => (s += `<text x="24" y="${n(15 + i * 11)}" text-anchor="middle" font-size="${n(Math.min(9, 62 / w.length))}" class="chalk">${esc(w)}</text>`));
+      s += '</g>';
+    }
+    return s + '</svg>';
+  };
+
+  /* An empty slot: shows that the street has room, and that listings are free. */
+  TH.renderEmptyStall = function () {
+    return `<svg viewBox="0 0 240 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      ${ell(120, 314, 120, 6, 'fill="rgba(30,20,10,.18)"')}
+      ${rect(14, 80, 10, 230, `fill="${WOOD}" opacity=".75"`)}${rect(216, 80, 10, 230, `fill="${WOOD}" opacity=".75"`)}
+      ${rect(14, 80, 212, 8, `fill="${WOOD}" opacity=".75"`)}
+      ${rect(6, COUNTER_Y, 228, 10, `fill="${WOOD_LT}" opacity=".8"`)}
+      ${rect(18, COUNTER_Y + 10, 8, 74, `fill="${WOOD_DK}" opacity=".7"`)}${rect(214, COUNTER_Y + 10, 8, 74, `fill="${WOOD_DK}" opacity=".7"`)}
+      <rect x="40" y="118" width="160" height="78" rx="6" fill="#efe3c8" stroke="${WOOD_DK}" stroke-width="4"/>
+      <text x="120" y="148" text-anchor="middle" class="stall-name" font-size="17">This stall is open</text>
+      <text x="120" y="170" text-anchor="middle" class="stall-small" font-size="9.5" fill="#6b4a32" letter-spacing="1.6">LISTINGS ARE ALWAYS FREE</text>
+      ${line2(70, 88, 70, 118)}${line2(170, 88, 170, 118)}
+    </svg>`;
+  };
+
+  /* Larger product illustration for the profile's photo placeholders. */
+  TH.renderGoodsVignette = function (b) {
+    const shelf = goods[b.display + 'Shelf'] ? goods[b.display + 'Shelf'](b.colors) : '';
+    return `<svg viewBox="20 ${shelf && shelf.back ? 100 : 130} 200 ${shelf && shelf.back ? 130 : 100}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+      <rect x="0" y="0" width="240" height="320" fill="${b.colors[1]}"/>
+      ${shelf && shelf.back ? shelf.svg : ''}${goods[b.display](b.colors)}
+      <rect x="0" y="${COUNTER_Y}" width="240" height="20" fill="#b38a60"/></svg>`;
+  };
+})();
+
+</script>
+<script>
+/*
+ * MARKETPLACE — places stall components on the street's slots and handles
+ * exploring: wheel, drag, touch, keyboard, step buttons, the street map and
+ * the business profile.
+ *
+ * Placement rule (Phase 1): today's businesses fill the slots in order; the
+ * remaining slots show an "open stall". In Phase 2 the ordered list comes from
+ * the daily featured rotation.
+ */
+(function () {
+  'use strict';
+  const TH = window.TH;
+  const $ = (s, el = document) => el.querySelector(s);
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const behavior = () => (reduceMotion.matches ? 'auto' : 'smooth');
+
+  const street = $('#street');
+  const track = $('#track');
+  const { W, H, STALL_W, STALL_H, STALL_BOTTOM, slots } = TH.STREET;
+
+  TH.renderMountains($('#layer-mountains'));
+  TH.renderHills($('#layer-hills'));
+  TH.renderStreet($('#layer-architecture'), $('#layer-lights'), $('#layer-foreground'));
+
+  /* ---------- place stalls ---------- */
+  const businesses = TH.DEMO_BUSINESSES;
+  const stallLayer = $('#layer-stalls');
+  const placed = [];
+  const list = $('#stall-list');
+
+  slots.forEach((slot, i) => {
+    const b = businesses[i];
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'stall' + (b ? '' : ' stall--open');
+    btn.style.left = ((slot.x - STALL_W / 2) / W) * 100 + '%';
+    btn.style.top = ((STALL_BOTTOM - STALL_H) / H) * 100 + '%';
+    btn.style.width = (STALL_W / W) * 100 + '%';
+    btn.style.height = (STALL_H / H) * 100 + '%';
+    if (b) {
+      btn.innerHTML = TH.renderStall(b);
+      btn.setAttribute('aria-label', `${b.name}, ${TH.CATEGORY[b.category].short}, ${b.type}. Demo listing. Open profile.`);
+      btn.dataset.id = b.id;
+      btn.addEventListener('click', () => openProfile(i));
+      placed.push({ slot, b, el: btn, index: i });
+      // accessible list alternative
+      const li = document.createElement('li');
+      li.innerHTML = `<button type="button" class="list-item"><span class="list-name">${b.name}</span><span class="chip chip--${b.category}">${TH.CATEGORY[b.category].short}</span><span class="list-type">${b.type}</span></button>`;
+      li.querySelector('button').addEventListener('click', () => openProfile(i));
+      list.appendChild(li);
+    } else {
+      btn.innerHTML = TH.renderEmptyStall();
+      btn.setAttribute('aria-label', 'Open stall. Listings are free. Learn how to get listed.');
+      btn.addEventListener('click', openFreeStall);
+      placed.push({ slot, b: null, el: btn, index: i });
+    }
+    btn.addEventListener('focus', () => {
+      const r = btn.getBoundingClientRect(), sr = street.getBoundingClientRect();
+      if (r.left < sr.left + 40 || r.right > sr.right - 40) {
+        street.scrollTo({ left: centerOf(slot) - street.clientWidth / 2, behavior: behavior() });
+      }
+    });
+    stallLayer.appendChild(btn);
+  });
+  $('#stall-count').textContent = businesses.length;
+
+  /* ---------- geometry ---------- */
+  const scale = () => track.clientWidth / W;
+  const centerOf = (slot) => slot.x * scale();
+
+  /* ---------- parallax + map ---------- */
+  const mtn = $('#layer-mountains'), hills = $('#layer-hills');
+  const mapWin = $('#map-window');
+  const nowName = $('#now-name');
+  let ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const x = street.scrollLeft;
+      if (!reduceMotion.matches) {
+        mtn.style.transform = `translate3d(${x * 0.72}px,0,0)`;
+        hills.style.transform = `translate3d(${x * 0.45}px,0,0)`;
+      } else {
+        mtn.style.transform = hills.style.transform = '';
+      }
+      const tw = track.clientWidth;
+      mapWin.style.left = (x / tw) * 100 + '%';
+      mapWin.style.width = (street.clientWidth / tw) * 100 + '%';
+      // nearest stall to the centre of the view
+      const c = x + street.clientWidth / 2;
+      let best = null, bd = Infinity;
+      placed.forEach((p) => {
+        const d = Math.abs(centerOf(p.slot) - c);
+        if (d < bd) { bd = d; best = p; }
+      });
+      const atGate = c < centerOf(slots[0]) - 380 * scale();
+      nowName.textContent = atGate ? 'The gateway arch' : best && best.b ? best.b.name : 'An open stall';
+      document.body.classList.toggle('past-gate', x > Math.max(40, 750 * scale() - street.clientWidth / 2 + 40));
+      ticking = false;
+    });
+  }
+  street.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+
+  /* ---------- street map ---------- */
+  const map = $('#map');
+  placed.forEach((p) => {
+    const dot = document.createElement('span');
+    dot.className = 'map-dot' + (p.b ? ' map-dot--' + p.b.category : ' map-dot--open');
+    dot.style.left = (p.slot.x / W) * 100 + '%';
+    map.appendChild(dot);
+  });
+  const arch = document.createElement('span');
+  arch.className = 'map-arch';
+  arch.style.left = (750 / W) * 100 + '%';
+  map.appendChild(arch);
+  map.addEventListener('click', (e) => {
+    const r = map.getBoundingClientRect();
+    const f = (e.clientX - r.left) / r.width;
+    street.scrollTo({ left: f * track.clientWidth - street.clientWidth / 2, behavior: behavior() });
+  });
+
+  /* ---------- step buttons ---------- */
+  function step(dir) {
+    const c = street.scrollLeft + street.clientWidth / 2;
+    const centers = [750 * scale(), ...placed.map((p) => centerOf(p.slot))];
+    let target;
+    if (dir > 0) target = centers.find((x) => x > c + 12);
+    else target = [...centers].reverse().find((x) => x < c - 12);
+    if (target == null) return;
+    street.scrollTo({ left: target - street.clientWidth / 2, behavior: behavior() });
+  }
+  $('#prev').addEventListener('click', () => step(-1));
+  $('#next').addEventListener('click', () => step(1));
+  $('#enter').addEventListener('click', () => step(1));
+
+  /* ---------- keyboard on the street region ---------- */
+  street.addEventListener('keydown', (e) => {
+    if (e.target !== street) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+    if (e.key === 'Home') { e.preventDefault(); street.scrollTo({ left: 0, behavior: behavior() }); }
+    if (e.key === 'End') { e.preventDefault(); street.scrollTo({ left: track.clientWidth, behavior: behavior() }); }
+  });
+
+  /* ---------- mouse wheel scrolls sideways (desktop) ---------- */
+  street.addEventListener('wheel', (e) => {
+    if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    const max = street.scrollWidth - street.clientWidth;
+    const atStart = street.scrollLeft <= 0 && e.deltaY < 0;
+    const atEnd = street.scrollLeft >= max - 1 && e.deltaY > 0;
+    if (atStart || atEnd) return; // let the page scroll at the ends
+    e.preventDefault();
+    street.scrollLeft += e.deltaY * (e.deltaMode === 1 ? 32 : 1);
+  }, { passive: false });
+
+  /* ---------- drag to pan (mouse only; touch scrolls natively) ---------- */
+  let drag = null, suppressClick = false;
+  street.addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
+    drag = { x: e.clientX, left: street.scrollLeft, moved: false, id: e.pointerId };
+  });
+  street.addEventListener('pointermove', (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) > 6) {
+      drag.moved = true;
+      street.setPointerCapture(drag.id);
+      street.classList.add('dragging');
+    }
+    if (drag.moved) street.scrollLeft = drag.left - dx;
+  });
+  const endDrag = () => {
+    if (drag && drag.moved) { suppressClick = true; setTimeout(() => (suppressClick = false), 0); }
+    drag = null;
+    street.classList.remove('dragging');
+  };
+  street.addEventListener('pointerup', endDrag);
+  street.addEventListener('pointercancel', endDrag);
+  street.addEventListener('click', (e) => { if (suppressClick) { e.stopPropagation(); e.preventDefault(); } }, true);
+
+  /* ---------- profile dialog ---------- */
+  const dlg = $('#profile');
+  let current = -1;
+  const LINK_LABELS = { website: 'Website', instagram: 'Instagram', facebook: 'Facebook', email: 'Email' };
+
+  function openProfile(i) {
+    current = i;
+    const b = businesses[i];
+    const cat = TH.CATEGORY[b.category];
+    const links = Object.keys(LINK_LABELS).filter((k) => b.links[k]);
+    $('#profile-body').innerHTML = `
+      <p class="demo-banner">Demo listing. This business is not real; it shows how a profile will look.</p>
+      <div class="profile-head">
+        <span class="chip chip--${b.category}">${cat.label}</span>
+        <h2 id="profile-title">${b.name}</h2>
+        <p class="profile-type">${b.type}</p>
+      </div>
+      <p class="profile-summary">${b.summary}</p>
+      <p>${b.description}</p>
+      <div class="photos" role="list" aria-label="Photo placeholders">
+        ${[0, 1, 2].map((k) => `<figure role="listitem" class="photo photo--${k}">${TH.renderGoodsVignette(b)}<figcaption>Business photo ${k + 1} goes here</figcaption></figure>`).join('')}
+      </div>
+      <dl class="facts">
+        <div><dt>Location / service area</dt><dd>${b.area}</dd></div>
+        <div><dt>Address</dt><dd>Home addresses are never published</dd></div>
+      </dl>
+      <div class="links">
+        ${links.map((k) => `<span class="link-pill" aria-disabled="true">${LINK_LABELS[k]}<small>demo</small></span>`).join('')}
+      </div>
+      <p class="profile-note">On the live site these buttons go straight to the business's own website, ordering page or social accounts. Temecula Homegrown never takes orders or payments.</p>`;
+    dlg.classList.remove('dialog--open-stall');
+    dlg.setAttribute('aria-labelledby', 'profile-title');
+    $('#profile-nav').hidden = false;
+    $('#profile-pos').textContent = `${i + 1} of ${businesses.length}`;
+    if (!dlg.open) dlg.showModal();
+    dlg.scrollTop = 0;
+    $('.dialog-inner').scrollTop = 0;
+  }
+
+  function openFreeStall() {
+    current = -1;
+    $('#profile-body').innerHTML = `
+      <div class="profile-head">
+        <span class="chip chip--open">Open stall</span>
+        <h2 id="profile-title">This stall is waiting for a local business</h2>
+      </div>
+      <p class="profile-summary">Listings on Temecula Homegrown are free. No subscriptions, commissions or paid rankings.</p>
+      <p>Two kinds of businesses will be able to apply:</p>
+      <ul class="cats">
+        <li><span class="chip chip--home">Home-Based Business</span> Home bakeries and Cottage Food, handmade goods, candles and soaps, jewelry, crafts, personalized gifts, small producers and home-based services.</li>
+        <li><span class="chip chip--micro">Independent Micro-Business</span> Independent artisans, small workshops and studios, makers, appointment-based and pop-up businesses, and owner-operated services without a retail storefront.</li>
+      </ul>
+      <p class="profile-note">The application form arrives in Phase 2.</p>`;
+    dlg.classList.add('dialog--open-stall');
+    $('#profile-nav').hidden = true;
+    if (!dlg.open) dlg.showModal();
+  }
+
+  $('#profile-close').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  $('#profile-prev').addEventListener('click', () => openProfile((current - 1 + businesses.length) % businesses.length));
+  $('#profile-next').addEventListener('click', () => openProfile((current + 1) % businesses.length));
+  dlg.addEventListener('close', () => {
+    if (current >= 0) {
+      const p = placed[current];
+      street.scrollTo({ left: centerOf(p.slot) - street.clientWidth / 2, behavior: behavior() });
+      p.el.focus({ preventScroll: true });
+    }
+  });
+
+  /* ---------- paper grain over the illustration (generated, tiny) ---------- */
+  try {
+    const c = document.createElement('canvas');
+    c.width = c.height = 120;
+    const g = c.getContext('2d');
+    const img = g.createImageData(120, 120);
+    for (let i = 0; i < img.data.length; i += 4) {
+      const v = 200 + Math.random() * 55;
+      img.data[i] = v; img.data[i + 1] = v * 0.97; img.data[i + 2] = v * 0.92; img.data[i + 3] = 255;
+    }
+    g.putImageData(img, 0, 0);
+    $('#layer-grain').style.backgroundImage = `url(${c.toDataURL()})`;
+  } catch (e) { /* texture is optional */ }
+
+  /* ---------- date line ---------- */
+  try {
+    $('#today').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  } catch (e) { /* keep the static fallback */ }
+
+  // phones: open with the arch centred instead of its left pillar
+  if (street.clientWidth < 1500 * scale()) street.scrollLeft = 750 * scale() - street.clientWidth / 2;
+  onScroll();
+})();
+
+</script>

@@ -1,0 +1,92 @@
+<header class="site-head">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Temecula Homegrown, home">
+      <svg class="brand-mark" viewBox="0 0 44 44" aria-hidden="true">
+        <path d="M6,40 V16 M38,40 V16" stroke="currentColor" stroke-width="3.2" fill="none"/>
+        <path d="M6,16 Q22,0 38,16" stroke="currentColor" stroke-width="3.2" fill="none"/>
+        <path d="M9,22 Q22,9 35,22" stroke="currentColor" stroke-width="1.6" fill="none"/>
+        <path d="M13,40 V31 L22,24 L31,31 V40" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linejoin="round"/>
+        <path d="M22,40 V34" stroke="currentColor" stroke-width="2.4"/>
+      </svg>
+      <span>
+        <span class="brand-name">Temecula Homegrown</span>
+        <span class="brand-tag">Small businesses. Big dreams. Local roots.</span>
+      </span>
+    </a>
+    <span class="phase">Phase 1 · visual prototype</span>
+  </div>
+</header>
+
+<main id="top">
+  <section class="intro wrap">
+    <p class="eyebrow">Today's market · <span id="today">Tuesday, November 24</span></p>
+    <h1>Stroll Front Street and meet the people who make things here.</h1>
+    <p class="lede">Pass under the arch, wander the stalls and open one to meet the maker. <span id="stall-count">10</span> demo stalls are set up today.</p>
+  </section>
+
+  <section class="market" aria-label="Illustrated marketplace">
+    <div id="street" class="street" tabindex="0" role="region"
+         aria-label="Front Street marketplace" aria-describedby="street-help">
+      <div id="track" class="track">
+        <div id="layer-mountains" class="layer layer-parallax"></div>
+        <div id="layer-hills" class="layer layer-parallax"></div>
+        <div id="layer-architecture" class="layer"></div>
+        <div class="layer tint"></div>
+        <div id="layer-lights" class="layer lights"></div>
+        <div id="layer-foreground" class="layer foreground"></div>
+        <div id="layer-stalls" class="layer stalls"></div>
+        <div id="layer-grain" class="layer grain"></div>
+      </div>
+    </div>
+    <button id="enter" type="button" class="enter-hint">Walk in <span aria-hidden="true">→</span></button>
+
+    <div class="controls wrap">
+      <button id="prev" type="button" class="step" aria-label="Previous stall">←</button>
+      <div class="now"><span class="now-label">Now passing</span><span id="now-name">The gateway arch</span></div>
+      <div id="map" class="map" aria-hidden="true"><span id="map-window" class="map-window"></span></div>
+      <button id="next" type="button" class="step" aria-label="Next stall">→</button>
+    </div>
+    <p id="street-help" class="help wrap">Scroll, drag or swipe sideways. With a keyboard, use the arrow keys to jump between stalls, or Tab through them.</p>
+  </section>
+
+  <section class="alt wrap" aria-label="Today's stalls as a list">
+    <details>
+      <summary>Prefer a list? See today's stalls</summary>
+      <ul id="stall-list" class="stall-list"></ul>
+    </details>
+    <div class="legend">
+      <span><i style="background:var(--cat-home)"></i>Home-Based Business</span>
+      <span><i style="background:var(--cat-micro)"></i>Independent Micro-Business</span>
+    </div>
+  </section>
+
+  <section class="notes wrap" aria-labelledby="notes-title">
+    <h2 id="notes-title">About this prototype</h2>
+    <div class="note-grid">
+      <div>
+        <h3>Demo content only</h3>
+        <p>Every stall is a labeled sample. No real businesses, names or photos are used. Real photos, supplied by each approved business, will appear in the profile frames.</p>
+      </div>
+      <div>
+        <h3>Street and stalls are separate</h3>
+        <p>The architecture is one illustration; each stall is its own component drawn from a business record. Adding, moving or editing a business never touches the street.</p>
+      </div>
+      <div>
+        <h3>The directory stays close</h3>
+        <p>The list above opens the same profiles. In Phase 2 it grows into the full searchable directory with category filters.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="profile" class="profile">
+  <div class="dialog-inner">
+    <button id="profile-close" type="button" class="profile-close">Close</button>
+    <div id="profile-body"></div>
+    <nav id="profile-nav" class="profile-nav" aria-label="Browse stalls">
+      <button id="profile-prev" type="button">← Previous stall</button>
+      <span id="profile-pos"></span>
+      <button id="profile-next" type="button">Next stall →</button>
+    </nav>
+  </div>
+</dialog>
