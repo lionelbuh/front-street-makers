@@ -19,7 +19,7 @@
   // colors:   [awning stripe A, awning stripe B, counter cloth]
   TH.DEMO_BUSINESSES = [
     {
-      id: 'demo-sourdough',
+      id: 'demo-sourdough', valance: 'scallop', flowers: ['#f2c14e','#f4efe4','#d9415a'],
       name: 'Sample Sourdough Co.',
       category: 'home',
       type: 'Home bakery · Cottage Food',
@@ -34,7 +34,7 @@
       links: { website: true, instagram: true, facebook: false, email: true }
     },
     {
-      id: 'demo-candles',
+      id: 'demo-candles', flowers: ['#f4efe4','#b9c9b2','#e7c9c2'],
       name: 'Sample Candle Studio',
       category: 'home',
       type: 'Candles & home fragrance',
@@ -49,7 +49,7 @@
       links: { website: true, instagram: true, facebook: true, email: false }
     },
     {
-      id: 'demo-jewelry',
+      id: 'demo-jewelry', valance: 'fringe', flowers: ['#9a7fc4','#f4efe4','#e86f8a'],
       name: 'Sample Silver Jewelry',
       category: 'micro',
       type: 'Independent artisan · by appointment',
@@ -64,7 +64,7 @@
       links: { website: true, instagram: true, facebook: false, email: true }
     },
     {
-      id: 'demo-honey',
+      id: 'demo-honey', flowers: ['#f2c14e','#f4efe4','#e98a6a'],
       name: 'Sample Honey & Jam',
       category: 'home',
       type: 'Cottage Food · preserves',
@@ -79,7 +79,7 @@
       links: { website: false, instagram: true, facebook: true, email: true }
     },
     {
-      id: 'demo-ceramics',
+      id: 'demo-ceramics', valance: 'points', flowers: ['#4e6e7e','#f4efe4','#f2c14e'],
       name: 'Sample Ceramics Studio',
       category: 'micro',
       type: 'Small workshop · classes',
@@ -94,7 +94,7 @@
       links: { website: true, instagram: true, facebook: true, email: true }
     },
     {
-      id: 'demo-soap',
+      id: 'demo-soap', flowers: ['#9a7fc4','#e7c9c2','#f4efe4'],
       name: 'Sample Soap Works',
       category: 'home',
       type: 'Handmade soaps',
@@ -109,7 +109,7 @@
       links: { website: true, instagram: true, facebook: false, email: false }
     },
     {
-      id: 'demo-succulents',
+      id: 'demo-succulents', valance: 'scallop', flowers: ['#e98a6a','#f4efe4','#f2c14e'],
       name: 'Sample Succulent Garden',
       category: 'home',
       type: 'Home-based grower',
@@ -124,7 +124,7 @@
       links: { website: false, instagram: true, facebook: true, email: true }
     },
     {
-      id: 'demo-leather',
+      id: 'demo-leather', flowers: ['#d9415a','#f2c14e','#f4efe4'],
       name: 'Sample Leather Workshop',
       category: 'micro',
       type: 'Maker · custom orders',
@@ -139,7 +139,7 @@
       links: { website: true, instagram: true, facebook: false, email: true }
     },
     {
-      id: 'demo-quilts',
+      id: 'demo-quilts', valance: 'points', flowers: ['#d9415a','#f2c14e','#f4efe4'],
       name: 'Sample Quilt Corner',
       category: 'home',
       type: 'Handmade textiles & gifts',
@@ -154,7 +154,7 @@
       links: { website: true, instagram: false, facebook: true, email: true }
     },
     {
-      id: 'demo-watercolor',
+      id: 'demo-watercolor', flowers: ['#4e7ecb','#f4efe4','#f2c14e'],
       name: 'Sample Watercolor Studio',
       category: 'micro',
       type: 'Artist · pop-up',

@@ -264,6 +264,19 @@
     $('#layer-grain').style.backgroundImage = `url(${c.toDataURL()})`;
   } catch (e) { /* texture is optional */ }
 
+  /* ---------- Daytime / Evening switch ---------- */
+  const market = $('.market');
+  function setScene(scene) {
+    market.dataset.scene = scene;
+    document.querySelectorAll('.scene-switch button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.scene === scene)));
+    try { localStorage.setItem('th-scene', scene); } catch (e) { /* optional */ }
+  }
+  document.querySelectorAll('.scene-switch button').forEach((b) => b.addEventListener('click', () => setScene(b.dataset.scene)));
+  try {
+    const saved = localStorage.getItem('th-scene');
+    if (saved === 'evening' || saved === 'day') setScene(saved);
+  } catch (e) { /* default: daytime */ }
+
   /* ---------- date line ---------- */
   try {
     $('#today').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });

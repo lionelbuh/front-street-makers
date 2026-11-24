@@ -24,7 +24,7 @@
     <p class="lede">Pass under the arch, wander the stalls and open one to meet the maker. <span id="stall-count">10</span> demo stalls are set up today.</p>
   </section>
 
-  <section class="market" aria-label="Illustrated marketplace">
+  <section class="market" data-scene="day" aria-label="Illustrated marketplace">
     <div id="street" class="street" tabindex="0" role="region"
          aria-label="Front Street marketplace" aria-describedby="street-help">
       <div id="track" class="track">
@@ -46,7 +46,13 @@
       <div id="map" class="map" aria-hidden="true"><span id="map-window" class="map-window"></span></div>
       <button id="next" type="button" class="step" aria-label="Next stall">→</button>
     </div>
-    <p id="street-help" class="help wrap">Scroll, drag or swipe sideways. With a keyboard, use the arrow keys to jump between stalls, or Tab through them.</p>
+    <div class="help-row wrap">
+      <p id="street-help" class="help">Scroll, drag or swipe sideways. With a keyboard, use the arrow keys to jump between stalls, or Tab through them.</p>
+      <div class="scene-switch" role="group" aria-label="Time of day">
+        <button type="button" data-scene="day" aria-pressed="true">Daytime</button>
+        <button type="button" data-scene="evening" aria-pressed="false">Evening</button>
+      </div>
+    </div>
   </section>
 
   <section class="alt wrap" aria-label="Today's stalls as a list">
@@ -70,6 +76,10 @@
       <div>
         <h3>Street and stalls are separate</h3>
         <p>The architecture is one illustration; each stall is its own component drawn from a business record. Adding, moving or editing a business never touches the street.</p>
+      </div>
+      <div>
+        <h3>Drawn from real references</h3>
+        <p>The gateway follows photos of the Front Street arch: fieldstone pillars, weathering-steel frieze and the TEMECULA EST. 1859 medallion. Named landmarks are historic buildings listed by the City of Temecula, grouped for the illustration.</p>
       </div>
       <div>
         <h3>The directory stays close</h3>

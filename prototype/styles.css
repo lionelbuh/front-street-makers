@@ -13,26 +13,6 @@
   --chip-ink: #fbf8f0;
   --focus: #b5791a;
 
-  --sky-1: #8fbad0;
-  --sky-2: #e4dcc4;
-  --sky-3: #f2d3a0;
-  --mtn-far: #aab6bb;
-  --mtn: #8f9ea2;
-  --hill-back: #bfae78;
-  --hill: #a99d5e;
-  --vine: #6b7a3c;
-  --oak: #66713f;
-  --oak-near: #56633a;
-  --cloud: rgba(255, 255, 255, 0.72);
-  --star-o: 0;
-  --street: #c9ad88;
-  --glass: #5e7780;
-  --arch-letter: #f4e6c6;
-  --tint: rgba(16, 22, 52, 0);
-  --lights-o: 0;
-  --stall-filter: none;
-  --fg-filter: none;
-
   --display: 'Young Serif', 'Iowan Old Style', Georgia, serif;
   --body: 'Instrument Sans', 'Segoe UI', system-ui, sans-serif;
   --street-h: clamp(380px, calc(100vh - 300px), 760px);
@@ -42,21 +22,72 @@
   :root:not([data-theme="light"]) {
     --bg: #141619; --surface: #1e2125; --ink: #ece7dc; --muted: #a8a698; --line: #33373c;
     --accent: #e2b052; --accent-soft: #3a3222; --cat-home: #93b68a; --cat-micro: #d790ac; --chip-ink: #17181a; --focus: #e2b052;
-    --sky-1: #2a3d74; --sky-2: #7b6f9a; --sky-3: #e09a6a;
-    --mtn-far: #6c6f8e; --mtn: #575d7a; --hill-back: #77704e; --hill: #686442; --vine: #464c2c; --oak: #444a2c; --oak-near: #3b4027;
-    --cloud: rgba(220, 200, 230, 0.28); --star-o: 0.9; --street: #b19676; --glass: #3d3f45; --arch-letter: #ffd98c;
-    --tint: rgba(14, 18, 48, 0.5); --lights-o: 1; --stall-filter: brightness(.82) saturate(.9); --fg-filter: brightness(.62) saturate(.85);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #141619; --surface: #1e2125; --ink: #ece7dc; --muted: #a8a698; --line: #33373c;
   --accent: #e2b052; --accent-soft: #3a3222; --cat-home: #93b68a; --cat-micro: #d790ac; --chip-ink: #17181a; --focus: #e2b052;
-  --sky-1: #2a3d74; --sky-2: #7b6f9a; --sky-3: #e09a6a;
-  --mtn-far: #6c6f8e; --mtn: #575d7a; --hill-back: #77704e; --hill: #686442; --vine: #464c2c; --oak: #444a2c; --oak-near: #3b4027;
-  --cloud: rgba(220, 200, 230, 0.28); --star-o: 0.9; --street: #b19676; --glass: #3d3f45; --arch-letter: #ffd98c;
-  --tint: rgba(14, 18, 48, 0.5); --lights-o: 1; --stall-filter: brightness(.82) saturate(.9); --fg-filter: brightness(.62) saturate(.85);
   color-scheme: dark;
+}
+
+
+/* ---------- scene lighting: chosen with the Daytime / Evening switch,
+   independent of the page's light or dark theme ---------- */
+.market {
+  /* Daytime: clear California sky, warm afternoon sun */
+  --sky-1: #2f86d4;
+  --sky-2: #6fb3e6;
+  --sky-3: #bfe0f2;
+  --sky-4: #e8eedf;
+  --mtn-far: #9fb3c4;
+  --mtn: #8aa0ae;
+  --hill-back: #c2b46e;
+  --hill: #a8a356;
+  --vine: #66803a;
+  --oak: #5d7236;
+  --oak-near: #4f652f;
+  --cloud: rgba(255, 255, 255, 0.85);
+  --sun-o: 1;
+  --star-o: 0;
+  --street: #c6b9a3;
+  --glass: #4f7380;
+  --banner: #2c5f8d;
+  --banner-mark: #f4f1e8;
+  --road-line: #e2b33c;
+  --haze: #cfe3ee;
+  --medal-ink: #f0d6a6;
+  --tint: rgba(16, 22, 52, 0);
+  --lights-o: 0;
+  --stall-filter: saturate(1.06);
+  --fg-filter: none;
+}
+.market[data-scene="evening"] {
+  --sky-1: #2a3d74;
+  --sky-2: #6c6493;
+  --sky-3: #d99068;
+  --sky-4: #e8a774;
+  --mtn-far: #6c6f8e;
+  --mtn: #575d7a;
+  --hill-back: #77704e;
+  --hill: #686442;
+  --vine: #464c2c;
+  --oak: #444a2c;
+  --oak-near: #3b4027;
+  --cloud: rgba(220, 200, 230, 0.28);
+  --sun-o: 0;
+  --star-o: 0.9;
+  --street: #a99c8b;
+  --glass: #3d3f45;
+  --banner: #2c5f8d;
+  --banner-mark: #f4f1e8;
+  --road-line: #c9a24a;
+  --haze: #8a88a8;
+  --medal-ink: #ffd98c;
+  --tint: rgba(14, 18, 48, 0.5);
+  --lights-o: 1;
+  --stall-filter: brightness(.82) saturate(.9);
+  --fg-filter: brightness(.62) saturate(.85);
 }
 
 * { box-sizing: border-box; }
@@ -117,7 +148,7 @@ button { font: inherit; color: inherit; }
   position: relative;
   height: 100%;
   width: calc(var(--street-h) * 7140 / 720);
-  background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 46%, var(--sky-3) 60%, var(--sky-3) 100%);
+  background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 32%, var(--sky-3) 50%, var(--sky-4) 62%, var(--sky-4) 100%);
 }
 .layer { position: absolute; inset: 0; }
 .layer > svg { display: block; width: 100%; height: 100%; }
@@ -145,6 +176,16 @@ button { font: inherit; color: inherit; }
 .sign-small { font-family: var(--body); font-weight: 700; }
 .arch-letters { font-family: var(--display); fill: var(--arch-letter); }
 .arch-sky { fill: var(--sky-2); }
+.medal-letters { font-family: var(--display); fill: var(--medal-ink); }
+.medal-stroke { stroke: var(--medal-ink); }
+.medal-fill { fill: var(--medal-ink); }
+.globe { fill: #f8f5ea; stroke: #d6cfbc; stroke-width: 1; }
+.banner { fill: var(--banner); }
+.banner-mark { stroke: var(--banner-mark); }
+.road-line { fill: var(--road-line); opacity: .8; }
+.haze-far { fill: var(--haze); opacity: .55; }
+.sun { opacity: var(--sun-o); }
+.sun-disc { fill: #fff8e2; }
 
 /* ---------- stall component ---------- */
 .stall {
@@ -168,6 +209,7 @@ button { font: inherit; color: inherit; }
 .demo-chip { fill: #24221d; }
 .demo-chip-text { fill: #f4e6c6; }
 .stall-lantern { fill: #f1ddb0; }
+.mini-bulb { fill: #fff3cf; stroke: rgba(60,50,40,.35); stroke-width: .6; }
 .lantern-glow { fill: url(#halo); opacity: var(--lights-o); }
 
 /* "walk in" hint over the gateway */
@@ -208,7 +250,14 @@ body.past-gate .enter-hint { opacity: 0; transform: translateY(8px); pointer-eve
 .map-dot--micro { background: var(--cat-micro); }
 .map-dot--open { background: transparent; border: 1.5px dashed var(--muted); }
 .map-arch { position: absolute; top: 50%; width: 16px; height: 12px; margin: -9px 0 0 -8px; border: 2.5px solid var(--ink); border-bottom: 0; border-radius: 10px 10px 0 0; }
-.help { margin: 0; font-size: .85rem; color: var(--muted); padding-block: 0 8px; }
+.help-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; padding-block: 0 8px; }
+.help { margin: 0; font-size: .85rem; color: var(--muted); min-width: 0; flex: 1 1 22rem; }
+.scene-switch { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: var(--surface); gap: 2px; }
+.scene-switch button {
+  border: 0; background: none; border-radius: 999px; padding: 6px 14px; cursor: pointer;
+  font-size: .85rem; font-weight: 600; color: var(--muted);
+}
+.scene-switch button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 
 /* ---------- list alternative + legend ---------- */
 .alt { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px 32px; align-items: start; padding-block: 18px 8px; }

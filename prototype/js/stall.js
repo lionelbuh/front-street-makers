@@ -298,7 +298,7 @@
   function line2(x1, y1, x2, y2) { return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#3a3632" stroke-width="1.2"/>`; }
 
   /* ---------------- roofs ---------------- */
-  function awningRoof(c) {
+  function awningRoof(c, valance) {
     let s = '';
     const stripes = 10;
     const top = [22, 228], bot = [0, 240], yT = 70, yB = 104;
@@ -306,11 +306,25 @@
       const a = i / stripes, b = (i + 1) / stripes;
       const tx1 = top[0] + (top[1] - top[0]) * a, tx2 = top[0] + (top[1] - top[0]) * b;
       const bx1 = bot[0] + (bot[1] - bot[0]) * a, bx2 = bot[0] + (bot[1] - bot[0]) * b;
-      s += `<polygon points="${n(tx1)},${yT} ${n(tx2)},${yT} ${n(bx2)},${yB} ${n(bx1)},${yB}" fill="${i % 2 ? c[1] : c[0]}"/>`;
-      s += `<path d="M${n(bx1)},${yB} H${n(bx2)} v4 q${n(-(bx2 - bx1) / 2)},13 ${n(-(bx2 - bx1))},0 Z" fill="${i % 2 ? c[1] : c[0]}"/>`;
+      const col = i % 2 ? c[1] : c[0];
+      s += `<polygon points="${n(tx1)},${yT} ${n(tx2)},${yT} ${n(bx2)},${yB} ${n(bx1)},${yB}" fill="${col}"/>`;
+      const sw = bx2 - bx1;
+      if (valance === 'points') s += `<path d="M${n(bx1)},${yB} H${n(bx2)} v3 l${n(-sw / 2)},12 l${n(-sw / 2)},-12 Z" fill="${col}"/>`;
+      else if (valance === 'fringe') s += rect(bx1, yB, sw, 9, `fill="${col}"`);
+      else s += `<path d="M${n(bx1)},${yB} H${n(bx2)} v4 q${n(-sw / 2)},13 ${n(-sw)},0 Z" fill="${col}"/>`;
     }
-    s += rect(20, yT - 4, 210, 5, `fill="${WOOD_DK}"`);
+    if (valance === 'fringe') {
+      s += rect(0, yB + 8, 240, 2.5, `fill="${c[2]}"`);
+      for (let x = 4; x < 240; x += 6) s += rect(x, yB + 10, 2, 6, `fill="${c[2]}"`);
+    }
+    // canvas fold highlights
     s += `<polygon points="22,${yT} 228,${yT} 240,${yB} 0,${yB}" fill="url(#awnShade)"/>`;
+    s += rect(20, yT - 4, 210, 5, `fill="${WOOD_DK}"`);
+    // a string of mini lights along the front edge
+    for (let x = 10; x < 236; x += 19) {
+      s += circ(x, yB + 18, 2.4, 'class="mini-bulb"') + circ(x, yB + 18, 9, 'class="lantern-glow"');
+    }
+    s += `<path d="M4,${yB + 13} Q120,${yB + 20} 236,${yB + 13}" stroke="#3a3632" stroke-width=".8" fill="none"/>`;
     return s;
   }
   function gableRoof() {
@@ -322,6 +336,101 @@
     s += rect(116, 40, 8, 12, `fill="${WOOD_DK}"`);
     return s;
   }
+
+
+  /* ---------------- decoration: each stall gets its own small world ---------------- */
+  function braces() {
+    return `<path d="M24,118 L44,104 M216,118 L196,104" stroke="${WOOD}" stroke-width="5"/>`;
+  }
+  function bunting(c) {
+    let s = '';
+    const cols = [c[0], c[1], '#f2c14e', c[2]];
+    [[10, 114, 118, 60], [230, 114, 122, 60]].forEach(([x1, y1, x2, y2], side) => {
+      for (let i = 1; i < 8; i++) {
+        const t = i / 8, x = x1 + (x2 - x1) * t, y = y1 + (y2 - y1) * t + 4;
+        s += `<path d="M${n(x - 5)},${n(y)} L${n(x + 5)},${n(y)} L${n(x)},${n(y + 11)} Z" fill="${cols[(i + side) % cols.length]}"/>`;
+      }
+    });
+    return s;
+  }
+  function hangingBasket(x, y) {
+    let s = line2(x, y, x - 8, y + 16) + line2(x, y, x + 8, y + 16);
+    s += `<path d="M${x - 12},${y + 16} q12,14 24,0 Z" fill="#8a6142"/>`;
+    for (let i = 0; i < 7; i++) s += circ(x - 11 + i * 3.6, y + 14 - (i % 2) * 3, 3, `fill="${['#5f7f46', '#e86f8a', '#f4efe4', '#6e8f50', '#d9415a'][i % 5]}"`);
+    s += `<path d="M${x - 8},${y + 22} q-3,10 1,20 M${x + 7},${y + 22} q3,8 -1,16" stroke="#5f7f46" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-dasharray="4 1.5"/>`;
+    return s;
+  }
+  function flowerBucket(x, colors) {
+    let s = '';
+    for (let i = 0; i < 9; i++) s += `<path d="M${x + 14},${292} q${(i - 4) * 2},-14 ${(i - 4) * 4},-24" stroke="#5f7f46" stroke-width="1.6" fill="none"/>`;
+    for (let i = 0; i < 9; i++) s += circ(x + 14 + (i - 4) * 4, 268 - Math.abs(i - 4) * 1.5, 4.2, `fill="${colors[i % colors.length]}"`);
+    s += `<path d="M${x},${290} H${x + 28} L${x + 25},${316} H${x + 3} Z" fill="#9aa3a6"/>`;
+    s += rect(x, 290, 28, 3, 'fill="#c5ccce"') + rect(x + 3, 300, 23, 1.5, 'fill="rgba(0,0,0,.15)"');
+    return s;
+  }
+  const ground = {
+    bakery() {
+      let s = `<path d="M40,316 C38,296 44,288 56,286 L72,286 C84,288 90,296 88,316 Z" fill="#cdb48a"/>`;
+      s += `<path d="M50,288 l6,-8 l8,8" fill="#cdb48a"/>` + `<text x="64" y="306" text-anchor="middle" font-size="7" class="stall-small" fill="#7a5a3a">FLOUR</text>`;
+      s += `<path d="M92,316 L96,298 L134,298 L138,316 Z" fill="#b08a52"/>`;
+      [104, 116, 128].forEach((x) => (s += ell(x, 296, 8, 6, 'fill="#c98943"')));
+      return s;
+    },
+    candles() {
+      let s = rect(44, 296, 60, 20, `fill="${WOOD_LT}"`) + rect(44, 296, 60, 3, `fill="${WOOD}"`);
+      [58, 88].forEach((x) => {
+        s += rect(x - 8, 270, 16, 26, 'rx="2" fill="none" stroke="#2a2826" stroke-width="2.4"') + `<path d="M${x - 10},270 h20 l-4,-6 h-12 Z" fill="#2a2826"/>`;
+        s += `<path d="M${x},278 q4,6 0,9 q-4,-3 0,-9 Z" class="flame"/>` + circ(x, 284, 14, 'class="lantern-glow"');
+      });
+      return s;
+    },
+    jewelry() {
+      let s = `<path d="M50,316 L46,294 H82 L78,316 Z" fill="#b8643f"/>` + rect(44, 290, 40, 6, 'fill="#a5583a"');
+      for (let i = 0; i < 9; i++) s += `<path d="M${52 + i * 3},290 q${(i - 4) * 1.5},-16 ${(i - 4) * 2.5},-26" stroke="#7f9c6a" stroke-width="2" fill="none"/>` + ell(52 + i * 3 + (i - 4) * 2.5, 264 + Math.abs(i - 4), 2, 5, 'fill="#9a7fc4"');
+      return s;
+    },
+    honey() {
+      let s = rect(48, 302, 48, 14, `fill="${WOOD}"`);
+      s += `<path d="M50,302 C50,276 94,276 94,302 Z" fill="#d6b06a"/>`;
+      for (let i = 1; i < 5; i++) s += `<path d="M${50 + i * 1.5},${302 - i * 5.5} Q72,${296 - i * 6.2} ${94 - i * 1.5},${302 - i * 5.5}" stroke="#b08a42" stroke-width="1.5" fill="none"/>`;
+      s += `<path d="M68,302 a4,4 0 0 1 8,0 Z" fill="#3a2a1e"/>`;
+      return s;
+    },
+    ceramics(c) {
+      return `<path d="M60,316 C46,312 44,290 54,280 L56,270 H76 L78,280 C88,290 86,312 72,316 Z" fill="#c07650"/>` +
+        rect(54, 268, 24, 4, 'fill="#a5583a"') + `<path d="M50,294 Q66,300 82,294" stroke="${c[0]}" stroke-width="3" fill="none"/>`;
+    },
+    soap() {
+      let s = rect(44, 292, 60, 24, `fill="${WOOD_LT}"`) + rect(44, 300, 60, 2, `fill="${WOOD}"`);
+      for (let i = 0; i < 6; i++) s += `<path d="M${52 + i * 8},292 l-2,-20" stroke="#7f9c6a" stroke-width="1.6"/>` + ell(50 + i * 8, 270, 2.4, 6, 'fill="#9a7fc4"');
+      s += rect(48, 288, 52, 5, 'fill="#e9dcc8"');
+      return s;
+    },
+    plants() {
+      let s = rect(40, 298, 62, 18, `fill="${WOOD_LT}"`) + rect(40, 304, 62, 2, `fill="${WOOD}"`);
+      [50, 66, 82, 96].forEach((x, i) => (s += `<path d="M${x - 6},298 h12 l-2,-8 h-8 Z" fill="#c07650"/>` + ell(x, 288, 7, 5, `fill="${i % 2 ? '#7f9c6a' : '#9db487'}"`)));
+      s += `<path d="M108,316 h22 v-18 h-22 Z M130,302 l14,-10 M108,302 q-8,-2 -6,-10" fill="#7d8b8e" stroke="#7d8b8e" stroke-width="3"/>`;
+      return s;
+    },
+    leather() {
+      let s = rect(42, 290, 62, 26, 'rx="3" fill="#6b4430"') + `<path d="M42,296 Q73,282 104,296" fill="#7a4e36"/>`;
+      s += rect(42, 300, 62, 3, 'fill="#3a3632"') + rect(70, 300, 6, 10, 'fill="#c9a86a"');
+      return s;
+    },
+    textiles(c) {
+      let s = `<path d="M44,316 L40,294 H96 L92,316 Z" fill="#b08a52"/>`;
+      for (let i = 0; i < 4; i++) s += `<path d="M44,${298 + i * 5} H92" stroke="rgba(60,40,20,.3)"/>`;
+      [[54, c[0]], [68, '#7c8f9c'], [82, '#d6a04a'], [62, '#e9dcc4'], [76, c[2]]].forEach(([x, col], i) => (s += circ(x, i > 2 ? 284 : 290, 8, `fill="${col}"`)));
+      return s;
+    },
+    art() {
+      let s = '';
+      [[44, 278, 34, 38, '#c8d6e0', -6], [72, 284, 30, 32, '#e8d9c0', 5]].forEach(([x, y, w, h, col, r]) => {
+        s += `<g transform="rotate(${r} ${x + w / 2} 316)">${rect(x, y, w, h, `fill="${WOOD_DK}"`)}${rect(x + 3, y + 3, w - 6, h - 6, `fill="${col}"`)}<path d="M${x + 3},${y + h * 0.7} q${w / 3},-8 ${w - 6},0 V${y + h - 3} H${x + 3} Z" fill="rgba(90,120,80,.5)"/></g>`;
+      });
+      return s;
+    }
+  };
 
   function categoryTag(cat) {
     const home = cat === 'home';
@@ -374,7 +483,8 @@
     if (shelf && shelf.back) s += shelf.svg;
     else if (shelf) s += rect(28, SHELF_Y, 184, 6, `fill="${WOOD_LT}"`) + rect(28, SHELF_Y + 6, 184, 3, 'fill="rgba(0,0,0,.2)"') + shelf;
     // roof
-    s += gable ? gableRoof() : awningRoof(c);
+    s += braces();
+    s += gable ? gableRoof() + bunting(c) + hangingBasket(30, 112) : awningRoof(c, b.valance);
     // lantern hanging under the roof
     s += `<g transform="translate(196,${gable ? 114 : 112})">${line2(0, 0, 0, 8)}<rect x="-6" y="8" width="12" height="15" rx="2" class="stall-lantern"/><rect x="-7" y="6" width="14" height="3" fill="#2a2826"/><circle cx="0" cy="16" r="26" class="lantern-glow"/></g>`;
     // counter goods, counter, cloth
@@ -385,6 +495,8 @@
     s += `<path d="M10,${COUNTER_Y + 26} H230" stroke="${c[1]}" stroke-opacity=".5" stroke-width="2" stroke-dasharray="6 4"/>`;
     s += rect(18, COUNTER_Y + 68, 8, 16, `fill="${WOOD_DK}"`) + rect(214, COUNTER_Y + 68, 8, 16, `fill="${WOOD_DK}"`);
     s += signboard(b.name, b.roof);
+    s += flowerBucket(2, b.flowers || ['#d9415a', '#f4efe4', '#f2c14e']);
+    if (ground[b.display]) s += ground[b.display](c);
     // demo ribbon
     s += `<g transform="${gable ? 'translate(176,150)' : 'translate(186,10)'}"><rect width="38" height="14" rx="2" class="demo-chip"/><text x="19" y="10.2" text-anchor="middle" font-size="8.5" class="stall-small demo-chip-text" letter-spacing="1.4">DEMO</text></g>`;
     s += categoryTag(b.category);
@@ -408,7 +520,7 @@
       ${rect(18, COUNTER_Y + 10, 8, 74, `fill="${WOOD_DK}" opacity=".7"`)}${rect(214, COUNTER_Y + 10, 8, 74, `fill="${WOOD_DK}" opacity=".7"`)}
       <rect x="40" y="118" width="160" height="78" rx="6" fill="#efe3c8" stroke="${WOOD_DK}" stroke-width="4"/>
       <text x="120" y="148" text-anchor="middle" class="stall-name" font-size="17">This stall is open</text>
-      <text x="120" y="170" text-anchor="middle" class="stall-small" font-size="9.5" fill="#6b4a32" letter-spacing="1.6">LISTINGS ARE ALWAYS FREE</text>
+      <text x="120" y="170" text-anchor="middle" class="stall-small" font-size="8.4" fill="#6b4a32" letter-spacing="1">LISTINGS ARE ALWAYS FREE</text>
       ${line2(70, 88, 70, 118)}${line2(170, 88, 170, 118)}
     </svg>`;
   };
