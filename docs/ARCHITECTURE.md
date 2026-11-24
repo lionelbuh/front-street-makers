@@ -1,8 +1,8 @@
-# Temecula Homegrown: Phase 1 visual prototype
+# Architecture: the illustrated street
 
 An illustrated Old Town Temecula street, set up as a European-style artisan market, that visitors explore sideways. All stalls are clearly labeled demo content.
 
-Open `index.html` in a browser, or share `dist/preview.html` (one self-contained file). After editing anything, run `node build.mjs` to regenerate both.
+Files live in `src/assets/js/market/` (street, stalls, crowd, sponsors) and `src/assets/js/app/` (data, pages, rotation). Build with `npm run build`.
 
 ## Layers (back to front)
 
@@ -42,3 +42,9 @@ Adding, removing, reordering or editing a business changes data only. The illust
 - Touch: native horizontal scrolling with momentum. Phones open with the arch centered.
 - List alternative: "Prefer a list?" opens the same profiles without using the street.
 - Reduced motion: no parallax, no smooth scrolling and no hover animation.
+
+## Phase 2 additions
+
+- `street.js` exposes `TH.mountStreet({ businesses, plan, onOpen, onOpenFree })`, and `crowd.js` exposes `TH.mountCrowd({ occupiedSlots })`. Pages pass in today's featured businesses.
+- `rotation.js` chooses today's businesses (`featuredForDate`) and where they stand (`streetPlan`). The API worker uses the same file, so the website and the API always agree.
+- `api.js` talks to the worker, or to a demo database in the browser when `config.js` has no `API_BASE`.

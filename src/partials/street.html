@@ -1,0 +1,32 @@
+  <section class="market" data-scene="day" aria-label="Illustrated marketplace">
+    <div id="street" class="street" tabindex="0" role="region"
+         aria-label="Front Street marketplace" aria-describedby="street-help">
+      <div id="track" class="track">
+        <div id="layer-mountains" class="layer layer-parallax"></div>
+        <div id="layer-hills" class="layer layer-parallax"></div>
+        <div id="layer-architecture" class="layer"></div>
+        <div class="layer tint"></div>
+        <div id="layer-lights" class="layer lights"></div>
+        <div id="layer-foreground" class="layer foreground"></div>
+        <div id="layer-stalls" class="layer stalls"></div>
+        <div id="layer-crowd" class="layer crowd"></div>
+        <div id="layer-grain" class="layer grain"></div>
+      </div>
+    </div>
+    <button id="enter" type="button" class="enter-hint">Walk in <span aria-hidden="true">→</span></button>
+
+    <div class="controls wrap">
+      <button id="prev" type="button" class="step" aria-label="Previous stall">←</button>
+      <div class="now"><span class="now-label">Now passing</span><span id="now-name">The gateway arch</span></div>
+      <div id="map" class="map" aria-hidden="true"><span id="map-window" class="map-window"></span></div>
+      <button id="next" type="button" class="step" aria-label="Next stall">→</button>
+    </div>
+    <div class="help-row wrap">
+      <p id="sponsor-line" class="sponsor-line" hidden></p>
+      <p id="street-help" class="help">Scroll, drag or swipe sideways. With a keyboard, use the arrow keys to jump between stalls, or Tab through them.</p>
+      <div class="scene-switch" role="group" aria-label="Time of day">
+        <button type="button" data-scene="day" aria-pressed="true">Daytime</button>
+        <button type="button" data-scene="evening" aria-pressed="false">Evening</button>
+      </div>
+    </div>
+  </section>

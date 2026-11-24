@@ -293,7 +293,28 @@
         s += rect(x - 3, 130 + h * 0.3, 6, 6, 'fill="#c9a86a"');
       });
       return { back: true, svg: s };
-    }
+    },
+    services(c) {
+      let s = '';
+      // appointment book, laptop and business cards on the counter
+      s += rect(34, COUNTER_Y - 6, 62, 6, 'fill="#3a3632"');
+      s += `<path d="M38,${COUNTER_Y - 6} L46,${COUNTER_Y - 44} H92 L88,${COUNTER_Y - 6} Z" fill="#5a5e63"/>`;
+      s += `<path d="M44,${COUNTER_Y - 10} L50,${COUNTER_Y - 40} H88 L84,${COUNTER_Y - 10} Z" fill="#9fc3d1"/>`;
+      s += rect(108, COUNTER_Y - 14, 52, 14, `rx="2" fill="${c[0]}"`) + rect(112, COUNTER_Y - 12, 44, 2, 'fill="rgba(255,255,255,.6)"');
+      s += rect(106, COUNTER_Y - 26, 56, 12, 'rx="2" fill="#f4efe6" stroke="rgba(0,0,0,.2)"');
+      for (let i = 0; i < 5; i++) s += line2(112 + i * 10, COUNTER_Y - 26, 112 + i * 10, COUNTER_Y - 14);
+      [[176, '#f4efe6'], [184, c[1]], [192, '#f4efe6']].forEach(([x, col], i) => (s += rect(x, COUNTER_Y - 4 - i * 2, 22, 13, `fill="${col}" stroke="rgba(0,0,0,.18)" transform="rotate(${-8 + i * 6} ${x + 11} ${COUNTER_Y})"`)));
+      s += `<path d="M196,${COUNTER_Y - 30} q4,-14 0,-22 M200,${COUNTER_Y - 30} q8,-10 10,-20" stroke="#5f7f46" stroke-width="2" fill="none"/>` + rect(190, COUNTER_Y - 30, 18, 14, 'rx="3" fill="#c07650"');
+      return s;
+    },
+    servicesShelf(c) {
+      // a framed "Open today" sign and a calendar on the backdrop
+      let s = rect(48, 114, 70, 44, `rx="3" fill="${WOOD_DK}"`) + rect(52, 118, 62, 36, 'rx="2" fill="#f4efe6"');
+      s += `<text x="83" y="133" text-anchor="middle" font-size="9" class="stall-small" fill="${c[2]}">BY</text><text x="83" y="146" text-anchor="middle" font-size="9" class="stall-small" fill="${c[2]}">APPOINTMENT</text>`;
+      s += rect(136, 112, 56, 50, 'fill="#f4efe6" stroke="rgba(0,0,0,.2)"') + rect(136, 112, 56, 10, `fill="${c[0]}"`);
+      for (let r = 0; r < 3; r++) for (let q = 0; q < 5; q++) s += rect(140 + q * 10, 126 + r * 11, 7, 7, `fill="${(r * 5 + q) % 4 === 1 ? c[0] : 'rgba(0,0,0,.08)'}"`);
+      return { back: true, svg: s };
+    },
   };
   function line2(x1, y1, x2, y2) { return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#3a3632" stroke-width="1.2"/>`; }
 
@@ -497,8 +518,8 @@
     s += signboard(b.name, b.roof);
     s += flowerBucket(2, b.flowers || ['#d9415a', '#f4efe4', '#f2c14e']);
     if (ground[b.display]) s += ground[b.display](c);
-    // demo ribbon
-    s += `<g transform="${gable ? 'translate(176,150)' : 'translate(186,10)'}"><rect width="38" height="14" rx="2" class="demo-chip"/><text x="19" y="10.2" text-anchor="middle" font-size="8.5" class="stall-small demo-chip-text" letter-spacing="1.4">DEMO</text></g>`;
+    // demo ribbon (demo listings only)
+    if (b.isDemo) s += `<g transform="${gable ? 'translate(176,150)' : 'translate(186,10)'}"><rect width="38" height="14" rx="2" class="demo-chip"/><text x="19" y="10.2" text-anchor="middle" font-size="8.5" class="stall-small demo-chip-text" letter-spacing="1.4">DEMO</text></g>`;
     s += categoryTag(b.category);
     // little chalkboard on the ground
     if (b.chalk) {

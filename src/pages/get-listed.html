@@ -1,0 +1,121 @@
+<!--{"path":"get-listed/","title":"Get Listed","description":"Apply for a free listing on Temecula Homegrown: home-based businesses and independent micro-businesses in Temecula, Murrieta and nearby.","nav":"getlisted","page":"get-listed","module":"get-listed.js"}-->
+<section class="intro wrap">
+  <p class="kicker">Get listed · free</p>
+  <h1>Take a stall on Front Street.</h1>
+  <p class="lead">Listing your business is free: no subscription, commission or paid ranking. We review every application by hand, then your business joins the directory and takes turns on the illustrated street.</p>
+</section>
+
+<div class="rubrics wrap">
+  <section aria-labelledby="who-title">
+    <div class="section-head"><h2 id="who-title">Who can apply</h2></div>
+    <div class="cat-cards">
+      <article class="cat-card cat-card--home">
+        <p class="card-kicker">Category A</p>
+        <h3>Home-Based Business</h3>
+        <p>Home bakeries and Cottage Food, handmade products, candles and soaps, jewelry and accessories, arts and crafts, personalized gifts, small home-based producers and home-based services.</p>
+      </article>
+      <article class="cat-card cat-card--micro">
+        <p class="card-kicker">Category B</p>
+        <h3>Independent Micro-Business</h3>
+        <p>Independent artisans, small workshops and studios, local makers and creators, appointment-based and pop-up businesses, independent service providers, and owner-operated businesses without a conventional retail storefront.</p>
+      </article>
+    </div>
+    <p class="section-text">We list small, independent, owner-operated businesses in Temecula, Murrieta and nearby communities. Franchises, chains and conventional large retail businesses are not eligible.</p>
+  </section>
+
+  <section aria-labelledby="form-title">
+    <div class="section-head"><h2 id="form-title">Your application</h2><p class="legend">About 10 minutes · <span class="req">*</span> required</p></div>
+
+    <form id="apply-form" class="apply-form" novalidate>
+      <input type="hidden" name="started_at">
+      <div class="hp" aria-hidden="true"><label for="company_website">Leave this empty</label><input id="company_website" name="company_website" tabindex="-1" autocomplete="off"></div>
+
+      <fieldset class="form-sec">
+        <legend><span class="step-no">1</span> Your category <span class="req">*</span></legend>
+        <div class="choice-cards">
+          <label class="choice-card"><input type="radio" name="category" value="home" required><span><strong>Home-Based Business</strong><small>You make or offer it from home.</small></span></label>
+          <label class="choice-card"><input type="radio" name="category" value="micro" required><span><strong>Independent Micro-Business</strong><small>Owner-operated, with a studio, workshop, pop-up or by appointment, but no conventional storefront.</small></span></label>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-sec">
+        <legend><span class="step-no">2</span> About your business</legend>
+        <div class="field"><label for="name">Business name <span class="req">*</span></label><input id="name" name="name" required maxlength="80" autocomplete="organization"></div>
+        <div class="field-row">
+          <div class="field"><label for="kind">What do you offer? <span class="req">*</span></label><select id="kind" name="kind" required><option value="">Choose one</option></select></div>
+          <div class="field"><label for="type_label">Short description</label><input id="type_label" name="type_label" maxlength="80" placeholder="Home bakery · Cottage Food"></div>
+        </div>
+        <div class="field"><label for="summary">In one sentence, what do you make or do? <span class="req">*</span></label><input id="summary" name="summary" required minlength="10" maxlength="160" data-max="160" placeholder="Naturally leavened sourdough and focaccia, baked to order on weekends."></div>
+        <div class="field"><label for="description">Tell neighbors more <span class="opt">(optional)</span></label><textarea id="description" name="description" rows="5" maxlength="1500" data-max="1500" placeholder="What makes your work special, how ordering works, seasons, custom orders…"></textarea></div>
+        <div class="field-row">
+          <div class="field"><label for="city">City <span class="req">*</span></label><select id="city" name="city" required><option value="">Choose your city</option></select></div>
+          <div class="field"><label for="area">Where do customers find you? <span class="req">*</span></label><input id="area" name="area" required maxlength="160" placeholder="Porch pickup in Temecula, ships in the valley…"><p class="hint">Never your street address: home addresses are never published.</p></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-sec">
+        <legend><span class="step-no">3</span> Where neighbors can reach you <span class="opt">(shown on your profile)</span></legend>
+        <div class="field-row">
+          <div class="field"><label for="website">Website</label><input id="website" name="website" inputmode="url" placeholder="yourbusiness.com"></div>
+          <div class="field"><label for="order_url">Ordering or booking link</label><input id="order_url" name="order_url" inputmode="url" placeholder="Square, Etsy, Calendly…"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="instagram">Instagram</label><input id="instagram" name="instagram" placeholder="@yourbusiness"></div>
+          <div class="field"><label for="facebook">Facebook</label><input id="facebook" name="facebook" placeholder="facebook.com/yourbusiness"></div>
+          <div class="field"><label for="tiktok">TikTok</label><input id="tiktok" name="tiktok" placeholder="@yourbusiness"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="public_email">Public email</label><input id="public_email" name="public_email" type="email" autocomplete="email"></div>
+          <div class="field"><label for="public_phone">Public phone</label><input id="public_phone" name="public_phone" type="tel" autocomplete="tel"></div>
+        </div>
+      </fieldset>
+
+      <fieldset class="form-sec">
+        <legend><span class="step-no">4</span> Photos of your work <span class="opt">(up to 6, recommended)</span></legend>
+        <p class="hint">Real photos of your products, workspace or you at work. We resize them for the web. Please don't send photos that show your home address or house number.</p>
+        <label class="btn btn-ghost file-btn">Choose photos<input type="file" id="photos" name="photos" accept="image/*" multiple></label>
+        <span id="photo-count" class="hint" aria-live="polite"></span>
+        <ul id="photo-previews" class="photo-previews"></ul>
+        <label class="check"><input type="checkbox" name="photo_rights"> These photos are mine, or I have permission to share them, and Temecula Homegrown may show them on my listing.</label>
+      </fieldset>
+
+      <fieldset class="form-sec">
+        <legend><span class="step-no">5</span> Licensing and permits</legend>
+        <fieldset class="sub">
+          <legend>Are you currently ready and authorized to operate your business? <span class="req">*</span></legend>
+          <div id="license-options" class="choices"></div>
+        </fieldset>
+        <div id="license-guidance" class="guidance" hidden></div>
+        <fieldset class="sub">
+          <legend>Would you like help understanding the requirements? <span class="req">*</span></legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="wants_help" value="yes" required> <span>Yes, I would appreciate some guidance.</span></label>
+            <label class="choice"><input type="radio" name="wants_help" value="no" required> <span>No, I am handling this myself.</span></label>
+          </div>
+        </fieldset>
+        <p class="hint">We don't collect copies of licenses or permits. You stay responsible for the rules that apply to your business. Businesses still clarifying their requirements are published once their situation is clear.</p>
+      </fieldset>
+
+      <fieldset class="form-sec">
+        <legend><span class="step-no">6</span> About you <span class="opt">(private, for our team only)</span></legend>
+        <div class="field-row">
+          <div class="field"><label for="owner_name">Your name <span class="req">*</span></label><input id="owner_name" name="owner_name" required maxlength="80" autocomplete="name"></div>
+          <div class="field"><label for="contact_email">Email <span class="req">*</span></label><input id="contact_email" name="contact_email" type="email" required autocomplete="email"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="contact_phone">Phone <span class="opt">(optional)</span></label><input id="contact_phone" name="contact_phone" type="tel" autocomplete="tel"></div>
+          <div class="field"><label for="zip">ZIP code <span class="opt">(optional)</span></label><input id="zip" name="zip" inputmode="numeric" maxlength="10" autocomplete="postal-code"></div>
+        </div>
+        <label class="check"><input type="checkbox" name="independent_ok" required> My business is independent and owner-operated, not a franchise, chain or large retail business. <span class="req">*</span></label>
+        <label class="check"><input type="checkbox" name="agree" required> I accept the <a href="{{root}}terms/" target="_blank">listing terms</a> and the <a href="{{root}}privacy/" target="_blank">privacy notice</a>. <span class="req">*</span></label>
+      </fieldset>
+
+      <div id="turnstile" hidden></div>
+      <div class="form-actions">
+        <button type="submit" class="btn" id="apply-submit">Send my application</button>
+        <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+    <div id="apply-done" class="apply-done" tabindex="-1" hidden></div>
+  </section>
+</div>

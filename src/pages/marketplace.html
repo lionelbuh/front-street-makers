@@ -1,0 +1,46 @@
+<!--{"path":"marketplace/","title":"The Marketplace","description":"Browse home-based businesses and independent micro-businesses from Temecula, Murrieta and nearby: search by name, category, what they offer and city.","nav":"marketplace","page":"marketplace","street":true,"module":"market-page.js"}-->
+<section class="intro wrap">
+  <p class="kicker">The Marketplace · <span class="js-today">today</span></p>
+  <h1>Every local maker in one place.</h1>
+  <p class="lead">Walk the street to meet today's <span data-count="featured">10</span> stalls, or search all <span data-count="all"></span> approved businesses below.</p>
+</section>
+<p id="market-error" class="wrap form-error" role="alert" hidden></p>
+
+<!--#street-->
+
+<div class="rubrics wrap">
+  <section aria-labelledby="dir-title">
+    <div class="section-head">
+      <h2 id="dir-title">Directory</h2>
+      <p class="legend">
+        <span><i style="background:var(--cat-home)"></i>Home-Based <span data-count="home"></span></span>
+        <span><i style="background:var(--cat-micro)"></i>Micro-Business <span data-count="micro"></span></span>
+      </p>
+    </div>
+    <form id="directory-filters" class="filters" role="search" aria-label="Search the directory">
+      <div class="field field--search">
+        <label for="f-q">Search</label>
+        <input id="f-q" name="q" type="search" placeholder="Sourdough, candles, pottery class…" autocomplete="off">
+      </div>
+      <fieldset class="seg">
+        <legend>Category</legend>
+        <label><input type="radio" name="cat" value="" checked><span>All</span></label>
+        <label><input type="radio" name="cat" value="home"><span>Home-based</span></label>
+        <label><input type="radio" name="cat" value="micro"><span>Micro-business</span></label>
+      </fieldset>
+      <div class="field">
+        <label for="f-kind">What they offer</label>
+        <select id="f-kind" name="kind"><option value="">Anything</option></select>
+      </div>
+      <div class="field">
+        <label for="f-city">City</label>
+        <select id="f-city" name="city"><option value="">Anywhere</option></select>
+      </div>
+      <label class="check"><input type="checkbox" name="today" value="1"> On the street today</label>
+    </form>
+    <p id="directory-count" class="result-count" role="status" aria-live="polite"></p>
+    <div id="directory-results" class="biz-grid"></div>
+  </section>
+</div>
+
+<!--#dialog-->

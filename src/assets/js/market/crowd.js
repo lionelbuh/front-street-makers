@@ -224,10 +224,13 @@
   /* ------------------------------------------------------------------
      Layer + animation
      ------------------------------------------------------------------ */
+  TH.mountCrowd = function mountCrowd(opts = {}) {
   const layer = document.getElementById('layer-crowd');
   const track = document.getElementById('track');
   const street = document.getElementById('street');
-  const businessSlots = slots.filter((sl) => !(TH.OPEN_SLOTS || []).includes(sl.index));
+  if (!layer || !track || !street) return;
+  const occupied = opts.occupiedSlots || [];
+  const businessSlots = slots.filter((sl) => occupied.includes(sl.index));
   const groups = [];
   let uid = 0;
 
@@ -454,4 +457,5 @@
     line.innerHTML = `<span class="chip chip--sponsor">Sponsor</span> <a href="${sp.url}" target="_blank" rel="sponsored noopener">${esc(sp.label)}</a> <span class="sponsor-tagline">${esc(sp.tagline)}</span>`;
     line.hidden = false;
   }
+  };
 })();

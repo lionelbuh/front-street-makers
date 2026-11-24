@@ -1,0 +1,61 @@
+<!--{"path":"admin/","title":"Admin","description":"Temecula Homegrown review dashboard.","nav":"","page":"admin","noindex":true,"stall":true,"module":"admin.js","footer":false}-->
+<div class="wrap admin">
+  <section id="admin-login" class="admin-login" hidden>
+    <h1>Review dashboard</h1>
+    <form id="login-form">
+      <div class="field"><label for="login-password">Admin password</label><input id="login-password" type="password" autocomplete="current-password" required></div>
+      <button type="submit" class="btn">Sign in</button>
+      <p id="login-error" class="form-status" role="alert"></p>
+      <p id="login-hint" class="hint" hidden>Demo mode: the password is <strong>demo</strong>. Everything you change stays in this browser.</p>
+    </form>
+  </section>
+
+  <section id="admin-app" hidden>
+    <header class="admin-head">
+      <h1>Review dashboard</h1>
+      <div class="admin-head-actions">
+        <button type="button" class="link-button" id="demo-reset" hidden>Restore demo data</button>
+        <button type="button" class="btn btn-ghost" id="logout">Sign out</button>
+      </div>
+    </header>
+    <div class="admin-tabs" role="tablist" aria-label="Dashboard sections">
+      <button type="button" role="tab" data-tab="applications" aria-selected="true">Applications</button>
+      <button type="button" role="tab" data-tab="rotation" aria-selected="false">Daily rotation</button>
+      <button type="button" role="tab" data-tab="stories" aria-selected="false">Community stories</button>
+    </div>
+
+    <div class="admin-panel" data-panel="applications" role="tabpanel">
+      <div class="status-filters" id="status-filters" role="group" aria-label="Filter by status"></div>
+      <div class="field field--search"><label for="admin-search">Search by business, owner or city</label><input id="admin-search" type="search"></div>
+      <div class="admin-split">
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead><tr><th scope="col">Business</th><th scope="col">Category</th><th scope="col">City</th><th scope="col">Licensing</th><th scope="col">Status</th><th scope="col">Applied</th></tr></thead>
+            <tbody id="app-list"></tbody>
+          </table>
+        </div>
+        <section id="detail" class="detail" tabindex="-1" hidden aria-label="Application details"></section>
+      </div>
+    </div>
+
+    <div class="admin-panel" data-panel="rotation" role="tabpanel" hidden>
+      <p class="section-text">Each day the street shows a fair rotation of approved businesses (<span id="approved-count">0</span> approved). Pinned businesses come first, new businesses get a welcome boost, then everyone else takes turns. Nobody repeats before everyone has had a turn.</p>
+      <form id="rotation-form" class="rotation-form">
+        <div class="field"><label for="r-count">Businesses on the street each day: <output id="count-out" for="r-count">8</output></label><input id="r-count" name="count" type="range" min="1" max="10" step="1"></div>
+        <div class="field"><label for="r-newdays">Welcome boost for new businesses (days)</label><input id="r-newdays" name="newDays" type="number" min="0" max="90"></div>
+        <div class="field"><label for="r-newmax">New businesses boosted per day, at most</label><input id="r-newmax" name="newMax" type="number" min="0" max="10"></div>
+        <div class="form-actions"><button type="submit" class="btn">Save rotation</button><button type="button" class="btn btn-ghost" id="reshuffle">Reshuffle the order</button></div>
+      </form>
+      <h2 class="admin-sub">Manual pins</h2>
+      <ul id="pins" class="pin-list"></ul>
+      <h2 class="admin-sub">Next 7 days</h2>
+      <p class="legend"><span class="feat feat-pinned">pinned</span> <span class="feat feat-new">new</span> <span class="feat feat-rotation">rotation</span></p>
+      <div class="table-wrap"><table class="admin-table"><tbody id="rotation-preview"></tbody></table></div>
+    </div>
+
+    <div class="admin-panel" data-panel="stories" role="tabpanel" hidden>
+      <div id="story-list" class="story-admin-list"></div>
+    </div>
+  </section>
+  <p id="admin-toast" class="admin-toast" role="status" hidden></p>
+</div>

@@ -1,0 +1,72 @@
+<!--{"path":"community/","title":"Community","description":"Stories from small business owners in the Temecula Valley, local initiatives, and practical ideas for makers.","nav":"community","page":"community","module":"community.js"}-->
+<section class="intro wrap">
+  <p class="kicker">Community</p>
+  <h1>The people behind the stalls.</h1>
+  <p class="lead">Stories from home bakers, makers and small studios in the valley, local initiatives that help them grow, and ideas worth sharing.</p>
+</section>
+
+<div class="rubrics wrap">
+  <section aria-labelledby="stories-title">
+    <div class="section-head"><h2 id="stories-title">Entrepreneur stories</h2></div>
+    <div id="stories" class="stories" aria-live="polite"><p class="hint">Loading stories…</p></div>
+  </section>
+
+  <section aria-labelledby="init-title">
+    <div class="section-head"><h2 id="init-title">Local initiatives</h2></div>
+    <div class="note-grid">
+      <article>
+        <p class="card-kicker">Free advising</p>
+        <h3>Small Business Development Center</h3>
+        <p>No-cost one-on-one advising and low-cost workshops through the Inland Empire SBDC, with a local hub in Temecula run by Cal State San Bernardino's Inland Empire Center for Entrepreneurship.</p>
+        <p><a class="card-link" href="https://www.iece.csusb.edu/content/ERCT" target="_blank" rel="noopener">Entrepreneurial Resource Center</a></p>
+      </article>
+      <article>
+        <p class="card-kicker">Mentoring</p>
+        <h3>SCORE Inland Empire</h3>
+        <p>Volunteer mentors who have run businesses themselves, free for as long as you need them, matched by ZIP code.</p>
+        <p><a class="card-link" href="https://www.score.org/ca/inland-empire/" target="_blank" rel="noopener">SCORE Inland Empire</a></p>
+      </article>
+      <article>
+        <p class="card-kicker">Getting started</p>
+        <h3>Startup Corner</h3>
+        <p>Our plain-language guide to city licenses, home-based business rules, California Cottage Food and seller's permits, with links to the official offices.</p>
+        <p><a class="card-link" href="{{root}}startup-corner/">Read the guide</a></p>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="ideas-title">
+    <div class="section-head"><h2 id="ideas-title">Ideas that help</h2></div>
+    <div class="ideas">
+      <article class="idea">
+        <h3>Price for the market day, not just the materials</h3>
+        <p>Add up ingredients or materials, packaging, your time at a fair hourly rate, booth fees and card fees, then the share of the day you spend not selling (setup, travel, slow hours). If the price feels high, offer a small “first taste” item rather than discounting your best work.</p>
+      </article>
+      <article class="idea">
+        <h3>Photos that sell on a phone</h3>
+        <p>Most neighbors will see your work on a small screen. Shoot near a window in daylight, keep the background plain, fill the frame with the product, and add one photo with a hand or a familiar object for scale. Three good photos beat twelve average ones.</p>
+      </article>
+      <article class="idea">
+        <h3>Turn one sale into a regular</h3>
+        <p>Put your name and how to order on every bag or label, mention when you'll be back, and offer a simple way to hear about new batches: a sign-up sheet, a QR code to your Instagram, or a punch card.</p>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="share-title">
+    <div class="section-head"><h2 id="share-title">Share your story</h2></div>
+    <p class="section-text">How did you start? What surprised you? What would you tell someone about to begin? We read every story and contact you before anything is published.</p>
+    <form id="story-form" class="story-form" novalidate>
+      <input type="hidden" name="started_at">
+      <div class="hp" aria-hidden="true"><label for="s-website">Leave this empty</label><input id="s-website" name="company_website" tabindex="-1" autocomplete="off"></div>
+      <div class="field-row">
+        <div class="field"><label for="s-author">Your name <span class="req">*</span></label><input id="s-author" name="author" required maxlength="80" autocomplete="name"></div>
+        <div class="field"><label for="s-business">Business <span class="opt">(optional)</span></label><input id="s-business" name="business" maxlength="80"></div>
+        <div class="field"><label for="s-email">Email <span class="req">*</span> <span class="opt">(private)</span></label><input id="s-email" name="email" type="email" required autocomplete="email"></div>
+      </div>
+      <div class="field"><label for="s-title">Title <span class="req">*</span></label><input id="s-title" name="title" required maxlength="120"></div>
+      <div class="field"><label for="s-body">Your story <span class="req">*</span></label><textarea id="s-body" name="body" rows="7" required minlength="80" maxlength="4000"></textarea></div>
+      <div class="form-actions"><button type="submit" class="btn">Send my story</button><p id="story-status" class="form-status" role="status" aria-live="polite"></p></div>
+    </form>
+  </section>
+</div>

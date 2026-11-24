@@ -2,23 +2,33 @@
 
 Small businesses. Big dreams. Local roots.
 
-An independent, free local marketplace for Temecula, Murrieta and nearby communities, built around an illustrated Old Town Temecula street where each stall is a local business.
+An independent, free local marketplace for home-based businesses and independent micro-businesses in Temecula, Murrieta and nearby communities. It is built around an illustrated Old Town Temecula street where each stall is a local business.
 
-## Status
+## What's inside
 
-**Phase 1: visual prototype.** It includes the illustrated street, the stall components, the business profile, the crowd, the sponsor placements and the Gazette-style page.
+| Page | Purpose |
+|---|---|
+| Home | Today's stalls on the illustrated street, with how it works |
+| Marketplace | The street plus the searchable directory (category, what they offer, city) |
+| Business pages | Shareable profile for each approved business |
+| Get Listed | Free application: categories, licensing-status questions, photos |
+| Community | Entrepreneur stories (moderated), local initiatives, practical ideas |
+| Startup Corner | Sourced guidance: city licenses, home occupation, Cottage Food, seller's permit and more |
+| Admin | Review applications, private notes, publish, stall look, photos, daily rotation, stories |
 
-Phase 2 (database, applications, admin, directory, Community, Startup Corner) has not started.
+- **Data:** a Cloudflare Worker with a D1 database and R2 photo storage (`worker/`). Only approved businesses are public, and contact details, licensing answers and notes never leave the admin.
+- **Fair visibility:** a shared, tested rotation module (`src/assets/js/app/rotation.js`). Pins come first, new businesses get a boost, and everyone else takes turns with no repeats within a cycle.
 
-All businesses shown are clearly labeled demo content.
-
-## Run it
+## Commands
 
 ```bash
-cd prototype
-node build.mjs     # writes index.html and dist/preview.html
+npm run serve      # build and preview at http://localhost:4173 (demo mode)
+npm test           # unit + API tests
+npm run test:e2e   # browser test of every page and the apply → approve flow
 ```
 
-Open `prototype/index.html` in a browser, or share the self-contained `prototype/dist/preview.html`.
+## Going live
 
-See `prototype/README.md` for how the street, stalls and data fit together.
+See **[docs/SETUP.md](docs/SETUP.md)**: GitHub Pages for the site, Cloudflare for the API, about 30 minutes in total. Until then, the site runs in demo mode.
+
+The street, stalls and crowd are explained in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
