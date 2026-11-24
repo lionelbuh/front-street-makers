@@ -17,7 +17,6 @@
   const LANE_FAR = STALL_BOTTOM + 34; // feet of the farthest lane (just in front of the counters)
   const LANE_NEAR = H - 8; // feet of the nearest lane
   const AD_EVERY_MS = 120000;
-  const FIRST_AD_MS = 5000;
 
   const SKIN = ['#f1c9a5', '#e0ac85', '#c68a62', '#9a6544', '#6e4630', '#f5d6bd', '#b47a55'];
   const HAIR = ['#2b1d14', '#4a2f1d', '#7a4f2a', '#c9a063', '#9b9a94', '#1c1a18', '#a3462b', '#d8c7a0'];
@@ -187,13 +186,13 @@
     // the sign on its pole: tossed, spun and caught (.ad-sign animation)
     s += `<g class="ad-sign">`;
     s += `<rect x="20" y="-300" width="5" height="190" rx="2" fill="#7a5638"/>`;
-    s += `<g transform="translate(22,-300)">`;
+    s += `<g transform="translate(22,-300)"><g class="unflip">`;
     s += `<rect x="-74" y="-104" width="148" height="112" rx="6" fill="${cream}" stroke="${brand}" stroke-width="6"/>`;
     s += `<clipPath id="sgn-${uid}"><rect x="-64" y="-94" width="128" height="66" rx="3"/></clipPath>`;
     s += `<image href="${sp.images.sign}" x="-64" y="-94" width="128" height="66" preserveAspectRatio="xMidYMid slice" clip-path="url(#sgn-${uid})"/>`;
     s += `<rect x="-64" y="-100" width="44" height="13" rx="2" fill="#b3121a"/><text x="-42" y="-90.5" text-anchor="middle" font-size="8.5" class="ad-tag">SPONSOR</text>`;
     s += `<text x="0" y="-10" text-anchor="middle" font-size="13.5" class="ad-label" fill="${brand}">${esc(sp.label)}</text>`;
-    s += `</g></g>`;
+    s += `</g></g></g>`;
     // the juggler: cap, bright shirt, one arm up on the pole
     s += person({ kind: 'adult', x: 0, skin: pick(r, SKIN), hair: '#2b1d14', top: '#f2c14e', stripe: brand, bottom: '#2f3a4a', hat: 'cap', hatColor: brand, hairStyle: 'short', raise: { x: 22, y: -140 } });
     // three juggling balls with the other hand
@@ -207,7 +206,7 @@
     let s = '';
     s += `<g class="ad-balloon">`;
     s += `<path d="M18,-96 C30,-140 6,-180 26,-226" stroke="#6b6560" stroke-width="1.6" fill="none"/>`;
-    s += `<g transform="translate(26,-300)">`;
+    s += `<g transform="translate(26,-300)"><g class="unflip">`;
     s += `<path d="M0,74 l-7,10 h14 Z" fill="${brand}"/>`;
     s += `<ellipse cx="0" cy="0" rx="66" ry="76" fill="${brand}"/>`;
     s += `<clipPath id="bln-${uid}"><circle cx="0" cy="-10" r="52"/></clipPath>`;
@@ -217,7 +216,7 @@
     s += `<text x="0" y="52" text-anchor="middle" font-size="11.5" class="ad-label" fill="${brand}">${esc(sp.label)}</text>`;
     s += `<rect x="-22" y="-78" width="44" height="13" rx="2" fill="#b3121a"/><text x="0" y="-68.5" text-anchor="middle" font-size="8.5" class="ad-tag">SPONSOR</text>`;
     s += `<ellipse cx="-30" cy="-40" rx="9" ry="16" fill="#fff" opacity=".35" transform="rotate(20 -30 -40)"/>`;
-    s += `</g></g>`;
+    s += `</g></g></g>`;
     s += person({ kind: 'child', x: 0, skin: pick(r, SKIN), hair: '#c9a063', hairStyle: 'pony', top: '#e7a1a6', stripe: '#f4efe4', bottom: '#3b4f6b', dress: false, raise: { x: 18, y: -96 } });
     return { svg: s, minX: -80, maxX: 100, top: -390, bottom: 6 };
   }
@@ -286,44 +285,57 @@
   const VISITORS = 14;
   for (let i = 0; i < VISITORS; i++) spawnVisitor(i, r0);
 
-  /* ---------- ad carriers: every 2 minutes, alternating ---------- */
+  /* ---------- ad carriers ----------
+     Timeline from the visitor's arrival:
+       0 s    the sign juggler sets off from the far (right) end of the street,
+              walking toward the entrance, so the visitor meets him while exploring
+       60 s   the balloon kid sets off from the entrance (left), walking the other way
+       then   every 2 minutes, alternating: juggler from the right, kid from the left
+     Each carrier walks the whole street, pausing in front of a few stalls. */
+  const STREET_START = 1450; // just past the gateway
+  const STREET_END = W - 420;
+  const FIRST_BALLOON_MS = 60000;
   let adCount = 0;
-  let activeAd = null;
+  const activeAds = [];
   function view() {
     const sc = track.clientWidth / W;
     return { left: street.scrollLeft / sc, right: (street.scrollLeft + street.clientWidth) / sc };
   }
-  function spawnAd(staticPose) {
-    if (activeAd || !TH.SPONSORS || !TH.SPONSORS.length) return;
+  function spawnAd(kind, staticPose) {
+    if (!TH.SPONSORS || !TH.SPONSORS.length) return;
+    if (activeAds.some((g) => g.kind === kind)) return; // one of each at a time
     const sponsor = TH.SPONSORS[Math.floor(adCount / 2) % TH.SPONSORS.length];
-    const kind = adCount % 2 === 0 ? 'sign' : 'balloon';
     adCount++;
     const shape = kind === 'sign' ? signJuggler(sponsor, ++uid) : balloonKid(sponsor, ++uid);
-    const v = view();
-    const fromLeft = true; // always walk left to right so the sign reads correctly
     const g = {
       shape, footY: LANE_NEAR - 2, depth: kind === 'sign' ? 1.45 : 1.5, ad: true, kind,
-      speed: kind === 'sign' ? 62 : 50, stopUntil: 0, lastSlot: -1, pauseDone: false, born: performance.now()
+      speed: kind === 'sign' ? 62 : 50, stopUntil: 0, lastSlot: -1, born: performance.now()
     };
     g.el = createEl(shape, true, sponsor);
     g.el.classList.add(kind === 'sign' ? 'ad--sign' : 'ad--balloon');
     if (staticPose) {
+      const v = view();
       g.x = Math.max(v.left + (v.right - v.left) * 0.62, 900);
       setDir(g, 1);
       setWalking(g, false);
+    } else if (kind === 'sign') {
+      g.x = STREET_END; // from the right
+      setDir(g, -1);
+      setWalking(g, true);
     } else {
-      g.x = fromLeft ? v.left - shape.maxX * g.depth - 20 : v.right - shape.minX * g.depth + 20;
-      setDir(g, fromLeft ? 1 : -1);
+      g.x = STREET_START; // from the left
+      setDir(g, 1);
       setWalking(g, true);
     }
     place(g);
     groups.push(g);
-    activeAd = g;
+    activeAds.push(g);
   }
   function removeGroup(g) {
     g.el.remove();
     groups.splice(groups.indexOf(g), 1);
-    if (g === activeAd) activeAd = null;
+    const i = activeAds.indexOf(g);
+    if (i >= 0) activeAds.splice(i, 1);
   }
 
   /* ---------- the loop ---------- */
@@ -332,7 +344,6 @@
     const dt = Math.min(0.06, (now - last) / 1000);
     last = now;
     const sc = track.clientWidth / W;
-    const v = view();
     for (let i = groups.length - 1; i >= 0; i--) {
       const g = groups[i];
       if (!g.walking) {
@@ -340,27 +351,21 @@
       } else {
         const prev = g.x;
         g.x += g.dir * g.speed * dt;
-        if (g.ad) {
-          // the ad carrier pauses once near the middle of the view to perform
-          const mid = (v.left + v.right) / 2;
-          if (!g.pauseDone && (prev - mid) * (g.x - mid) <= 0) {
-            g.pauseDone = true;
-            setWalking(g, false);
-            g.stopUntil = now + (g.kind === 'sign' ? 11000 : 7000);
-          }
-          const gone = g.dir > 0 ? g.x + g.shape.minX * g.depth > v.right + 200 : g.x + g.shape.maxX * g.depth < v.left - 200;
-          if ((g.pauseDone && gone) || now - g.born > 150000) { removeGroup(g); continue; }
-        } else {
-          // visitors sometimes stop in front of a stall
-          for (const slot of businessSlots) {
-            if (slot.index !== g.lastSlot && (prev - slot.x) * (g.x - slot.x) <= 0) {
-              g.lastSlot = slot.index;
-              if (Math.random() < 0.42) {
-                setWalking(g, false);
-                g.stopUntil = now + 2500 + Math.random() * 6500;
-              }
+        // everyone may stop in front of a stall; ad carriers stop to perform
+        for (const slot of businessSlots) {
+          if (slot.index !== g.lastSlot && (prev - slot.x) * (g.x - slot.x) <= 0) {
+            g.lastSlot = slot.index;
+            const chance = g.ad ? 0.3 : 0.42;
+            if (Math.random() < chance) {
+              setWalking(g, false);
+              g.stopUntil = now + (g.ad ? (g.kind === 'sign' ? 8000 : 4500) : 2500 + Math.random() * 6500);
             }
           }
+        }
+        if (g.ad) {
+          const done = g.dir < 0 ? g.x < STREET_START - 250 : g.x > STREET_END + 250;
+          if (done || now - g.born > 240000) { removeGroup(g); continue; }
+        } else {
           if (g.x < 1560 && g.dir < 0) setDir(g, 1);
           if (g.x > W - 380 && g.dir > 0) setDir(g, -1);
         }
@@ -373,17 +378,29 @@
   if (reduceMotion.matches) {
     // still picture: everyone stands, the sign carrier waits near the first stalls
     groups.forEach((g) => setWalking(g, false));
-    spawnAd(true);
+    spawnAd('sign', true);
     tick(performance.now());
     window.addEventListener('resize', () => tick(performance.now()));
   } else {
     requestAnimationFrame(tick);
-    setTimeout(() => spawnAd(false), FIRST_AD_MS);
-    setInterval(() => { if (!document.hidden) spawnAd(false); }, AD_EVERY_MS);
+    spawnAd('sign');
+    setTimeout(() => {
+      spawnAd('balloon');
+      let next = 'sign';
+      setInterval(() => {
+        if (!document.hidden) spawnAd(next);
+        next = next === 'sign' ? 'balloon' : 'sign';
+      }, AD_EVERY_MS);
+    }, FIRST_BALLOON_MS);
   }
 
-  // handle for the future admin preview (show the next ad carrier now)
-  TH.crowd = { showNextAd() { if (activeAd) removeGroup(activeAd); spawnAd(false); } };
+  // handle for the future admin preview (send a carrier now)
+  TH.crowd = {
+    showNextAd(kind = 'sign') {
+      activeAds.filter((g) => g.kind === kind).forEach(removeGroup);
+      spawnAd(kind);
+    }
+  };
 
   /* ---------- the always-available sponsor line under the street ---------- */
   const line = document.getElementById('sponsor-line');
