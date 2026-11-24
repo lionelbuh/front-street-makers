@@ -101,8 +101,7 @@ await check('apply → review → approve → listed', async () => {
   await page.check('input[name="license_status"][value="unsure"]', { force: true });
   await page.waitForSelector('#license-guidance:not([hidden])');
   await page.check('input[name="wants_help"][value="yes"]', { force: true });
-  await page.fill('#owner_name', 'Pat Tester');
-  await page.fill('#contact_email', 'pat@example.com');
+  await page.fill('#first_name', 'Pat');
   await page.check('input[name="independent_ok"]');
   await page.check('input[name="agree"]');
   await page.click('#apply-submit');
@@ -117,7 +116,7 @@ await check('apply → review → approve → listed', async () => {
   await page.click('#status-filters button[data-status="assistance"]');
   await page.click('text=Sample Test Pies');
   await page.waitForSelector('#detail-form');
-  assert.match(await page.textContent('#detail'), /pat@example.com/);
+  assert.match(await page.textContent('#detail'), /First name\s*Pat/);
   assert.match(await page.textContent('#detail'), /not sure/i);
   await page.selectOption('#d-status', 'approved');
   await page.fill('#d-notes', 'Talked through Riverside County CFO registration.');
@@ -136,7 +135,7 @@ await check('apply → review → approve → listed', async () => {
   await page.goto(`${base}/business/?b=sample-test-pies`);
   await page.waitForSelector('#profile-title');
   assert.equal(await page.textContent('#profile-title'), 'Sample Test Pies');
-  assert.ok(!(await page.textContent('#business')).includes('pat@example.com'), 'private email never shown');
+  assert.ok(!/\bPat\b|not sure/i.test(await page.textContent('#business')), 'first name and licensing answers never shown');
   assert.deepEqual(page.errors, []);
   await page.context().close();
 });
@@ -145,7 +144,7 @@ await check('community: a story goes to review, then can be published', async ()
   const page = await newPage();
   await page.goto(`${base}/community/`);
   await page.fill('#s-author', 'Robin');
-  await page.fill('#s-email', 'robin@example.com');
+  await page.fill('#s-contact', '@robinsjams');
   await page.fill('#s-title', 'From farmers market to regulars');
   await page.fill('#s-body', 'I started with a folding table and twelve jars of jam. '.repeat(3));
   await page.waitForTimeout(3100);

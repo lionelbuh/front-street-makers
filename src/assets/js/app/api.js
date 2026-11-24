@@ -70,7 +70,7 @@ const remote = {
 /* ======================================================================
    Demo back end (this browser only)
    ====================================================================== */
-const DEMO_KEY = 'th-demo-db-v1';
+const DEMO_KEY = 'th-demo-db-v2';
 const nowIso = () => new Date().toISOString();
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
 
@@ -80,7 +80,7 @@ function seedDemo() {
     published_at: b.publishedAt + 'T16:00:00.000Z', slug: b.slug, category: b.category, name: b.name, kind: b.kind, type_label: b.type,
     summary: b.summary, description: b.description, city: b.city, area: b.area, website: b.links.website, order_url: b.links.order,
     instagram: b.links.instagram, facebook: b.links.facebook, tiktok: b.links.tiktok, public_email: b.links.email, public_phone: b.links.phone,
-    stall: b.stall, owner_name: 'Demo owner', contact_email: 'demo@example.com', contact_phone: '', zip: '92590',
+    stall: b.stall, first_name: 'Demo',
     license_status: 'ready', wants_help: 0, independent_ok: 1, notes: 'Demo record.', photos: [], isDemo: true,
     history: [{ at: nowIso(), action: 'seeded', detail: 'demo data' }]
   }));
@@ -95,15 +95,15 @@ function seedDemo() {
       published_at: null, slug: slugify(p.name), category: p.category, name: p.name, kind: p.kind, type_label: p.type_label,
       summary: 'Demo application to try the review workflow.', description: 'This application is part of the demo data.', city: p.city,
       area: `${p.city} and nearby`, website: '', order_url: '', instagram: '', facebook: '', tiktok: '', public_email: '', public_phone: '',
-      stall: defaultStall(p.kind, id), owner_name: 'Demo applicant', contact_email: `applicant${i + 1}@example.com`, contact_phone: '',
-      zip: '92562', license_status: p.license_status, wants_help: p.wants_help, independent_ok: 1, notes: '', photos: [], isDemo: true,
+      stall: defaultStall(p.kind, id), first_name: ['Rosa', 'Sam', 'Lee'][i],
+      instagram: `https://www.instagram.com/sample${i + 1}`, license_status: p.license_status, wants_help: p.wants_help, independent_ok: 1, notes: '', photos: [], isDemo: true,
       history: [{ at: nowIso(), action: 'applied', detail: 'demo data' }]
     };
   });
   return {
     businesses: [...rows, ...pending],
     settings: { ...DEFAULT_SETTINGS },
-    stories: [{ id: 'demo-story-1', created_at: nowIso(), status: 'pending', author: 'Demo author', business: 'Sample Sourdough Co.', email: 'demo@example.com', title: 'Demo story waiting for review', body: 'This is a demo community story. In the admin dashboard you can publish it to see how stories appear on the Community page.' }]
+    stories: [{ id: 'demo-story-1', created_at: nowIso(), status: 'pending', author: 'Demo', business: 'Sample Sourdough Co.', contact: '@samplesourdough', title: 'Demo story waiting for review', body: 'This is a demo community story. In the admin dashboard you can publish it to see how stories appear on the Community page.' }]
   };
 }
 function loadDemo() {
@@ -171,7 +171,7 @@ const demo = {
     return demoPublic(r);
   },
   async stories() {
-    return demoDb().stories.filter((s) => s.status === 'published').map(({ email, ...s }) => s);
+    return demoDb().stories.filter((s) => s.status === 'published').map(({ contact, ...s }) => s);
   },
   async apply(form) {
     const g = (k) => String(form.get(k) || '').trim();
@@ -179,7 +179,7 @@ const demo = {
       category: g('category'), name: g('name'), kind: g('kind'), type_label: g('type_label'), summary: g('summary'), description: g('description'),
       city: g('city'), area: g('area'), website: tidyUrl(g('website')), order_url: tidyUrl(g('order_url')), instagram: social(g('instagram'), 'instagram.com'),
       facebook: social(g('facebook'), 'facebook.com'), tiktok: social(g('tiktok'), 'tiktok.com'), public_email: g('public_email'), public_phone: g('public_phone'),
-      owner_name: g('owner_name'), contact_email: g('contact_email').toLowerCase(), contact_phone: g('contact_phone'), zip: g('zip'),
+      first_name: g('first_name'),
       license_status: g('license_status'), wants_help: g('wants_help') === 'yes' ? 1 : 0, independent_ok: form.get('independent_ok') ? 1 : 0
     };
     const errors = {};
@@ -189,8 +189,10 @@ const demo = {
     if (v.summary.length < 10) errors.summary = 'Write one sentence about what you make or do.';
     if (!CITIES.includes(v.city)) errors.city = 'Choose your city.';
     if (v.area.length < 3) errors.area = 'Say where you serve customers (no street address needed).';
-    if (v.owner_name.length < 2) errors.owner_name = 'Enter your name.';
-    if (!isEmail(v.contact_email)) errors.contact_email = 'Enter an email address we can reach you at.';
+    if (v.first_name.length < 1) errors.first_name = 'Enter your first name.';
+    if (![v.public_email, v.public_phone, v.website, v.order_url, v.instagram, v.facebook, v.tiktok].some(Boolean)) {
+      errors.public_email = 'Add at least one way for neighbors (and us) to reach your business: an email, phone, website or social account.';
+    }
     if (!LICENSE_OPTIONS.some((o) => o.id === v.license_status)) errors.license_status = 'Choose the answer that fits your situation.';
     if (!v.independent_ok) errors.independent_ok = 'Temecula Homegrown lists independent, owner-operated businesses only.';
     if (!form.get('agree')) errors.agree = 'Please accept the listing terms and privacy notice.';
@@ -212,10 +214,10 @@ const demo = {
   },
   async submitStory(form) {
     const g = (k) => String(form.get(k) || '').trim();
-    const v = { author: g('author'), business: g('business'), email: g('email'), title: g('title'), body: g('body') };
+    const v = { author: g('author'), business: g('business'), contact: g('contact'), title: g('title'), body: g('body') };
     const errors = {};
     if (v.author.length < 2) errors.author = 'Enter your name.';
-    if (!isEmail(v.email)) errors.email = 'Enter an email address we can reach you at.';
+    if (v.contact.length < 3) errors.contact = 'Add a business email or social handle so we can confirm with you before publishing.';
     if (v.title.length < 4) errors.title = 'Give your story a title.';
     if (v.body.length < 80) errors.body = 'Tell us a little more (at least a few sentences).';
     if (Object.keys(errors).length) throw fieldErr(errors);

@@ -90,10 +90,10 @@ $('#status-filters').addEventListener('click', (e) => {
 $('#admin-search').addEventListener('input', (e) => { state.query = e.target.value.toLowerCase(); renderList(); });
 function renderList() {
   const rows = state.rows.filter((r) => (!state.status || r.status === state.status) &&
-    (!state.query || `${r.name} ${r.owner_name} ${r.city}`.toLowerCase().includes(state.query)));
+    (!state.query || `${r.name} ${r.first_name} ${r.city}`.toLowerCase().includes(state.query)));
   $('#app-list').innerHTML = rows.length ? rows.map((r) => `
     <tr data-id="${esc(r.id)}"${state.current && state.current.business.id === r.id ? ' aria-current="true"' : ''}>
-      <td><button type="button" class="row-open">${esc(r.name)}</button><span class="row-sub">${esc(r.owner_name)}</span></td>
+      <td><button type="button" class="row-open">${esc(r.name)}</button><span class="row-sub">${esc(r.first_name)}</span></td>
       <td>${esc((CATEGORIES[r.category] || {}).short || '')}</td>
       <td>${esc(r.city || '')}</td>
       <td class="lic lic-${esc(r.license_status)}">${esc(shortLicense(r.license_status))}${r.wants_help ? ' · wants help' : ''}</td>
@@ -146,12 +146,10 @@ function renderDetail() {
       <div class="field"><label for="d-status">Status</label>
         <select id="d-status" name="status">${STATUSES.map((s) => opt(s.id, s.label, b.status)).join('')}</select></div>
       <div class="private-box">
-        <p class="private-tag">Private · never shown publicly</p>
+        <p class="private-tag">Private · the only private details we keep</p>
         <dl class="kv">
-          <div><dt>Owner</dt><dd>${esc(b.owner_name)}</dd></div>
-          <div><dt>Email</dt><dd><a href="mailto:${esc(b.contact_email)}">${esc(b.contact_email)}</a></dd></div>
-          <div><dt>Phone</dt><dd>${esc(b.contact_phone || '—')}</dd></div>
-          <div><dt>ZIP</dt><dd>${esc(b.zip || '—')}</dd></div>
+          <div><dt>First name</dt><dd>${esc(b.first_name)}</dd></div>
+          <div><dt>Reach them via</dt><dd>${esc([b.public_email, b.public_phone, b.instagram, b.facebook, b.tiktok, b.website].filter(Boolean).join(' · ') || '—')}</dd></div>
           <div><dt>Licensing</dt><dd>${esc(LICENSE_LABEL[b.license_status] || b.license_status)}</dd></div>
           <div><dt>Wants guidance</dt><dd>${b.wants_help ? 'Yes, would appreciate guidance' : 'No, handling it'}</dd></div>
           <div><dt>Independent</dt><dd>${b.independent_ok ? 'Confirmed owner-operated, not a franchise or chain' : 'Not confirmed'}</dd></div>
@@ -371,7 +369,7 @@ async function loadStories() {
     <article class="story-admin">
       <p class="card-kicker">${esc(s.status)} · ${fmtDate(s.created_at)}</p>
       <h3>${esc(s.title)}</h3>
-      <p class="row-sub">${esc(s.author)}${s.business ? `, ${esc(s.business)}` : ''} · <a href="mailto:${esc(s.email)}">${esc(s.email)}</a></p>
+      <p class="row-sub">${esc(s.author)}${s.business ? `, ${esc(s.business)}` : ''} · ${esc(s.contact)}</p>
       <p>${esc(s.body).slice(0, 600)}${s.body.length > 600 ? '…' : ''}</p>
       <p class="story-actions">
         ${s.status !== 'published' ? `<button type="button" class="btn" data-story="${esc(s.id)}" data-to="published">Publish</button>` : ''}

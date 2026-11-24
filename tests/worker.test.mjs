@@ -22,7 +22,7 @@ function applicationForm(over = {}) {
     category: 'home', name: 'Valley Sourdough', kind: 'baked', type_label: 'Home bakery · Cottage Food',
     summary: 'Naturally leavened loaves baked in a home kitchen.', description: 'Weekend bakes.',
     city: 'Temecula', area: 'Temecula · porch pickup', website: 'valleysourdough.example.com', instagram: '@valleysourdough',
-    owner_name: 'Alex Baker', contact_email: 'ALEX@example.com', contact_phone: '951-555-0100', zip: '92590',
+    first_name: 'Alexandra', public_email: 'hello@valleysourdough.example',
     license_status: 'ready', wants_help: 'no', independent_ok: 'on', agree: 'on', started_at: String(Date.now() - 60000), ...over
   };
   for (const [k, v] of Object.entries(fields)) if (v !== null) f.append(k, v);
@@ -61,11 +61,18 @@ test('application: valid submission is stored privately and not published', asyn
 
 test('application: licensing answers set the initial status', async () => {
   const env = fakeEnv();
-  const a = await jsonOf(await call(env, 'POST', '/api/applications', { form: applicationForm({ license_status: 'unsure', wants_help: 'yes', contact_email: 'a@example.com' }) }));
+  const a = await jsonOf(await call(env, 'POST', '/api/applications', { form: applicationForm({ license_status: 'unsure', wants_help: 'yes', name: 'Valley Sourdough A' }) }));
   assert.equal(a.status, 'assistance');
   assert.equal(a.needsGuidance, true);
-  const b = await jsonOf(await call(env, 'POST', '/api/applications', { form: applicationForm({ license_status: 'not_started', wants_help: 'no', contact_email: 'b@example.com' }) }));
+  const b = await jsonOf(await call(env, 'POST', '/api/applications', { form: applicationForm({ license_status: 'not_started', wants_help: 'no', name: 'Valley Sourdough B' }) }));
   assert.equal(b.status, 'clarifying');
+});
+
+test('application: at least one public contact is required', async () => {
+  const env = fakeEnv();
+  const res = await call(env, 'POST', '/api/applications', { form: applicationForm({ public_email: null, website: null, instagram: null }) });
+  assert.equal(res.status, 422);
+  assert.ok((await jsonOf(res)).fields.public_email);
 });
 
 test('application: missing answers return field errors', async () => {
@@ -107,7 +114,8 @@ test('admin approves → business appears publicly without private fields', asyn
   assert.equal(list.counts.new, 1);
   const id = list.businesses[0].id;
   const detail = await jsonOf(await call(env, 'GET', `/api/admin/businesses/${id}`, { token }));
-  assert.equal(detail.business.contact_email, 'alex@example.com');
+  assert.equal(detail.business.first_name, 'Alexandra');
+  for (const gone of ['owner_name', 'contact_email', 'contact_phone', 'zip']) assert.ok(!(gone in detail.business), `${gone} is not collected`);
 
   // photo of an unapproved business is private
   const photoPath = new URL(detail.photos[0].url).pathname;
@@ -125,7 +133,7 @@ test('admin approves → business appears publicly without private fields', asyn
   assert.ok(pub.publishedAt);
   assert.deepEqual(market.featured, [pub.id]);
   const leaked = JSON.stringify(market);
-  for (const secret of ['alex@example.com', '951-555-0100', '92590', 'Alex Baker', 'Checked CFO', 'license']) {
+  for (const secret of ['Alexandra', 'Checked CFO', 'license', 'wants_help']) {
     assert.ok(!leaked.includes(secret), `public payload must not include ${secret}`);
   }
   assert.equal((await call(env, 'GET', photoPath)).status, 200, 'photo becomes public once approved');
@@ -160,7 +168,7 @@ test('admin: rotation settings are saved and previewed', async () => {
 
 test('community stories are moderated before they appear', async () => {
   const env = fakeEnv();
-  const res = await call(env, 'POST', '/api/stories', { body: { author: 'Sam', email: 'sam@example.com', title: 'How I started', body: 'x'.repeat(120), started_at: Date.now() - 10000 } });
+  const res = await call(env, 'POST', '/api/stories', { body: { author: 'Sam', contact: '@samsbakes', title: 'How I started', body: 'x'.repeat(120), started_at: Date.now() - 10000 } });
   assert.equal(res.status, 201);
   assert.equal((await jsonOf(await call(env, 'GET', '/api/stories'))).stories.length, 0);
   const token = await login(env);
@@ -168,7 +176,7 @@ test('community stories are moderated before they appear', async () => {
   await call(env, 'PATCH', `/api/admin/stories/${id}`, { token, body: { status: 'published' } });
   const pub = (await jsonOf(await call(env, 'GET', '/api/stories'))).stories;
   assert.equal(pub.length, 1);
-  assert.equal(pub[0].email, undefined, 'author email stays private');
+  assert.equal(pub[0].contact, undefined, 'contact stays private');
 });
 
 test('CORS: unknown origins get no CORS headers', async () => {

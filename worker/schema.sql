@@ -36,11 +36,9 @@ CREATE TABLE IF NOT EXISTS businesses (
   stall_valance   TEXT,
   stall_chalk     TEXT,
 
-  -- private application data (never public)
-  owner_name      TEXT NOT NULL,
-  contact_email   TEXT NOT NULL,
-  contact_phone   TEXT,
-  zip             TEXT,
+  -- The only private data: the owner's first name and the licensing answers.
+  -- Everything else above is information the business already makes public.
+  first_name      TEXT NOT NULL,
   license_status  TEXT NOT NULL
                   CHECK (license_status IN ('ready','unsure','started','not_started','not_required')),
   wants_help      INTEGER NOT NULL DEFAULT 0,
@@ -66,7 +64,7 @@ CREATE TABLE IF NOT EXISTS stories (
   status      TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','published','archived')),
   author      TEXT NOT NULL,
   business    TEXT,
-  email       TEXT NOT NULL,
+  contact     TEXT NOT NULL,   -- a public channel (business email, @handle) to confirm before publishing
   title       TEXT NOT NULL,
   body        TEXT NOT NULL
 );

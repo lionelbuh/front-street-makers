@@ -55,6 +55,7 @@
 
       <fieldset class="form-sec">
         <legend><span class="step-no">3</span> Where neighbors can reach you <span class="opt">(shown on your profile)</span></legend>
+        <p class="hint">Add at least one. We also use these to reply to your application, so only share contacts you're happy to show publicly. <span class="req">*</span></p>
         <div class="field-row">
           <div class="field"><label for="website">Website</label><input id="website" name="website" inputmode="url" placeholder="yourbusiness.com"></div>
           <div class="field"><label for="order_url">Ordering or booking link</label><input id="order_url" name="order_url" inputmode="url" placeholder="Square, Etsy, Calendly…"></div>
@@ -97,15 +98,8 @@
       </fieldset>
 
       <fieldset class="form-sec">
-        <legend><span class="step-no">6</span> About you <span class="opt">(private, for our team only)</span></legend>
-        <div class="field-row">
-          <div class="field"><label for="owner_name">Your name <span class="req">*</span></label><input id="owner_name" name="owner_name" required maxlength="80" autocomplete="name"></div>
-          <div class="field"><label for="contact_email">Email <span class="req">*</span></label><input id="contact_email" name="contact_email" type="email" required autocomplete="email"></div>
-        </div>
-        <div class="field-row">
-          <div class="field"><label for="contact_phone">Phone <span class="opt">(optional)</span></label><input id="contact_phone" name="contact_phone" type="tel" autocomplete="tel"></div>
-          <div class="field"><label for="zip">ZIP code <span class="opt">(optional)</span></label><input id="zip" name="zip" inputmode="numeric" maxlength="10" autocomplete="postal-code"></div>
-        </div>
+        <legend><span class="step-no">6</span> About you <span class="opt">(private)</span></legend>
+        <div class="field"><label for="first_name">Your first name <span class="req">*</span></label><input id="first_name" name="first_name" required maxlength="40" autocomplete="given-name"><p class="hint">So we know who we're talking to. We don't ask for your last name, home address or private phone: we reply through your business contacts above.</p></div>
         <label class="check"><input type="checkbox" name="independent_ok" required> My business is independent and owner-operated, not a franchise, chain or large retail business. <span class="req">*</span></label>
         <label class="check"><input type="checkbox" name="agree" required> I accept the <a href="{{root}}terms/" target="_blank">listing terms</a> and the <a href="{{root}}privacy/" target="_blank">privacy notice</a>. <span class="req">*</span></label>
       </fieldset>

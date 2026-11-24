@@ -11,9 +11,10 @@
  *   TURNSTILE_SECRET (optional) Cloudflare Turnstile secret for the public forms
  *   RESEND_API_KEY, NOTIFY_EMAIL, FROM_EMAIL (optional) email the admin on new applications
  *
- * Privacy rule: the public endpoints only ever return businesses whose status
- * is 'approved', and only their public fields. Contact details, licensing
- * answers and internal notes are returned by admin endpoints only.
+ * Privacy rule: we only collect what businesses already make public, plus two
+ * private items: the owner's first name and the licensing answers. Public
+ * endpoints return approved businesses' public fields only; first name,
+ * licensing answers and internal notes are returned by admin endpoints only.
  */
 import { featuredForDate, normalizeSettings, todayInTemecula, addDays, DEFAULT_SETTINGS } from '../../src/assets/js/app/rotation.js';
 import {
@@ -260,10 +261,7 @@ async function createApplication(request, env) {
     tiktok: socialUrl(form.get('tiktok'), 'tiktok.com'),
     public_email: text(form.get('public_email'), 160),
     public_phone: phone(form.get('public_phone')),
-    owner_name: text(form.get('owner_name'), 80),
-    contact_email: text(form.get('contact_email'), 160).toLowerCase(),
-    contact_phone: phone(form.get('contact_phone')),
-    zip: text(form.get('zip'), 10).replace(/[^0-9-]/g, ''),
+    first_name: text(form.get('first_name'), 40),
     license_status: text(form.get('license_status'), 20),
     wants_help: text(form.get('wants_help'), 5) === 'yes' ? 1 : 0,
     independent_ok: form.get('independent_ok') ? 1 : 0
@@ -275,8 +273,10 @@ async function createApplication(request, env) {
   if (!CITIES.includes(v.city)) errors.city = 'Choose your city.';
   if (v.area.length < 3) errors.area = 'Say where you serve customers (no street address needed).';
   if (v.public_email && !isEmail(v.public_email)) errors.public_email = 'This email address does not look right.';
-  if (v.owner_name.length < 2) errors.owner_name = 'Enter your name.';
-  if (!isEmail(v.contact_email)) errors.contact_email = 'Enter an email address we can reach you at.';
+  if (v.first_name.length < 1) errors.first_name = 'Enter your first name.';
+  if (![v.public_email, v.public_phone, v.website, v.order_url, v.instagram, v.facebook, v.tiktok].some(Boolean)) {
+    errors.public_email = 'Add at least one way for neighbors (and us) to reach your business: an email, phone, website or social account.';
+  }
   if (!LICENSE_OPTIONS.some((o) => o.id === v.license_status)) errors.license_status = 'Choose the answer that fits your situation.';
   if (!v.independent_ok) errors.independent_ok = 'Temecula Homegrown lists independent, owner-operated businesses only.';
   if (!form.get('agree')) errors.agree = 'Please accept the listing terms and privacy notice.';
@@ -285,9 +285,9 @@ async function createApplication(request, env) {
   if (files.length > MAX_PHOTOS) errors.photos = `Up to ${MAX_PHOTOS} photos.`;
   if (Object.keys(errors).length) fail(422, 'Some answers need attention.', errors);
 
-  const recent = await env.DB.prepare("SELECT COUNT(*) AS n FROM businesses WHERE contact_email = ? AND created_at > ?")
-    .bind(v.contact_email, new Date(Date.now() - 86400000).toISOString()).first();
-  if (recent && recent.n >= 3) fail(429, 'We already received several applications from this email today. We will be in touch.');
+  const recent = await env.DB.prepare('SELECT COUNT(*) AS n FROM businesses WHERE lower(name) = lower(?) AND created_at > ?')
+    .bind(v.name, new Date(Date.now() - 86400000).toISOString()).first();
+  if (recent && recent.n >= 2) fail(429, 'We already received an application for this business today. We will be in touch.');
 
   const id = uid();
   const t = nowIso();
@@ -296,11 +296,11 @@ async function createApplication(request, env) {
   const stall = defaultStall(v.kind, id);
   await env.DB.prepare(`INSERT INTO businesses (id, created_at, updated_at, status, slug, category, name, kind, type_label, summary, description,
       city, area, website, order_url, instagram, facebook, tiktok, public_email, public_phone, stall_display, stall_roof, stall_colors, stall_valance,
-      owner_name, contact_email, contact_phone, zip, license_status, wants_help, independent_ok)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      first_name, license_status, wants_help, independent_ok)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
     .bind(id, t, t, status, slug, v.category, v.name, v.kind, v.type_label, v.summary, v.description, v.city, v.area, v.website, v.order_url,
       v.instagram, v.facebook, v.tiktok, v.public_email, v.public_phone, stall.display, stall.roof, JSON.stringify(stall.colors), stall.valance,
-      v.owner_name, v.contact_email, v.contact_phone, v.zip, v.license_status, v.wants_help, v.independent_ok)
+      v.first_name, v.license_status, v.wants_help, v.independent_ok)
     .run();
   await savePhotos(env, id, files, v.name);
   await audit(env.DB, id, 'applied', `status=${status}`);
@@ -314,16 +314,16 @@ async function createStory(request, env) {
   await checkHuman(form, request, env);
   const v = {
     author: text(form.get('author'), 80), business: text(form.get('business'), 80),
-    email: text(form.get('email'), 160).toLowerCase(), title: text(form.get('title'), 120), body: text(form.get('body'), 4000)
+    contact: text(form.get('contact'), 160), title: text(form.get('title'), 120), body: text(form.get('body'), 4000)
   };
   const errors = {};
   if (v.author.length < 2) errors.author = 'Enter your name.';
-  if (!isEmail(v.email)) errors.email = 'Enter an email address we can reach you at.';
+  if (v.contact.length < 3) errors.contact = 'Add a business email or social handle so we can confirm with you before publishing.';
   if (v.title.length < 4) errors.title = 'Give your story a title.';
   if (v.body.length < 80) errors.body = 'Tell us a little more (at least a few sentences).';
   if (Object.keys(errors).length) fail(422, 'Some answers need attention.', errors);
-  await env.DB.prepare('INSERT INTO stories (id, created_at, status, author, business, email, title, body) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
-    .bind(uid(), nowIso(), 'pending', v.author, v.business, v.email, v.title, v.body).run();
+  await env.DB.prepare('INSERT INTO stories (id, created_at, status, author, business, contact, title, body) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(uid(), nowIso(), 'pending', v.author, v.business, v.contact, v.title, v.body).run();
   await notifyAdmin(env, `New community story: ${v.title}`, `${v.author}${v.business ? ` (${v.business})` : ''} sent a story for review.`);
   return json({ ok: true }, 201);
 }
@@ -354,7 +354,7 @@ async function media(request, env, url, key) {
 }
 
 /* ------------------------------------------------------------------ admin handlers */
-const ADMIN_LIST_FIELDS = 'id, created_at, updated_at, status, published_at, slug, category, name, kind, city, license_status, wants_help, owner_name';
+const ADMIN_LIST_FIELDS = 'id, created_at, updated_at, status, published_at, slug, category, name, kind, city, license_status, wants_help, first_name';
 
 async function adminList(env, url) {
   const status = url.searchParams.get('status');
@@ -382,7 +382,7 @@ async function adminUpdate(request, env, id) {
   const body = await request.json().catch(() => fail(400, 'Invalid request.'));
   const set = {};
   const errors = {};
-  const textFields = { name: 80, type_label: 80, summary: 160, description: 1500, area: 160, owner_name: 80, contact_phone: 30, zip: 10, notes: 8000 };
+  const textFields = { name: 80, type_label: 80, summary: 160, description: 1500, area: 160, first_name: 40, notes: 8000 };
   for (const [k, max] of Object.entries(textFields)) if (k in body) set[k] = text(body[k], max);
   for (const k of ['website', 'order_url']) if (k in body) set[k] = cleanUrl(body[k]);
   if ('instagram' in body) set.instagram = socialUrl(body.instagram, 'instagram.com');
@@ -392,10 +392,6 @@ async function adminUpdate(request, env, id) {
   if ('public_email' in body) {
     set.public_email = text(body.public_email, 160);
     if (set.public_email && !isEmail(set.public_email)) errors.public_email = 'Invalid email.';
-  }
-  if ('contact_email' in body) {
-    set.contact_email = text(body.contact_email, 160).toLowerCase();
-    if (!isEmail(set.contact_email)) errors.contact_email = 'Invalid email.';
   }
   if ('category' in body) { if (CATEGORIES[body.category]) set.category = body.category; else errors.category = 'Unknown category.'; }
   if ('kind' in body) { if (KIND_BY_ID[body.kind]) set.kind = body.kind; else errors.kind = 'Unknown kind.'; }
