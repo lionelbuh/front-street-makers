@@ -302,6 +302,16 @@ button { font: inherit; color: inherit; }
 }
 .ad-balloon { transform-box: view-box; transform-origin: 18px -96px; animation: bob-balloon 3.2s ease-in-out infinite alternate; }
 @keyframes bob-balloon { from { transform: rotate(-4deg) translateY(0); } to { transform: rotate(4deg) translateY(-8px); } }
+.post-sign { position: absolute; display: block; pointer-events: auto; z-index: 1; filter: var(--crowd-filter); }
+.post-sign svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.post-board { transform-box: view-box; transform-origin: 110px 11px; animation: post-sway 5s ease-in-out infinite alternate; }
+@keyframes post-sway { from { transform: rotate(-1.6deg); } to { transform: rotate(1.6deg); } }
+.post-sign:hover .post-board { animation-duration: 1.2s; }
+.post-sign:hover .post-url { fill: #b3121a; }
+.post-sign:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.post-title { font-family: var(--serif); font-style: italic; font-weight: 600; }
+.post-small { font-family: var(--body); font-weight: 700; }
+.post-url { font-family: var(--serif); font-weight: 700; }
 .sponsor-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: .86rem; flex: 1 1 100%; }
 .sponsor-line a { color: var(--ink); font-family: var(--serif); font-weight: 600; font-size: 1rem; }
 .sponsor-line a:hover { color: var(--accent); }
@@ -488,5 +498,5 @@ body.past-gate .enter-hint { opacity: 0; transform: translateY(8px); pointer-eve
   .stall, .enter-hint, .lights { transition: none; }
   .enter-hint span { animation: none; }
   .stall:hover { transform: none; }
-  .ad-sign, .ad-balls circle, .ad-balloon { animation: none; }
+  .ad-sign, .ad-balls circle, .ad-balloon, .post-board { animation: none; }
 }

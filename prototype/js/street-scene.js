@@ -1397,10 +1397,10 @@
     // seam: large pepper tree + wooden way-sign
     fg += tree(GATE_W - 150, 280, 55, { top: 120 });
     fg += rect(GATE_W + 58, 470, 8, 236, `fill="${WOOD_DK}"`);
-    fg += rect(GATE_W - 22, 470, 168, 44, `rx="4" fill="${WOOD_DK}"`) + rect(GATE_W - 17, 475, 158, 34, `rx="3" fill="#efe3c8"`);
-    fg += `<text x="${GATE_W + 62}" y="499" text-anchor="middle" class="sign-paint" font-size="16" fill="#3b2f25">Homegrown Market</text>`;
-    fg += poly([[GATE_W - 2, 524], [GATE_W + 128, 524], [GATE_W + 148, 542], [GATE_W + 128, 560], [GATE_W - 2, 560]], `fill="${WOOD_LT}"`);
-    fg += `<text x="${GATE_W + 66}" y="548" text-anchor="middle" class="sign-small" font-size="13" fill="#3b2f25" letter-spacing="1">STALLS THIS WAY →</text>`;
+    fg += rect(GATE_W - 22, 560, 168, 44, `rx="4" fill="${WOOD_DK}"`) + rect(GATE_W - 17, 565, 158, 34, `rx="3" fill="#efe3c8"`);
+    fg += `<text x="${GATE_W + 62}" y="589" text-anchor="middle" class="sign-paint" font-size="16" fill="#3b2f25">Homegrown Market</text>`;
+    fg += poly([[GATE_W - 2, 612], [GATE_W + 128, 612], [GATE_W + 148, 630], [GATE_W + 128, 648], [GATE_W - 2, 648]], `fill="${WOOD_LT}"`);
+    fg += `<text x="${GATE_W + 66}" y="636" text-anchor="middle" class="sign-small" font-size="13" fill="#3b2f25" letter-spacing="1">STALLS THIS WAY →</text>`;
 
     fg += twinLamp(120, 706, 360) + twinLamp(1380, 706, 360);
     fg += gatewayArch();

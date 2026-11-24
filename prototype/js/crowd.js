@@ -227,7 +227,7 @@
   const layer = document.getElementById('layer-crowd');
   const track = document.getElementById('track');
   const street = document.getElementById('street');
-  const businessSlots = slots.slice(0, TH.DEMO_BUSINESSES.length);
+  const businessSlots = slots.filter((sl) => !(TH.OPEN_SLOTS || []).includes(sl.index));
   const groups = [];
   let uid = 0;
 
@@ -401,6 +401,51 @@
       spawnAd(kind);
     }
   };
+
+  /* ---------- a vintage hanging sign on the first lamp post after the arch ----------
+     Wrought-iron bracket, enamel-style board in the sponsor's colours. */
+  const POST_X = slots[0].x - 200; // the first street lamp
+  function postSign(sp) {
+    const brand = sp.colors.brand, cream = sp.colors.cream, gold = '#d6bf84';
+    const a = document.createElement('a');
+    a.className = 'post-sign';
+    a.href = sp.url;
+    a.target = '_blank';
+    a.rel = 'sponsored noopener';
+    a.setAttribute('aria-label', `Sponsor: ${sp.name}, ${sp.label} (opens in a new tab)`);
+    const w = 222, h = 165; // drawing box
+    const ws = 268, hs = 199, top = 352; // size on the street (world units)
+    a.style.left = ((POST_X - 6 - ws) / W) * 100 + '%';
+    a.style.top = (top / H) * 100 + '%';
+    a.style.width = (ws / W) * 100 + '%';
+    a.style.height = (hs / H) * 100 + '%';
+    a.innerHTML = `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true" focusable="false">
+      <rect x="10" y="5" width="${w - 10}" height="6" rx="2" fill="#2a2826"/>
+      <circle cx="12" cy="8" r="5" fill="#2a2826"/>
+      <path d="M${w},44 Q${w - 20},12 ${w - 78},11" fill="none" stroke="#2a2826" stroke-width="4"/>
+      <path d="M${w - 30},11 C${w - 30},30 ${w - 58},34 ${w - 66},24 C${w - 72},16 ${w - 60},10 ${w - 56},18" fill="none" stroke="#2a2826" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M${w - 84},11 C${w - 92},26 ${w - 112},26 ${w - 114},16" fill="none" stroke="#2a2826" stroke-width="2.4" stroke-linecap="round"/>
+      <g class="post-board">
+        <path d="M34,11 V30 M186,11 V30" stroke="#2a2826" stroke-width="2" stroke-dasharray="3 1.6"/>
+        <rect x="12" y="30" width="196" height="128" rx="8" fill="${brand}"/>
+        <rect x="18" y="36" width="184" height="116" rx="5" fill="none" stroke="${gold}" stroke-width="1.6"/>
+        <rect x="24" y="42" width="172" height="104" rx="4" fill="${cream}"/>
+        <circle cx="110" cy="62" r="14" fill="${brand}"/>
+        <g transform="translate(110,62) scale(.4) translate(-32,-34)">
+          <path d="M14 40h36l-4 15H18z" fill="#DDE3D2"/>
+          <path d="M32 9c1.5 2 1 4.5 3 7 5 6 15 10 15 20 0 4-2 6-4 6H18c-2 0-4-2-4-6 0-10 10-14 15-20 1.6-2 1.5-4 3-7z" fill="${cream}"/>
+        </g>
+        <text x="110" y="98" text-anchor="middle" class="post-title" font-size="22" fill="${brand}">Meringue Suisse</text>
+        <path d="M54,106 H98 M122,106 H166" stroke="${gold}" stroke-width="1.4"/><path d="M110,102 l4,4 l-4,4 l-4,-4 Z" fill="${gold}"/>
+        <text x="110" y="121" text-anchor="middle" class="post-small" font-size="7.6" fill="${brand}" letter-spacing="1.4">SWISS MERINGUES · TEMECULA</text>
+        <text x="110" y="139" text-anchor="middle" class="post-url" font-size="13.5" fill="#2a2826">${esc(sp.label)} →</text>
+        <rect x="16" y="22" width="48" height="14" rx="2" fill="#b3121a"/>
+        <text x="40" y="32.3" text-anchor="middle" font-size="8.5" class="ad-tag">SPONSOR</text>
+      </g>
+    </svg>`;
+    layer.appendChild(a);
+  }
+  if (TH.SPONSORS && TH.SPONSORS.length) postSign(TH.SPONSORS[0]);
 
   /* ---------- the always-available sponsor line under the street ---------- */
   const line = document.getElementById('sponsor-line');

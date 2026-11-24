@@ -28,8 +28,11 @@
   const placed = [];
   const list = $('#stall-list');
 
+  // Open (free) stalls are spread along the street instead of bunched at the end.
+  TH.OPEN_SLOTS = [6, 11];
+  let nextBusiness = 0;
   slots.forEach((slot, i) => {
-    const b = businesses[i];
+    const b = TH.OPEN_SLOTS.includes(i) ? null : businesses[nextBusiness++];
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'stall' + (b ? '' : ' stall--open');
@@ -38,15 +41,16 @@
     btn.style.width = (STALL_W / W) * 100 + '%';
     btn.style.height = (STALL_H / H) * 100 + '%';
     if (b) {
+      const bi = nextBusiness - 1;
       btn.innerHTML = TH.renderStall(b);
       btn.setAttribute('aria-label', `${b.name}, ${TH.CATEGORY[b.category].short}, ${b.type}. Demo listing. Open profile.`);
       btn.dataset.id = b.id;
-      btn.addEventListener('click', () => openProfile(i));
+      btn.addEventListener('click', () => openProfile(bi));
       placed.push({ slot, b, el: btn, index: i });
       // accessible list alternative
       const li = document.createElement('li');
       li.innerHTML = `<button type="button" class="list-item"><span class="list-name">${b.name}</span><span class="chip chip--${b.category}">${TH.CATEGORY[b.category].short}</span><span class="list-type">${b.type}</span></button>`;
-      li.querySelector('button').addEventListener('click', () => openProfile(i));
+      li.querySelector('button').addEventListener('click', () => openProfile(bi));
       list.appendChild(li);
     } else {
       btn.innerHTML = TH.renderEmptyStall();
@@ -244,7 +248,7 @@
   $('#profile-next').addEventListener('click', () => openProfile((current + 1) % businesses.length));
   dlg.addEventListener('close', () => {
     if (current >= 0) {
-      const p = placed[current];
+      const p = placed.find((q) => q.b === businesses[current]);
       street.scrollTo({ left: centerOf(p.slot) - street.clientWidth / 2, behavior: behavior() });
       p.el.focus({ preventScroll: true });
     }
