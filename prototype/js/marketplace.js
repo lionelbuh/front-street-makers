@@ -269,13 +269,20 @@
   function setScene(scene) {
     market.dataset.scene = scene;
     document.querySelectorAll('.scene-switch button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.scene === scene)));
-    try { localStorage.setItem('th-scene', scene); } catch (e) { /* optional */ }
   }
-  document.querySelectorAll('.scene-switch button').forEach((b) => b.addEventListener('click', () => setScene(b.dataset.scene)));
+  // Default follows the visitor's local clock: evening from 8 pm until 6 am.
+  // A manual choice is kept for the rest of the visit (this browser tab).
+  const hour = new Date().getHours();
+  let scene = hour >= 20 || hour < 6 ? 'evening' : 'day';
   try {
-    const saved = localStorage.getItem('th-scene');
-    if (saved === 'evening' || saved === 'day') setScene(saved);
-  } catch (e) { /* default: daytime */ }
+    const saved = sessionStorage.getItem('th-scene');
+    if (saved === 'evening' || saved === 'day') scene = saved;
+  } catch (e) { /* keep the clock-based default */ }
+  setScene(scene);
+  document.querySelectorAll('.scene-switch button').forEach((b) => b.addEventListener('click', () => {
+    setScene(b.dataset.scene);
+    try { sessionStorage.setItem('th-scene', b.dataset.scene); } catch (e) { /* optional */ }
+  }));
 
   /* ---------- date line ---------- */
   try {

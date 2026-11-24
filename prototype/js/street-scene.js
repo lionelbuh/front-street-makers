@@ -742,6 +742,182 @@
     return s;
   }
 
+  /* ---------------------------------------------------------------------
+     More Old Town building types, drawn from reference photos supplied by
+     the project owner (used as visual reference only). Unnamed except the
+     Community Theater, a public civic building.
+     --------------------------------------------------------------------- */
+  const WEATHERED = '#7e5b40';
+  function boards(x, y, w, h, seed, base = WEATHERED) {
+    const r = rng(seed);
+    let s = rect(x, y, w, h, `fill="${base}"`);
+    for (let bx = x; bx < x + w; bx += 9) {
+      const t = r();
+      if (t > 0.55) s += rect(bx, y, 9, h, `fill="${t > 0.8 ? 'rgba(255,235,210,.08)' : 'rgba(30,15,5,.10)'}"`);
+      s += rect(bx, y, 1.2, h, 'fill="rgba(30,15,5,.28)"');
+    }
+    return s;
+  }
+
+  // Two-storey weathered-wood building: stepped false fronts with a curved
+  // centre parapet, green shutters, white two-level balcony.
+  function westernBalcony(x, w) {
+    const top = BASE - 262;
+    const d = `M${x},${BASE} V${top - 14} H${n(x + w * 0.2)} V${top - 26} H${n(x + w * 0.36)} V${top - 34} Q${n(x + w * 0.5)},${top - 92} ${n(x + w * 0.64)},${top - 34} V${top - 26} H${n(x + w * 0.8)} V${top - 14} H${x + w} V${BASE} Z`;
+    let s = `<clipPath id="wb${Math.round(x)}"><path d="${d}"/></clipPath>`;
+    s += `<g clip-path="url(#wb${Math.round(x)})">${boards(x, top - 100, w, BASE - top + 100, Math.round(x))}</g>`;
+    s += `<path d="M${x - 3},${top - 14} H${n(x + w * 0.2)} V${top - 26} H${n(x + w * 0.36)} V${top - 34} Q${n(x + w * 0.5)},${top - 92} ${n(x + w * 0.64)},${top - 34} V${top - 26} H${n(x + w * 0.8)} V${top - 14} H${x + w + 3}" fill="none" stroke="#6f8a7a" stroke-width="6"/>`;
+    const nU = Math.max(3, Math.round(w / 95));
+    for (let i = 0; i < nU; i++) {
+      const wx = x + (w / nU) * (i + 0.5) - 15;
+      s += rect(wx - 16, top + 30, 12, 66, 'fill="#4f7a62"') + rect(wx + 34, top + 30, 12, 66, 'fill="#4f7a62"');
+      s += win(wx, top + 32, 30, 62, { trim: '#f1ede4' });
+    }
+    s += storefront(x + 6, w - 12, BASE - 120, '#5a3e2c', '#f1ede4');
+    s += porch(x, w, BASE - 128, { balcony: true, roof: '#9a948a', post: '#f1ede4', fascia: '#f1ede4' });
+    const c = Math.max(2, Math.round(w / 115) + 1);
+    s += rect(x - 10, top + 6, w + 20, 8, 'fill="#9a948a"');
+    for (let i = 0; i < c; i++) {
+      const px = x - 3 + ((w - 2) / (c - 1)) * i;
+      s += rect(px, top + 14, 7, BASE - 128 - 9 - top - 14, 'fill="#f1ede4"');
+      if (i > 0) s += poly([[px, top + 14], [px - 16, top + 14], [px, top + 30]], 'fill="#f1ede4"');
+      if (i < c - 1) s += poly([[px + 7, top + 14], [px + 23, top + 14], [px + 7, top + 30]], 'fill="#f1ede4"');
+    }
+    return s;
+  }
+
+  // Grey clapboard building with bay windows, a turret, a roof deck and a
+  // porch with white railings.
+  function victorianGrey(x, w) {
+    const wall = '#a8adac', trim = '#f4f2ec', top = BASE - 250;
+    const tw = 84, tx = x + w - tw - 6;
+    let s = '';
+    // roof deck railing + flag
+    s += rect(x + 30, top - 64, w * 0.55, 4, `fill="${trim}"`) + rect(x + 30, top - 40, w * 0.55, 3, `fill="${trim}"`);
+    for (let bx = x + 32; bx < x + 30 + w * 0.55; bx += 7) s += rect(bx, top - 62, 2.4, 22, `fill="${trim}"`);
+    s += line(x + w * 0.5, top - 64, x + w * 0.5, top - 120, 'stroke="#9a9a96" stroke-width="2"');
+    s += rect(x + w * 0.5, top - 120, 30, 18, 'fill="#c8423b"');
+    for (let k = 0; k < 3; k++) s += rect(x + w * 0.5, top - 116 + k * 6, 30, 2.5, 'fill="#f4f2ec"');
+    s += rect(x + w * 0.5, top - 120, 13, 9, 'fill="#2c4f86"');
+    const roof = [[x - 12, top + 4], [x + 30, top - 40], [x + w - 60, top - 40], [x + w - 20, top + 4]];
+    s += poly(roof, 'fill="#8d8a82"') + poly(roof, 'fill="url(#shingle)"');
+    s += rect(x, top, w, BASE - top, `fill="${wall}"`) + rect(x, top, w, BASE - top, 'fill="url(#clap)"');
+    // bay windows on the upper floor
+    [0.14, 0.42].forEach((f) => {
+      const bx = x + w * f;
+      s += poly([[bx - 8, top + 30], [bx + 78, top + 30], [bx + 70, top + 16], [bx, top + 16]], 'fill="#7f7c75"');
+      s += rect(bx, top + 30, 70, 76, `fill="${shade(wall, 0.12)}"`);
+      s += win(bx + 8, top + 42, 24, 52, { trim }) + win(bx + 38, top + 42, 24, 52, { trim });
+      s += rect(bx - 4, top + 106, 78, 8, 'fill="#7f7c75"');
+    });
+    // turret with a conical roof
+    s += rect(tx, top - 40, tw, BASE - top + 40, `fill="${shade(wall, 0.06)}"`) + rect(tx, top - 40, tw, BASE - top + 40, 'fill="url(#clap)"');
+    s += rect(tx + tw - 20, top - 40, 20, BASE - top + 40, 'fill="rgba(0,0,0,.1)"');
+    s += poly([[tx - 8, top - 38], [tx + tw + 8, top - 38], [tx + tw / 2, top - 112]], 'fill="#7d7a72"') + poly([[tx - 8, top - 38], [tx + tw + 8, top - 38], [tx + tw / 2, top - 112]], 'fill="url(#shingle)"');
+    s += circ(tx + tw / 2, top - 114, 4, `fill="${IRON}"`);
+    s += win(tx + 14, top - 10, 22, 44, { trim }) + win(tx + 48, top - 10, 22, 44, { trim });
+    s += win(tx + 14, top + 70, 22, 44, { trim }) + win(tx + 48, top + 70, 22, 44, { trim });
+    s += storefront(x + 6, w - 12, BASE - 118, '#6f6d66', trim);
+    s += porch(x, w, BASE - 128, { roof: '#8d8a82', post: trim, fascia: trim });
+    // white porch railing
+    s += rect(x - 6, BASE - 34, w + 12, 4, `fill="${trim}"`);
+    for (let bx = x - 4; bx < x + w + 4; bx += 7) s += rect(bx, BASE - 32, 2.4, 30, `fill="${trim}"`);
+    s += shrubs(x + 6, w - 12, Math.round(x) + 5);
+    return s;
+  }
+
+  // The Old Town Temecula Community Theater's tall barn-like gable, with a
+  // long weathered-wood row in front: curved parapet with a red TEMECULA
+  // banner sign, rust tin porch roof and a river-rock planter wall.
+  function theaterRow(x, w) {
+    let s = '';
+    // theater gable behind
+    const gx = x + w * 0.5, gw = w * 0.5, gTop = BASE - 400;
+    s += poly([[gx - 10, BASE - 180], [gx - 10, gTop + 70], [gx + gw / 2, gTop], [gx + gw + 10, gTop + 70], [gx + gw + 10, BASE - 180]], 'fill="#e3d7bc"');
+    s += `<path d="M${gx - 16},${gTop + 72} L${gx + gw / 2},${gTop - 6} L${gx + gw + 16},${gTop + 72}" stroke="#77736c" stroke-width="10" fill="none"/>`;
+    for (let k = 0; k <= 4; k++) s += rect(gx - 10 + (gw + 20) * k / 4 - 4, gTop + 60, 8, 200, 'fill="#77736c"');
+    s += rect(gx - 10, gTop + 150, gw + 20, 8, 'fill="#77736c"');
+    for (let k = 0; k < 4; k++) {
+      const a = gx - 10 + (gw + 20) * k / 4, b = a + (gw + 20) / 4;
+      s += `<path d="M${n(a)},${gTop + 154} L${n(b)},${gTop + 260} M${n(b)},${gTop + 154} L${n(a)},${gTop + 260}" stroke="#77736c" stroke-width="6"/>`;
+    }
+    s += rect(gx + gw / 2 - 70, gTop + 82, 140, 44, 'fill="#5c5a55"');
+    s += `<text x="${n(gx + gw / 2)}" y="${gTop + 100}" text-anchor="middle" font-size="8.5" class="sign-small" fill="#f1ede4" letter-spacing="1">OLD TOWN TEMECULA</text>`;
+    s += `<text x="${n(gx + gw / 2)}" y="${gTop + 117}" text-anchor="middle" font-size="12" class="sign-paint" fill="#f1ede4">Community Theater</text>`;
+    // weathered row in front
+    const top = BASE - 196;
+    const segs = [[0, 0.22, 14], [0.22, 0.5, 0], [0.5, 0.74, 22], [0.74, 1, 8]];
+    segs.forEach(([a, b, up], i) => {
+      const sx = x + w * a, sw = w * (b - a);
+      if (i === 1) {
+        const d = `M${n(sx)},${BASE} V${top - 20} Q${n(sx + sw / 2)},${top - 92} ${n(sx + sw)},${top - 20} V${BASE} Z`;
+        s += `<clipPath id="tr${Math.round(x)}"><path d="${d}"/></clipPath><g clip-path="url(#tr${Math.round(x)})">${boards(sx, top - 100, sw, BASE - top + 100, Math.round(x) + i, '#76553b')}</g>`;
+        s += `<path d="M${n(sx - 3)},${top - 20} Q${n(sx + sw / 2)},${top - 94} ${n(sx + sw + 3)},${top - 20}" stroke="#5a3e2c" stroke-width="6" fill="none"/>`;
+        // red scroll banner sign
+        const cx = sx + sw / 2, by = top - 52;
+        s += `<path d="M${n(cx - 64)},${by} Q${n(cx)},${by - 16} ${n(cx + 64)},${by} L${n(cx + 72)},${by + 18} L${n(cx + 62)},${by + 34} Q${n(cx)},${by + 20} ${n(cx - 62)},${by + 34} L${n(cx - 72)},${by + 18} Z" fill="#c2412d" stroke="#f1e3c4" stroke-width="2"/>`;
+        s += `<text x="${n(cx)}" y="${by + 22}" text-anchor="middle" font-size="18" class="sign-paint" fill="#f6ead0" letter-spacing="1">TEMECULA</text>`;
+      } else {
+        s += boards(sx, top - up, sw, BASE - top + up, Math.round(x) + i, i % 2 ? '#86634a' : WEATHERED);
+        s += rect(sx - 2, top - up - 6, sw + 4, 7, 'fill="#5a3e2c"');
+        for (let bx = sx + 4; bx < sx + sw - 4; bx += 11) s += rect(bx, top - up + 2, 5, 5, 'fill="#5a3e2c"');
+      }
+    });
+    s += storefront(x + 6, w - 12, BASE - 128, '#5a3e2c', '#a07a55');
+    // rust corrugated tin porch roof
+    s += rect(x - 12, BASE - 150, w + 24, 18, 'fill="#9c4a2e"');
+    for (let bx = x - 12; bx < x + w + 12; bx += 5) s += rect(bx, BASE - 150, 2, 18, 'fill="rgba(0,0,0,.18)"');
+    s += porch(x, w, BASE - 132, { roof: '#7e3a24', post: '#8a6a4a', fascia: '#6b4a34' });
+    // river-rock planter wall with roses
+    const r = rng(Math.round(x) + 9);
+    s += rect(x, BASE - 22, w, 22, 'fill="#8d8577"');
+    for (let bx = x + 4; bx < x + w - 4; bx += 9 + r() * 5) s += ell(bx, BASE - 14 + (r() - 0.5) * 8, 5 + r() * 3, 4 + r() * 2, `fill="${['#b5aa95', '#9d927f', '#c4baa5', '#a89a83'][Math.floor(r() * 4)]}"`);
+    for (let bx = x + 8; bx < x + w - 8; bx += 16) s += ell(bx, BASE - 28, 10, 8, 'fill="#5f7f46"') + circ(bx + 3, BASE - 31, 2.6, `fill="${r() > 0.5 ? '#f4efe4' : '#e86f8a'}"`);
+    return s;
+  }
+
+  // Large wooden building with green metal roofs, wraparound balconies, a
+  // row of clerestory windows and a clock cupola; red-brick front steps.
+  function woodClock(x, w) {
+    const top = BASE - 250, green = '#3f7a5e', greenDk = '#2f5f48';
+    let s = '';
+    // cupola with clock
+    const cx = x + w / 2;
+    s += boards(cx - 34, top - 168, 68, 80, Math.round(x) + 3, '#8a5a3a');
+    s += circ(cx, top - 128, 22, 'fill="#f8f4ea" stroke="#3a3632" stroke-width="2.5"');
+    for (let i = 0; i < 12; i++) {
+      const a = (i / 12) * Math.PI * 2;
+      s += line(cx + Math.cos(a) * 16, top - 128 + Math.sin(a) * 16, cx + Math.cos(a) * 19, top - 128 + Math.sin(a) * 19, 'stroke="#3a3632" stroke-width="1.4"');
+    }
+    s += line(cx, top - 128, cx, top - 142, 'stroke="#3a3632" stroke-width="2.2"') + line(cx, top - 128, cx + 10, top - 124, 'stroke="#3a3632" stroke-width="2.2"');
+    s += poly([[cx - 46, top - 168], [cx + 46, top - 168], [cx + 24, top - 196], [cx - 24, top - 196]], `fill="${green}"`);
+    s += rect(cx - 24, top - 204, 48, 8, `fill="${greenDk}"`);
+    // upper green hip roof
+    s += poly([[x + 20, top - 70], [x + w - 20, top - 70], [x + w - 60, top - 92], [x + 60, top - 92]], `fill="${green}"`);
+    // clerestory band of small windows
+    s += boards(x + 40, top - 70, w - 80, 46, Math.round(x) + 4, '#8a5a3a');
+    for (let wx = x + 52; wx < x + w - 64; wx += 30) s += rect(wx, top - 62, 20, 30, 'fill="#f1ede4"') + rect(wx + 3, top - 59, 14, 24, 'class="glass"');
+    // second roof tier
+    s += poly([[x - 16, top + 4], [x + w + 16, top + 4], [x + w - 10, top - 26], [x + 10, top - 26]], `fill="${green}"`);
+    for (let bx = x; bx < x + w; bx += 8) s += rect(bx, top - 24, 1.4, 28, 'fill="rgba(0,0,0,.12)"');
+    // main body
+    s += boards(x, top + 4, w, BASE - top - 4, Math.round(x) + 5, '#8a5a3a');
+    const nU = Math.max(5, Math.round(w / 70));
+    for (let i = 0; i < nU; i++) s += win(x + (w / nU) * (i + 0.5) - 13, top + 34, 26, 58, { trim: '#f1ede4' });
+    s += storefront(x + 6, w - 12, BASE - 118, '#5a3e2c', '#f1ede4');
+    // wraparound balcony with green roof band
+    s += rect(x - 14, BASE - 150, w + 28, 16, `fill="${green}"`);
+    s += porch(x, w, BASE - 132, { balcony: true, roof: greenDk, post: '#e9e2d2', fascia: '#e9e2d2' });
+    const c = Math.max(2, Math.round(w / 115) + 1);
+    for (let i = 0; i < c; i++) {
+      const px = x - 3 + ((w - 2) / (c - 1)) * i;
+      s += rect(px, top + 6, 7, BASE - 132 - 9 - top - 6, 'fill="#e9e2d2"');
+    }
+    // red brick steps
+    for (let k = 0; k < 3; k++) s += rect(cx - 50 + k * 8, BASE - 8 - k * 7 + 7, 100 - k * 16, 7, `fill="${['#a8533a', '#b65f44', '#c26a4c'][k]}"`);
+    return s;
+  }
+
   /* =====================================================================
      GATEWAY: the ironwork arch, framing a perspective view of Front Street
      ===================================================================== */
@@ -894,9 +1070,10 @@
      The figures are redrawn for this illustration; they follow the theme and
      layout of the real frieze, not its exact outlines.
      --------------------------------------------------------------------- */
-  const CORTEN = '#7d4127';
-  const CORTEN_HI = '#a8613a';
-  const CORTEN_DK = '#4e2817';
+  const CORTEN = '#6a2722';
+  const CORTEN_HI = '#93443a';
+  const CORTEN_DK = '#431612';
+  const RELIEF = '#d8ccb6';
 
   const HORSE = 'M10,30 C20,22 45,24 62,24 L70,14 C73,8 78,3 84,4 L86,0 L88,5 L98,15 L96,21 L87,20 C82,24 78,30 76,36 L74,44 L79,57 L83,70 L78,70 L72,58 L66,47 L62,49 L64,70 L59,70 L56,50 L30,48 L26,60 L30,70 L25,70 L19,58 L18,47 L14,51 L12,70 L7,70 L8,48 C4,42 4,34 10,30 Z M10,32 C2,36 -1,48 2,58 L6,50 C6,42 8,38 12,36 Z';
   const RIDER = 'M42,24 C42,14 44,6 50,4 C48,0 52,-4 56,-2 C60,-2 61,3 58,6 L62,7 L58,10 C62,16 62,22 60,28 L66,40 L60,40 L54,30 L46,30 Z M44,-6 L64,-6 L62,-9 L58,-9 C57,-14 51,-14 50,-9 L46,-9 Z';
@@ -959,16 +1136,17 @@
     s += rect(cx - 37, top, 74, 92, `fill="${CORTEN}"`);
     s += rect(cx - 37, top, 7, 92, `fill="${CORTEN_HI}"`);
     s += rect(cx + 28, top, 9, 92, 'fill="rgba(0,0,0,.22)"');
-    s += rect(cx - 26, top + 12, 52, 66, `fill="${CORTEN_DK}"`);
-    s += rect(cx - 22, top + 16, 44, 58, `fill="none" stroke="${CORTEN_HI}" stroke-width="2"`);
-    // emblem: a stylised blossom in a ring
-    const ey = top + 45;
-    s += circ(cx, ey, 16, `fill="none" stroke="${CORTEN_HI}" stroke-width="2.5"`);
-    for (let i = 0; i < 8; i++) {
-      const a = (i / 8) * 360;
-      s += `<ellipse cx="${cx}" cy="${n(ey - 7)}" rx="3.4" ry="7" fill="${CORTEN_HI}" transform="rotate(${a} ${cx} ${n(ey)})"/>`;
+    s += rect(cx - 27, top + 11, 54, 68, `fill="${CORTEN_DK}"`);
+    s += rect(cx - 23, top + 15, 46, 60, `fill="${RELIEF}"`);
+    s += rect(cx - 20, top + 18, 40, 54, 'fill="none" stroke="rgba(80,50,40,.35)" stroke-width="1.5"');
+    // emblem: a rose in relief
+    const ey = top + 42;
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * 360;
+      s += `<ellipse cx="${cx}" cy="${n(ey - 6)}" rx="5.5" ry="7.5" fill="#bfae94" stroke="#8a6f5c" stroke-width="1" transform="rotate(${a} ${cx} ${n(ey)})"/>`;
     }
-    s += circ(cx, ey, 3.5, `fill="${CORTEN_DK}"`);
+    s += circ(cx, ey, 5.5, 'fill="#a88e74"') + `<path d="M${cx - 3},${ey} q3,-4 6,0 q-3,4 -6,0" fill="none" stroke="#6e5544" stroke-width="1.2"/>`;
+    s += `<path d="M${cx},${ey + 13} q-2,10 0,20 M${cx},${ey + 22} q-8,-2 -11,-8 M${cx},${ey + 26} q8,-2 11,-8" fill="none" stroke="#8a6f5c" stroke-width="2"/>`;
     s += rect(cx - 44, top - 12, 88, 13, `fill="${CORTEN_DK}"`);
     s += rect(cx - 44, top - 12, 88, 3, `fill="${CORTEN_HI}"`);
     s += poly([[cx - 40, top - 12], [cx + 40, top - 12], [cx, top - 44]], `fill="${CORTEN}"`);
@@ -1007,7 +1185,8 @@
       s += fieldstonePillar(cx, capBot, 692, 70, 94, 60 + i);
       s += rect(cx - 48, 488, 96, 11, 'fill="#bdb29c"');
       s += rect(cx - 48, 499, 96, 4, 'fill="rgba(0,0,0,.25)"');
-      s += capital(cx, capBot);
+      s += rect(cx - 41, capBot - 2, 82, 12, 'fill="#a9a08f"') + rect(cx - 41, capBot + 10, 82, 3, 'fill="rgba(0,0,0,.25)"');
+      s += capital(cx, capBot - 2);
     });
 
     // curved braces under the rails at each end
@@ -1047,15 +1226,15 @@
     const my = lowMid - gap / 2 - 2;
     s += ell(750, my + 3, 104, 70, 'fill="rgba(0,0,0,.18)"');
     s += ell(750, my, 102, 68, `fill="${CORTEN_DK}"`);
-    s += ell(750, my, 97, 63, `fill="${CORTEN}"`);
-    s += ell(750, my, 88, 55, `fill="none" stroke="${CORTEN_HI}" stroke-width="3"`);
-    s += ell(750, my, 82, 49, `fill="${CORTEN_DK}"`);
+    s += ell(750, my, 97, 63, 'fill="#efe6d3"');
+    s += ell(750, my, 90, 56, `fill="${CORTEN}"`);
+    s += ell(750, my, 84, 50, 'fill="none" stroke="#efe6d3" stroke-width="1.6"');
     s += `<path id="medTop" d="M${750 - 70},${my + 10} A70,46 0 0 1 ${750 + 70},${my + 10}" fill="none"/>`;
     s += `<text class="medal-letters" font-size="24" letter-spacing="1.2"><textPath href="#medTop" startOffset="50%" text-anchor="middle">TEMECULA</textPath></text>`;
     s += `<text x="750" y="${my + 38}" text-anchor="middle" class="medal-letters" font-size="17" letter-spacing="2.2">EST. 1859</text>`;
-    // small emblem between the words
-    s += circ(750, my + 12, 9, 'fill="none" class="medal-stroke" stroke-width="2"');
-    s += `<path d="M744,${my + 15} L750,${my + 6} L756,${my + 15} Z" class="medal-fill"/>`;
+    // small tree emblem between the words
+    s += rect(748.6, my + 8, 2.8, 12, 'class="medal-fill"');
+    s += ell(750, my + 6, 10, 6.5, 'class="medal-fill"') + ell(744, my + 9, 5, 3.5, 'class="medal-fill"') + ell(756, my + 9, 5, 3.5, 'class="medal-fill"');
     s += ell(750 - 99, my, 5, 9, `fill="${CORTEN}"`) + ell(750 + 99, my, 5, 9, `fill="${CORTEN}"`);
 
     // half-barrel planters at the pillar bases (as in the photo)
@@ -1142,10 +1321,10 @@
     s += rect(GATE_W - 150, 620, 300, 100, 'class="street"');
 
     const seq = [
-      ['ff', 300, { color: '#e3d6b8', stories: 2, flowers: true, flowerColor: '#d9415a' }],
+      ['western', 340],
       ['hotelTemecula', 520],
       ['tree', 140],
-      ['ff', 260, { color: '#a5583f', parapet: 'peak' }],
+      ['victorian', 360],
       ['mercantile', 380],
       ['barn', 200],
       ['cross', 220, 'MAIN ST'],
@@ -1153,8 +1332,8 @@
       ['welty', 360],
       ['tree', 150],
       ['machado', 420],
-      ['ff', 280, { color: '#8e9f8a', parapet: 'stepped', stories: 2, flowers: true, flowerColor: '#e86f8a' }],
-      ['clock', 360],
+      ['theater', 440],
+      ['woodClock', 400],
       ['tree', 180],
       ['ff', 240, { color: '#d8cdb6', parapet: 'peak' }]
     ];
@@ -1170,6 +1349,10 @@
       else if (type === 'welty') s += weltyStore(x, w);
       else if (type === 'machado') s += machadoStore(x, w);
       else if (type === 'clock') s += clockTower(x, w);
+      else if (type === 'western') s += westernBalcony(x, w);
+      else if (type === 'victorian') s += victorianGrey(x, w);
+      else if (type === 'theater') s += theaterRow(x, w);
+      else if (type === 'woodClock') s += woodClock(x, w);
       else if (type === 'tree') s += tree(x - 30, w + 60, seed++ * 17);
       x += w;
     });
