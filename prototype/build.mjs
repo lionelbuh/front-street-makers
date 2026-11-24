@@ -14,7 +14,7 @@ const head = `<title>Temecula Homegrown</title>
 <meta name="description" content="Temecula Homegrown: an illustrated artisan market on Old Town Front Street. Phase 1 visual prototype.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Young+Serif&display=swap">`;
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Young+Serif&display=swap">`;
 const body = read('body.html');
 
 writeFileSync(join(root, 'index.html'), `<!doctype html>
