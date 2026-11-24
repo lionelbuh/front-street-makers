@@ -20,7 +20,7 @@
   --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
   --display: 'Young Serif', 'Iowan Old Style', Georgia, serif; /* painted signs in the illustration */
   --body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --street-h: clamp(400px, calc(100vh - 400px), 760px);
+  --street-h: clamp(420px, calc(100vh - 380px), 820px);
   color-scheme: light;
 }
 
@@ -43,6 +43,7 @@
   --sun-o: 1;
   --star-o: 0;
   --street: #c6b9a3;
+  --promenade: #d2c6af;
   --glass: #4f7380;
   --banner: #2c5f8d;
   --banner-mark: #f4f1e8;
@@ -52,6 +53,7 @@
   --tint: rgba(16, 22, 52, 0);
   --lights-o: 0;
   --stall-filter: saturate(1.06);
+  --crowd-filter: none;
   --fg-filter: none;
 }
 .market[data-scene="evening"] {
@@ -70,6 +72,7 @@
   --sun-o: 0;
   --star-o: 0.9;
   --street: #a99c8b;
+  --promenade: #b2a693;
   --glass: #3d3f45;
   --banner: #2c5f8d;
   --banner-mark: #f4f1e8;
@@ -79,6 +82,7 @@
   --tint: rgba(14, 18, 48, 0.5);
   --lights-o: 1;
   --stall-filter: brightness(.82) saturate(.9);
+  --crowd-filter: brightness(.8) saturate(.9);
   --fg-filter: brightness(.62) saturate(.85);
 }
 
@@ -190,7 +194,7 @@ button { font: inherit; color: inherit; }
 .track {
   position: relative;
   height: 100%;
-  width: calc(var(--street-h) * 7140 / 720);
+  width: calc(var(--street-h) * 7140 / 820);
   background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 32%, var(--sky-3) 50%, var(--sky-4) 62%, var(--sky-4) 100%);
 }
 .layer { position: absolute; inset: 0; }
@@ -209,7 +213,8 @@ button { font: inherit; color: inherit; }
 .oak { fill: var(--oak); } .oak-near { fill: var(--oak-near); }
 .cloud { fill: var(--cloud); }
 .star { fill: #fff; opacity: var(--star-o); }
-.street, .street-p { fill: var(--street); }
+.road, .street-p { fill: var(--street); }
+.promenade { fill: var(--promenade); }
 .glass { fill: var(--glass); }
 .shine { fill: #fff; opacity: .13; }
 .lit { fill: #f2b85e; opacity: .5; }
@@ -254,6 +259,51 @@ button { font: inherit; color: inherit; }
 .stall-lantern { fill: #f1ddb0; }
 .mini-bulb { fill: #fff3cf; stroke: rgba(60,50,40,.35); stroke-width: .6; }
 .lantern-glow { fill: url(#halo); opacity: var(--lights-o); }
+
+/* ---------- crowd and ad carriers ---------- */
+.crowd { pointer-events: none; }
+.walker { position: absolute; left: 0; display: block; will-change: transform; filter: var(--crowd-filter); }
+.walker svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.walker--left svg { transform: scaleX(-1); }
+.walker .lg1, .walker .lg2, .walker .ar1, .walker .ar2 { transform-box: fill-box; transform-origin: 50% 0; }
+.walking .lg1, .walking .ar2 { animation: swing .9s ease-in-out infinite alternate; }
+.walking .lg2, .walking .ar1 { animation: swing .9s ease-in-out infinite alternate-reverse; }
+.walking .figure { animation: bob .45s ease-in-out infinite alternate; }
+@keyframes swing { from { transform: rotate(-20deg); } to { transform: rotate(20deg); } }
+@keyframes bob { from { transform: translateY(0); } to { transform: translateY(-2.5px); } }
+.walker--ad { pointer-events: auto; cursor: pointer; }
+.walker--ad:hover { filter: drop-shadow(0 0 6px rgba(255, 244, 214, .9)); }
+.walker--ad:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+.ad-label { font-family: var(--serif); font-weight: 700; }
+.ad-tag { font-family: var(--body); font-weight: 800; fill: #fff; letter-spacing: .08em; }
+.ad-sign { transform-box: view-box; transform-origin: 22px -140px; animation: sign-trick 6.5s ease-in-out infinite; }
+@keyframes sign-trick {
+  0%, 100% { transform: rotate(-4deg); }
+  22% { transform: rotate(4deg); }
+  44% { transform: rotate(-4deg); }
+  52% { transform: translateY(0) rotate(0deg); }
+  62% { transform: translateY(-70px) rotate(180deg); }
+  72% { transform: translateY(-80px) rotate(360deg); }
+  82% { transform: translateY(0) rotate(360deg); }
+  91% { transform: rotate(364deg); }
+}
+.ad-balls circle { transform-box: view-box; animation: juggle 1.2s linear infinite; }
+.ad-balls .b2 { animation-delay: -.4s; }
+.ad-balls .b3 { animation-delay: -.8s; }
+@keyframes juggle {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-8px, -30px); }
+  50% { transform: translate(-16px, 0); }
+  75% { transform: translate(-8px, 10px); }
+  100% { transform: translate(0, 0); }
+}
+.ad-balloon { transform-box: view-box; transform-origin: 18px -96px; animation: bob-balloon 3.2s ease-in-out infinite alternate; }
+@keyframes bob-balloon { from { transform: rotate(-4deg) translateY(0); } to { transform: rotate(4deg) translateY(-8px); } }
+.sponsor-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: .86rem; flex: 1 1 100%; }
+.sponsor-line a { color: var(--ink); font-family: var(--serif); font-weight: 600; font-size: 1rem; }
+.sponsor-line a:hover { color: var(--accent); }
+.sponsor-tagline { color: var(--muted); }
+.chip.chip--sponsor { background: var(--accent); }
 
 /* "walk in" hint over the gateway */
 .enter-hint {
@@ -411,7 +461,7 @@ body.past-gate .enter-hint { opacity: 0; transform: translateY(8px); pointer-eve
 
 /* ---------- small screens ---------- */
 @media (max-width: 640px) {
-  :root { --street-h: clamp(340px, 60vh, 560px); }
+  :root { --street-h: clamp(380px, 64vh, 600px); }
   .wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .site-header { padding: 14px 16px 0; grid-template-areas: 'date date date' 'brand brand brand' 'nav nav nav'; }
   .masthead-dateline { font-size: .64rem; grid-template-columns: 1fr; }
@@ -435,4 +485,5 @@ body.past-gate .enter-hint { opacity: 0; transform: translateY(8px); pointer-eve
   .stall, .enter-hint, .lights { transition: none; }
   .enter-hint span { animation: none; }
   .stall:hover { transform: none; }
+  .ad-sign, .ad-balls circle, .ad-balloon { animation: none; }
 }

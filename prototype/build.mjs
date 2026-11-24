@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = dirname(fileURLToPath(import.meta.url));
 const read = (p) => readFileSync(join(root, p), 'utf8');
-const scripts = ['js/demo-businesses.js', 'js/street-scene.js', 'js/stall.js', 'js/marketplace.js'];
+const scripts = ['js/demo-businesses.js', 'js/sponsors.js', 'js/street-scene.js', 'js/stall.js', 'js/marketplace.js', 'js/crowd.js'];
 
 const head = `<title>Temecula Homegrown</title>
 <meta name="claude:viewport-fit-sides" content="cover">

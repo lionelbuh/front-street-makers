@@ -15,7 +15,7 @@
   'use strict';
   const TH = (window.TH = window.TH || {});
 
-  const H = 720;
+  const H = 820; // 720 for the street + a 100-unit promenade in front of the stalls
   const BASE = 470; // bottom of building facades / top of boardwalk
   const WALK_H = 18;
   const GATE_W = 1500; // width of the gateway (perspective) panel
@@ -630,7 +630,7 @@
     s += rect(x + 14, BASE - 70, w * 0.32, 56, 'fill="#ddd2bb"') + rect(x + 14, BASE - 74, w * 0.32, 6, 'fill="#efe6d2"');
     s += rect(x + w * 0.58, BASE - 60, w * 0.3, 46, 'fill="#b78968"');
     s += ell(x + w * 0.5, BASE - 64, 26, 22, 'fill="#6e8a50"');
-    s += rect(x, BASE - 16, w, 16 + WALK_H + 2, 'class="street"');
+    s += rect(x, BASE - 16, w, 16 + WALK_H + 2, 'class="road"');
     s += rect(x, BASE + WALK_H - 2, w, 3, 'fill="rgba(0,0,0,.12)"');
     // corner street sign
     const px = x + w - 26;
@@ -1315,10 +1315,14 @@
     s += rect(x0, BASE, W - x0, WALK_H, 'fill="#9c7c5a"');
     s += rect(x0, BASE, W - x0, WALK_H, 'fill="url(#planks)"');
     s += rect(x0, BASE + WALK_H - 3, W - x0, 3, `fill="${WOOD_DK}"`);
-    s += rect(x0, BASE + WALK_H, W - x0, H - BASE - WALK_H, 'class="street"');
+    s += rect(x0, BASE + WALK_H, W - x0, H - BASE - WALK_H, 'class="road"');
     s += rect(x0, BASE + WALK_H, W - x0, H - BASE - WALK_H, 'fill="url(#streetFade)"');
     // blend the seam between the perspective road and the elevation street
-    s += rect(GATE_W - 150, 620, 300, 100, 'class="street"');
+    s += rect(GATE_W - 150, 620, 300, H - 620, 'class="road"');
+    // the promenade: a wider, paved band between the visitor and the stalls
+    s += rect(x0, STALL_BOTTOM + 6, W - x0, H - STALL_BOTTOM - 6, 'class="promenade"');
+    s += rect(x0, STALL_BOTTOM + 6, W - x0, H - STALL_BOTTOM - 6, 'fill="url(#pavers)"');
+    s += rect(x0, STALL_BOTTOM + 4, W - x0, 3, 'fill="rgba(60,45,30,.12)"');
 
     const seq = [
       ['western', 340],
