@@ -1,5 +1,5 @@
--- Temecula Homegrown — Cloudflare D1 schema
--- Apply with: npx wrangler d1 execute temecula-homegrown --remote --file=worker/schema.sql
+-- Front Street Makers — Cloudflare D1 schema
+-- Apply with: npx wrangler d1 execute front-street-makers --remote --file=worker/schema.sql
 
 -- One row per business, from first application to published profile.
 -- Only rows with status = 'approved' are ever returned by the public API.

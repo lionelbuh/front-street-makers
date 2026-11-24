@@ -36,7 +36,7 @@ for (const file of readdirSync(src('pages')).filter((f) => f.endsWith('.html')))
     ...(meta.street ? MARKET_SCRIPTS : meta.stall ? ['market/street-scene.js', 'market/stall.js'] : []).map((s) => `<script src="{{root}}assets/js/${s}"></script>`),
     meta.module ? `<script type="module" src="{{root}}assets/js/app/${meta.module}"></script>` : ''
   ].join('\n');
-  const title = meta.home ? meta.title : `${meta.title} · Temecula Homegrown`;
+  const title = meta.home ? meta.title : `${meta.title} · Front Street Makers`;
   let html = `<!doctype html>
 <html lang="en" data-root="{{root}}">
 <head>
@@ -60,7 +60,7 @@ ${scripts}
   const dest = meta.path === '404' ? join(out, '404.html') : join(out, meta.path || '', 'index.html');
   mkdirSync(dirname(dest), { recursive: true });
   writeFileSync(dest, html);
-  if (!meta.noindex && meta.path !== '404') urls.push(`https://temeculahomegrown.com/${meta.path || ''}`);
+  if (!meta.noindex && meta.path !== '404') urls.push(`https://frontstreetmakers.com/${meta.path || ''}`);
 }
 writeFileSync(join(out, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

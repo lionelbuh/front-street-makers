@@ -67,7 +67,7 @@ export function profileHtml(b, { titleTag = 'h2', withPageLink = true } = {}) {
       <div><dt>What they offer</dt><dd>${esc((KIND_BY_ID[b.kind] || {}).label || b.type)}</dd></div>
     </dl>
     ${linkHtml ? `<div class="links">${linkHtml}</div>` : ''}
-    <p class="profile-note">Contact the business directly to order or book. Temecula Homegrown never takes orders or payments, and home addresses are never published.</p>
+    <p class="profile-note">Contact the business directly to order or book. Front Street Makers never takes orders or payments, and home addresses are never published.</p>
     ${withPageLink && !b.isDemo ? `<p><a class="section-link" href="${businessHref(b)}">Open this business's page</a></p>` : ''}`;
 }
 
@@ -107,7 +107,7 @@ export function openFreeStall() {
       <span class="chip chip--open">Open stall</span>
       <h2 id="profile-title">This stall is waiting for a local business</h2>
     </div>
-    <p class="profile-summary">Listings on Temecula Homegrown are free. No subscriptions, commissions or paid rankings.</p>
+    <p class="profile-summary">Listings on Front Street Makers are free. No subscriptions, commissions or paid rankings.</p>
     <ul class="cats">
       <li><span class="chip chip--home">${CATEGORIES.home.label}</span> ${esc(CATEGORIES.home.blurb)}</li>
       <li><span class="chip chip--micro">${CATEGORIES.micro.label}</span> ${esc(CATEGORIES.micro.blurb)}</li>

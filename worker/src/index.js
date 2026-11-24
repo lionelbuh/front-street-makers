@@ -1,5 +1,5 @@
 /*
- * Temecula Homegrown API — Cloudflare Worker
+ * Front Street Makers API — Cloudflare Worker
  *
  * Bindings (see wrangler.toml and docs/SETUP.md):
  *   DB      D1 database (schema in worker/schema.sql)
@@ -7,7 +7,7 @@
  * Secrets / vars:
  *   ADMIN_PASSWORD   password for the admin dashboard
  *   SESSION_SECRET   long random string used to sign admin sessions
- *   ALLOWED_ORIGINS  comma-separated site origins, e.g. https://temeculahomegrown.com
+ *   ALLOWED_ORIGINS  comma-separated site origins, e.g. https://frontstreetmakers.com
  *   TURNSTILE_SECRET (optional) Cloudflare Turnstile secret for the public forms
  *   RESEND_API_KEY, NOTIFY_EMAIL, FROM_EMAIL (optional) email the admin on new applications
  *
@@ -235,7 +235,7 @@ async function notifyAdmin(env, subject, body) {
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ from: env.FROM_EMAIL || 'Temecula Homegrown <onboarding@resend.dev>', to: [env.NOTIFY_EMAIL], subject, text: body })
+      body: JSON.stringify({ from: env.FROM_EMAIL || 'Front Street Makers <onboarding@resend.dev>', to: [env.NOTIFY_EMAIL], subject, text: body })
     });
   } catch { /* notification is best effort */ }
 }
@@ -278,7 +278,7 @@ async function createApplication(request, env) {
     errors.public_email = 'Add at least one way for neighbors (and us) to reach your business: an email, phone, website or social account.';
   }
   if (!LICENSE_OPTIONS.some((o) => o.id === v.license_status)) errors.license_status = 'Choose the answer that fits your situation.';
-  if (!v.independent_ok) errors.independent_ok = 'Temecula Homegrown lists independent, owner-operated businesses only.';
+  if (!v.independent_ok) errors.independent_ok = 'Front Street Makers lists independent, owner-operated businesses only.';
   if (!form.get('agree')) errors.agree = 'Please accept the listing terms and privacy notice.';
   const files = form.getAll('photos').filter((f) => f && typeof f !== 'string' && f.size);
   if (files.length && !form.get('photo_rights')) errors.photo_rights = 'Please confirm the photos are yours to share.';

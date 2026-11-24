@@ -146,6 +146,7 @@ button { font: inherit; color: inherit; }
   letter-spacing: -0.035em; line-height: .95;
 }
 .brand-dot { color: var(--accent); font-style: italic; font-weight: 400; }
+.brand-place { margin-top: 4px; font-size: .74rem; font-weight: 800; letter-spacing: .32em; text-transform: uppercase; color: var(--accent); }
 .brand-motto {
   margin-top: 6px; font-size: .72rem; font-weight: 600; letter-spacing: .24em;
   text-transform: uppercase; color: var(--muted);

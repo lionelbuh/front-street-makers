@@ -13,9 +13,26 @@ const holder = $('#business');
   }
   try {
     const b = await api.business(slug);
-    document.title = `${b.name} · Temecula Homegrown`;
+    document.title = `${b.name} · Front Street Makers`;
     const desc = document.querySelector('meta[name="description"]');
     if (desc) desc.setAttribute('content', `${b.name}: ${b.summary}`);
+    if (!b.isDemo) {
+      const ld = document.createElement('script');
+      ld.type = 'application/ld+json';
+      ld.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'LocalBusiness',
+        name: b.name,
+        description: b.summary,
+        url: location.href,
+        areaServed: { '@type': 'City', name: b.city, containedInPlace: { '@type': 'State', name: 'California' } },
+        ...(b.photos && b.photos[0] ? { image: b.photos.map((p) => p.url) } : {}),
+        ...(b.links.email ? { email: b.links.email } : {}),
+        ...(b.links.phone ? { telephone: b.links.phone } : {}),
+        sameAs: [b.links.website, b.links.instagram, b.links.facebook, b.links.tiktok].filter(Boolean)
+      }).replace(/</g, '\\u003c');
+      document.head.appendChild(ld);
+    }
     holder.innerHTML = profileHtml(b, { titleTag: 'h1', withPageLink: false }) +
       `<p class="back-links"><a class="section-link" href="${root()}marketplace/">← Back to the marketplace</a></p>`;
   } catch (err) {

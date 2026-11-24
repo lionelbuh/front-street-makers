@@ -31,7 +31,7 @@ async function request(path, { method = 'GET', body, form, admin = false } = {})
   try {
     res = await fetch(CONFIG.API_BASE.replace(/\/$/, '') + path, { method, headers, body: payload });
   } catch {
-    throw new ApiError('We could not reach Temecula Homegrown. Check your connection and try again.');
+    throw new ApiError('We could not reach Front Street Makers. Check your connection and try again.');
   }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
@@ -194,7 +194,7 @@ const demo = {
       errors.public_email = 'Add at least one way for neighbors (and us) to reach your business: an email, phone, website or social account.';
     }
     if (!LICENSE_OPTIONS.some((o) => o.id === v.license_status)) errors.license_status = 'Choose the answer that fits your situation.';
-    if (!v.independent_ok) errors.independent_ok = 'Temecula Homegrown lists independent, owner-operated businesses only.';
+    if (!v.independent_ok) errors.independent_ok = 'Front Street Makers lists independent, owner-operated businesses only.';
     if (!form.get('agree')) errors.agree = 'Please accept the listing terms and privacy notice.';
     const files = form.getAll('photos').filter((f) => f && f.size);
     if (files.length && !form.get('photo_rights')) errors.photo_rights = 'Please confirm the photos are yours to share.';

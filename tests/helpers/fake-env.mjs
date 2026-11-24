@@ -38,7 +38,7 @@ export function fakeEnv(extra = {}) {
     PHOTOS: fakeR2(),
     ADMIN_PASSWORD: 'correct horse battery staple',
     SESSION_SECRET: 'test-secret-0123456789',
-    ALLOWED_ORIGINS: 'https://temeculahomegrown.com',
+    ALLOWED_ORIGINS: 'https://frontstreetmakers.com',
     ...extra
   };
 }

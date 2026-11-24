@@ -1,8 +1,8 @@
 {
-  "name": "temecula-homegrown",
+  "name": "front-street-makers",
   "version": "0.2.0",
   "private": true,
-  "description": "Temecula Homegrown: a free illustrated marketplace for small local businesses in Temecula and Murrieta.",
+  "description": "Front Street Makers: a free illustrated marketplace for small local businesses in Temecula and Murrieta.",
   "type": "module",
   "license": "UNLICENSED",
   "engines": { "node": ">=22.5" },

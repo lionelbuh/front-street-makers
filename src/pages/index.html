@@ -1,4 +1,4 @@
-<!--{"path":"","home":true,"title":"Temecula Homegrown — the illustrated local marketplace","description":"Stroll an illustrated Old Town Temecula market and meet home-based businesses and independent makers from Temecula, Murrieta and nearby. Free listings.","nav":"","page":"home","street":true,"module":"market-page.js"}-->
+<!--{"path":"","home":true,"title":"Front Street Makers — Temecula's market of local makers","description":"Stroll an illustrated Old Town Temecula market and meet home-based businesses and independent makers from Temecula, Murrieta and nearby. Free listings.","nav":"","page":"home","street":true,"module":"market-page.js"}-->
 <section class="intro wrap">
   <p class="kicker">Today's market · <span class="js-today">today</span></p>
   <h1>Stroll Front Street and meet the people who make things here.</h1>
@@ -19,7 +19,7 @@
   </section>
 
   <section aria-labelledby="how-title">
-    <div class="section-head"><h2 id="how-title">How Temecula Homegrown works</h2></div>
+    <div class="section-head"><h2 id="how-title">How Front Street Makers works</h2></div>
     <div class="note-grid">
       <article>
         <p class="card-kicker">For neighbors</p>
@@ -55,3 +55,32 @@
 </div>
 
 <!--#dialog-->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://frontstreetmakers.com/#website",
+      "name": "Front Street Makers",
+      "alternateName": "Front Street Makers Temecula",
+      "url": "https://frontstreetmakers.com/",
+      "description": "A free illustrated online marketplace of home-based businesses and independent makers in Temecula, Murrieta and nearby communities.",
+      "inLanguage": "en-US",
+      "potentialAction": { "@type": "SearchAction", "target": "https://frontstreetmakers.com/marketplace/?q={search_term_string}", "query-input": "required name=search_term_string" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://frontstreetmakers.com/#org",
+      "name": "Front Street Makers",
+      "url": "https://frontstreetmakers.com/",
+      "email": "hello@frontstreetmakers.com",
+      "slogan": "Small businesses. Big dreams. Local roots.",
+      "areaServed": [
+        { "@type": "City", "name": "Temecula", "containedInPlace": { "@type": "State", "name": "California" } },
+        { "@type": "City", "name": "Murrieta", "containedInPlace": { "@type": "State", "name": "California" } }
+      ]
+    }
+  ]
+}
+</script>

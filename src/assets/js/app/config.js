@@ -2,7 +2,7 @@
  * Site configuration.
  *
  * API_BASE: the address of the Cloudflare Worker (docs/SETUP.md), for example
- *   'https://api.temeculahomegrown.com'. Leave it empty to run in DEMO MODE:
+ *   'https://api.frontstreetmakers.com'. Leave it empty to run in DEMO MODE:
  *   the site shows the sample stalls, and applications, stories and the admin
  *   dashboard work entirely inside the visitor's own browser (nothing is sent).
  *
@@ -12,8 +12,8 @@
 export const CONFIG = {
   API_BASE: '',
   TURNSTILE_SITE_KEY: '',
-  CONTACT_EMAIL: 'hello@temeculahomegrown.com',
-  SITE_NAME: 'Temecula Homegrown'
+  CONTACT_EMAIL: 'hello@frontstreetmakers.com',
+  SITE_NAME: 'Front Street Makers'
 };
 
 export const DEMO_MODE = !CONFIG.API_BASE;

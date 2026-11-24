@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import worker, { cleanUrl, socialUrl, text } from '../worker/src/index.js';
 import { fakeEnv } from './helpers/fake-env.mjs';
 
-const ORIGIN = 'https://temeculahomegrown.com';
-const API = 'https://api.temeculahomegrown.com';
+const ORIGIN = 'https://frontstreetmakers.com';
+const API = 'https://api.frontstreetmakers.com';
 
 function call(env, method, path, { body, token, form, headers = {} } = {}) {
   const h = new Headers({ origin: ORIGIN, ...headers });

@@ -1,4 +1,4 @@
-# Temecula Homegrown
+# Front Street Makers
 
 Small businesses. Big dreams. Local roots.
 

@@ -1,20 +1,20 @@
-# Cloudflare Worker for the Temecula Homegrown API.
+# Cloudflare Worker for the Front Street Makers API.
 # Setup steps: docs/SETUP.md
-name = "temecula-homegrown-api"
+name = "front-street-makers-api"
 main = "src/index.js"
 compatibility_date = "2025-09-01"
 
 [vars]
-ALLOWED_ORIGINS = "https://temeculahomegrown.com,https://www.temeculahomegrown.com"
+ALLOWED_ORIGINS = "https://frontstreetmakers.com,https://www.frontstreetmakers.com"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "temecula-homegrown"
+database_name = "front-street-makers"
 database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
 
 [[r2_buckets]]
 binding = "PHOTOS"
-bucket_name = "temecula-homegrown-photos"
+bucket_name = "front-street-makers-photos"
 
 # Secrets (never in this file): set with
 #   npx wrangler secret put ADMIN_PASSWORD
