@@ -14,7 +14,7 @@ export function safeHref(url) {
   const s = String(url || '');
   return /^(https?:|mailto:|tel:)/i.test(s) ? esc(s) : '#';
 }
-export const businessHref = (b) => `${root()}business/?b=${encodeURIComponent(b.slug)}`;
+export const businessHref = (b) => `${root()}business/${encodeURIComponent(b.slug)}/`;
 
 export function isNew(b, days = 30) {
   if (!b.publishedAt) return false;

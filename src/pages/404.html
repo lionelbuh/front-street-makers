@@ -1,6 +1,7 @@
-<!--{"path":"404","title":"Page not found","description":"This page could not be found.","nav":"","page":"404","noindex":true}-->
-<section class="intro wrap">
+<!--{"path":"404","title":"Page not found","description":"This page could not be found.","nav":"","page":"404","noindex":true,"stall":true,"inlineScript":"<script type=\"module\">const m = location.pathname.match(/\\/business\\/([a-z0-9-]+)\\/?$/); if (m) { document.getElementById('not-found').hidden = true; const a = document.getElementById('business'); a.hidden = false; a.dataset.slug = m[1]; import('/assets/js/app/business-page.js'); }</script>"}-->
+<section class="intro wrap" id="not-found">
   <p class="kicker">Page not found</p>
   <h1>This stall has packed up.</h1>
   <p class="lead">The page you were looking for isn't here. Head back to <a href="/">the street</a> or browse the <a href="/marketplace/">marketplace</a>.</p>
 </section>
+<article id="business" class="wrap business-page" aria-live="polite" hidden><p class="hint">Loading…</p></article>

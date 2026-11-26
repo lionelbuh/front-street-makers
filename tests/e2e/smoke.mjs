@@ -45,6 +45,25 @@ for (const path of PAGES) {
   });
 }
 
+await check('SEO: pre-built business pages, directory and sitemap', async () => {
+  const page = await newPage();
+  const res = await page.goto(`${base}/business/demo-sourdough/`);
+  assert.equal(res.status(), 200);
+  const html = await res.text();
+  assert.match(html, /<h1 id="profile-title">Sample Sourdough Co\.<\/h1>/, 'profile is in the HTML, not only added by script');
+  assert.match(html, /<link rel="canonical" href="https:\/\/frontstreetmakers\.com\/business\/demo-sourdough\/">/);
+  assert.match(html, /<meta name="robots" content="noindex/, 'demo pages are never indexed');
+  const dir = await (await page.goto(`${base}/marketplace/`)).text();
+  assert.match(dir, /href="\.\.\/business\/demo-sourdough\/"/, 'directory is pre-rendered with links');
+  const sitemap = await (await page.goto(`${base}/sitemap.xml`)).text();
+  assert.match(sitemap, /frontstreetmakers\.com\/startup-corner\//);
+  assert.ok(!sitemap.includes('demo-sourdough'), 'demo businesses stay out of the sitemap');
+  assert.deepEqual(page.errors, []);
+  await page.goto(`${base}/business/not-yet-built/`); // a 404 on purpose
+  assert.equal(await page.isVisible('#not-found'), false, 'unknown business paths are handled by the page script');
+  await page.context().close();
+});
+
 await check('phones: no sideways page scroll on any page', async () => {
   const page = await newPage({ width: 390, height: 844 });
   for (const path of PAGES) {

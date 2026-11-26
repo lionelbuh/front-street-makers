@@ -1,11 +1,14 @@
 name: Deploy site to GitHub Pages
 
-# Builds dist/ and publishes it on GitHub Pages each time main changes.
+# Builds dist/ and publishes it on GitHub Pages each time main changes, and every
+# night so newly approved businesses get their own page and the sitemap stays fresh.
 # One-time setup: Settings → Pages → Source: "GitHub Actions", then
 # Custom domain: frontstreetmakers.com and "Enforce HTTPS" (docs/SETUP.md).
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '23 10 * * *' # every night, about 3:23 am in Temecula
   workflow_dispatch:
 
 permissions:
