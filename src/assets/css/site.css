@@ -319,6 +319,11 @@ button { font: inherit; color: inherit; }
 .sponsor-line a:hover { color: var(--accent); }
 .sponsor-tagline { color: var(--muted); }
 .chip.chip--sponsor { background: var(--accent); }
+.story-line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: .86rem; flex: 1 1 100%; }
+.story-line a { color: var(--ink); font-family: var(--serif); font-weight: 600; font-size: 1rem; }
+.story-line a:hover { color: var(--accent); }
+.story-tagline { color: var(--muted); flex: 1 1 100%; }
+.chip.chip--story { background: var(--cat-home); }
 
 /* "walk in" hint over the gateway */
 .enter-hint {
