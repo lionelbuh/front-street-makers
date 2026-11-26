@@ -32,7 +32,7 @@ async function newPage(viewport = { width: 1280, height: 860 }) {
 }
 const noOverflow = (page) => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 
-const PAGES = ['', 'marketplace/', 'community/', 'startup-corner/', 'get-listed/', 'privacy/', 'terms/', 'admin/', 'business/?b=demo-sourdough'];
+const PAGES = ['', 'marketplace/', 'community/', 'startup-corner/', 'get-listed/', 'about/', 'privacy/', 'terms/', 'admin/', 'business/?b=demo-sourdough'];
 for (const path of PAGES) {
   await check(`page loads cleanly: /${path}`, async () => {
     const page = await newPage();

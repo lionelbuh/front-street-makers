@@ -804,6 +804,13 @@ a { color: var(--lake); }
   .lb-nav { width: 40px; height: 56px; font-size: 2rem; }
 }
 
+/* ---------- our story ---------- */
+.why { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 12px 32px; align-items: start; }
+.why p { margin: 0; max-width: 60ch; }
+.why-quote { font-family: var(--serif); font-style: italic; font-size: 1.35rem; line-height: 1.45; border-left: 3px solid var(--accent); padding-left: 16px; }
+@media (max-width: 760px) { .why { grid-template-columns: 1fr; } }
+.about-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px !important; }
+
 /* ---------- "100% free" badge ---------- */
 .free-line { margin: 6px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
 .intro .free-line { grid-column: 2; }
