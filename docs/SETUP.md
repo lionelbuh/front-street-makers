@@ -25,6 +25,8 @@ Until the API is connected, the website runs in **demo mode**: sample stalls onl
 
 ## 2. Create the API on Cloudflare (about 20 minutes)
 
+**Easiest:** do it all in the browser with [CLOUDFLARE-DASHBOARD.md](CLOUDFLARE-DASHBOARD.md). The command-line steps below are an alternative.
+
 You need a free Cloudflare account and Node.js 22 on your computer.
 
 ```bash
