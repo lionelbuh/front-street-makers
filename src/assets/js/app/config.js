@@ -10,7 +10,7 @@
  *   (pair it with the TURNSTILE_SECRET on the worker).
  */
 export const CONFIG = {
-  API_BASE: '',
+  API_BASE: 'https://front-street-makers-api.buhler-lionel.workers.dev',
   TURNSTILE_SITE_KEY: '',
   CONTACT_EMAIL: 'hello@frontstreetmakers.com',
   SITE_NAME: 'Front Street Makers'

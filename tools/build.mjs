@@ -19,6 +19,12 @@ mkdirSync(out, { recursive: true });
 cpSync(src('assets'), join(out, 'assets'), { recursive: true });
 for (const f of readdirSync(src('static'))) cpSync(src(`static/${f}`), join(out, f), { recursive: true });
 
+// Tests run against the in-browser demo, never the live API: FORCE_DEMO=1 npm run build
+if (process.env.FORCE_DEMO) {
+  const cfg = join(out, 'assets/js/app/config.js');
+  writeFileSync(cfg, readFileSync(cfg, 'utf8').replace(/API_BASE: '[^']*'/, "API_BASE: ''"));
+}
+
 const urls = [];
 for (const file of readdirSync(src('pages')).filter((f) => f.endsWith('.html'))) {
   const raw = readFileSync(src(`pages/${file}`), 'utf8');
