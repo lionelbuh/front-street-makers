@@ -18,7 +18,7 @@ You will create four things and connect them:
 1. In the left menu, open **Storage & Databases → D1 SQL Database**.
 2. Click **Create database**, name it `front-street-makers` and click **Create**.
 3. Open the new database and go to the **Console** tab.
-4. Open [`worker/schema.sql`](../worker/schema.sql) on GitHub, click **Copy raw file**, paste it into the console and click **Execute**.
+4. Open [`worker/schema-console.sql`](../worker/schema-console.sql) on GitHub, click **Copy raw file**, paste it into the console and click **Execute**. Use this file, not `schema.sql`: the console joins everything into one line, and the comments in `schema.sql` would then hide the commands.
 5. Check the result: under **Tables** you should see `businesses`, `photos`, `stories`, `settings` and `audit`.
 
 ## Step 2 — Photo storage (R2), about 3 minutes
