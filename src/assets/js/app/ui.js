@@ -39,9 +39,11 @@ export function profileHtml(b, { titleTag = 'h2', withPageLink = true } = {}) {
   const photos = b.photos || [];
   let photosHtml = '';
   if (photos.length) {
-    photosHtml = `<div class="photos photos--${Math.min(photos.length, 3)}" role="list" aria-label="Photos from ${esc(b.name)}">
-      ${photos.slice(0, 6).map((p, i) => `<figure role="listitem" class="photo photo--${i}"><img src="${safeHref(p.url)}" alt="${esc(p.alt || b.name)}" loading="lazy" decoding="async"></figure>`).join('')}
-    </div>`;
+    shownPhotos = photos.slice(0, 6);
+    photosHtml = `<div class="photos photos--${Math.min(photos.length, 3)}${photos.length > 3 ? ' photos--many' : ''}" role="list" aria-label="Photos from ${esc(b.name)}">
+      ${shownPhotos.map((p, i) => `<figure role="listitem" class="photo photo--${i}"><button type="button" class="photo-open" data-i="${i}" aria-label="View photo ${i + 1} of ${shownPhotos.length} full size"><img src="${safeHref(p.url)}" alt="${esc(p.alt || b.name)}" loading="lazy" decoding="async"></button></figure>`).join('')}
+    </div>
+    <p class="hint">Tap a photo to see it full size.</p>`;
   } else if (b.isDemo && window.TH && window.TH.renderGoodsVignette) {
     const st = b.stall || {};
     const flat = { ...b, display: st.display, colors: st.colors };
@@ -70,6 +72,58 @@ export function profileHtml(b, { titleTag = 'h2', withPageLink = true } = {}) {
     <p class="profile-note">Contact the business directly to order or book. Front Street Makers never takes orders or payments, and home addresses are never published.</p>
     ${withPageLink && !b.isDemo ? `<p><a class="section-link" href="${businessHref(b)}">Open this business's page</a></p>` : ''}`;
 }
+
+/* ---------------- photo viewer: every photo full size, one by one ---------------- */
+let shownPhotos = [];
+let viewer = null;
+let viewerIndex = 0;
+function buildViewer() {
+  viewer = document.createElement('dialog');
+  viewer.className = 'lightbox';
+  viewer.setAttribute('aria-label', 'Photo viewer');
+  viewer.innerHTML = `
+    <button type="button" class="lb-close" aria-label="Close">×</button>
+    <figure class="lb-figure"><img class="lb-img" alt=""><figcaption class="lb-count"></figcaption></figure>
+    <button type="button" class="lb-nav lb-prev" aria-label="Previous photo">‹</button>
+    <button type="button" class="lb-nav lb-next" aria-label="Next photo">›</button>`;
+  document.body.appendChild(viewer);
+  $('.lb-close', viewer).addEventListener('click', () => viewer.close());
+  $('.lb-prev', viewer).addEventListener('click', () => showPhoto(viewerIndex - 1));
+  $('.lb-next', viewer).addEventListener('click', () => showPhoto(viewerIndex + 1));
+  viewer.addEventListener('click', (e) => { if (e.target === viewer) viewer.close(); });
+  viewer.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); showPhoto(viewerIndex - 1); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); showPhoto(viewerIndex + 1); }
+  });
+  let startX = null;
+  viewer.addEventListener('pointerdown', (e) => { startX = e.clientX; });
+  viewer.addEventListener('pointerup', (e) => {
+    if (startX == null) return;
+    const dx = e.clientX - startX;
+    startX = null;
+    if (Math.abs(dx) > 50) showPhoto(viewerIndex + (dx < 0 ? 1 : -1));
+  });
+}
+function showPhoto(i) {
+  const n = shownPhotos.length;
+  viewerIndex = (i + n) % n;
+  const p = shownPhotos[viewerIndex];
+  const img = $('.lb-img', viewer);
+  img.src = p.url;
+  img.alt = p.alt || '';
+  $('.lb-count', viewer).textContent = `${viewerIndex + 1} of ${n}`;
+  $$('.lb-nav', viewer).forEach((b) => (b.hidden = n < 2));
+}
+export function openPhotoViewer(i) {
+  if (!shownPhotos.length) return;
+  if (!viewer) buildViewer();
+  showPhoto(i);
+  if (!viewer.open) viewer.showModal();
+}
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.photo-open');
+  if (btn) openPhotoViewer(Number(btn.dataset.i));
+});
 
 /* ---------------- profile dialog (shared by street and directory) ---------------- */
 let dialogList = [];
@@ -107,7 +161,7 @@ export function openFreeStall() {
       <span class="chip chip--open">Open stall</span>
       <h2 id="profile-title">This stall is waiting for a local business</h2>
     </div>
-    <p class="profile-summary">Listings on Front Street Makers are free. No subscriptions, commissions or paid rankings.</p>
+    <p class="profile-summary"><span class="free-badge">100% free</span> Listings on Front Street Makers cost nothing: no sign-up fee, subscription, commission or paid ranking.</p>
     <ul class="cats">
       <li><span class="chip chip--home">${CATEGORIES.home.label}</span> ${esc(CATEGORIES.home.blurb)}</li>
       <li><span class="chip chip--micro">${CATEGORIES.micro.label}</span> ${esc(CATEGORIES.micro.blurb)}</li>

@@ -92,8 +92,10 @@ await check('apply → review → approve → listed', async () => {
   await page.fill('#name', 'Sample Test Pies');
   await page.selectOption('#kind', 'baked');
   await page.fill('#summary', 'Seasonal fruit pies baked in a home kitchen for weekend pickup.');
-  await page.selectOption('#city', 'Murrieta');
-  await page.fill('#area', 'Murrieta · porch pickup');
+  await page.selectOption('#city', 'Other');
+  await page.waitForSelector('#city_other:visible');
+  await page.fill('#city_other', 'Fallbrook');
+  await page.fill('#area', 'Fallbrook · porch pickup');
   await page.fill('#instagram', '@testpies');
   await page.setInputFiles('#photos', 'src/assets/img/sponsors/meringuesuisse-balloon.jpg');
   await page.waitForSelector('#photo-previews li');
@@ -135,6 +137,11 @@ await check('apply → review → approve → listed', async () => {
   await page.goto(`${base}/business/?b=sample-test-pies`);
   await page.waitForSelector('#profile-title');
   assert.equal(await page.textContent('#profile-title'), 'Sample Test Pies');
+  assert.match(await page.textContent('#business'), /Fallbrook/, 'the typed city is kept');
+  await page.click('.photo-open');
+  await page.waitForSelector('.lightbox[open] .lb-img');
+  assert.equal(await page.textContent('.lb-count'), '1 of 1');
+  await page.keyboard.press('Escape');
   assert.ok(!/\bPat\b|not sure/i.test(await page.textContent('#business')), 'first name and licensing answers never shown');
   assert.deepEqual(page.errors, []);
   await page.context().close();

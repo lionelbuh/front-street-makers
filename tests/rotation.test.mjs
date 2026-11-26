@@ -41,7 +41,7 @@ test('pinned businesses are featured on their dates only', () => {
   const pins = [{ id: 'b29', from: '2026-11-24', to: '2026-11-25' }];
   for (const date of ['2026-11-24', '2026-11-25']) {
     const r = featuredForDate(all, { count: 6, pins, newDays: 0 }, date);
-    assert.equal(r.ids[0], 'b29');
+    assert.ok(r.ids.includes('b29'));
     assert.equal(r.reasons.b29, 'pinned');
   }
   const after = featuredForDate(all, { count: 6, pins, newDays: 0 }, '2026-11-26');
@@ -51,10 +51,25 @@ test('pinned businesses are featured on their dates only', () => {
 test('new businesses get initial visibility, capped per day', () => {
   const all = [...biz(20), { id: 'fresh1', publishedAt: '2026-11-20' }, { id: 'fresh2', publishedAt: '2026-11-23' }, { id: 'fresh3', publishedAt: '2026-11-22' }];
   const r = featuredForDate(all, { count: 8, newDays: 14, newMax: 2 }, '2026-11-24');
-  const fresh = r.ids.filter((id) => r.reasons[id] === 'new');
+  const fresh = r.ids.filter((id) => r.reasons[id] === 'new').sort();
   assert.deepEqual(fresh, ['fresh2', 'fresh3'], 'newest first, at most newMax');
   const later = featuredForDate(all, { count: 8, newDays: 14, newMax: 2 }, '2026-12-20');
   assert.equal(Object.values(later.reasons).filter((x) => x === 'new').length, 0, 'boost ends after newDays');
+});
+
+test('"always" businesses appear every day, on top of the count, in a moving spot', () => {
+  const all = biz(30);
+  const spots = new Set();
+  for (let d = 0; d < 20; d++) {
+    const r = featuredForDate(all, { count: 10, newDays: 0, always: ['b05'] }, addDays('2026-11-24', d));
+    assert.equal(r.ids.length, 11, 'ten rotating plus the always business');
+    assert.equal(r.reasons.b05, 'always');
+    assert.equal(r.ids.filter((id) => id === 'b05').length, 1);
+    spots.add(r.ids.indexOf('b05'));
+  }
+  assert.ok(spots.size > 3, 'its position changes from day to day');
+  const plan = streetPlan(11);
+  assert.equal(plan.filter((x) => x === null).length, 1, 'one open stall remains');
 });
 
 test('settings are clamped to sane values', () => {

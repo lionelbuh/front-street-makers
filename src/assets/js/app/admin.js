@@ -169,7 +169,7 @@ function renderDetail() {
       ${field('summary', 'One-sentence summary', b.summary, { max: 160 })}
       ${field('description', 'Description', b.description, { rows: 5, max: 1500 })}
       <div class="field-row">
-        <div class="field"><label for="d-city">City</label><select id="d-city" name="city">${CITIES.map((c) => opt(c, c, b.city)).join('')}</select></div>
+        <div class="field"><label for="d-city">City</label><select id="d-city" name="city">${[...CITIES.filter((c) => c !== 'Other'), ...(CITIES.includes(b.city) ? [] : [b.city])].map((c) => opt(c, c, b.city)).join('')}</select></div>
         ${field('area', 'Service area (no home address)', b.area, { max: 160 })}
       </div>
       <div class="field-row">
@@ -213,7 +213,8 @@ function renderDetail() {
 
     <section class="detail-sec">
       <h3>Feature on the street</h3>
-      <p class="hint">Pinned businesses stand on the street on the chosen days, ahead of the rotation.</p>
+      <label class="check"><input type="checkbox" id="always-toggle"${(state.settings.always || []).includes(b.id) ? ' checked' : ''}> <span><strong>Always on the street</strong>: every day, in a different spot, on top of the daily rotation (up to 2 businesses).</span></label>
+      <p class="hint">Or pin it for chosen days only (an event, an opening): it then stands on the street ahead of the rotation.</p>
       <ul class="pin-list">${pins.map((p, i) => `<li>${esc(p.from)} → ${esc(p.to)} <button type="button" class="link-button" data-unpin="${i}">Remove</button></li>`).join('') || '<li class="hint">Not pinned.</li>'}</ul>
       <div class="field-row field-row--end">
         <div class="field"><label for="pin-from">From</label><input type="date" id="pin-from" value="${todayInTemecula()}"></div>
@@ -295,6 +296,17 @@ function bindDetail() {
     toast('Photo removed.');
     openDetail(b.id);
   }));
+  $('#always-toggle').addEventListener('change', async (e) => {
+    const current = state.settings.always || [];
+    if (e.target.checked && current.length >= 2) {
+      e.target.checked = false;
+      toast('Two businesses are already always on the street. Remove one first (Daily rotation tab).', true);
+      return;
+    }
+    const always = e.target.checked ? [...current, b.id] : current.filter((id) => id !== b.id);
+    state.settings = (await guard(() => A.saveSettings({ ...state.settings, always }))).settings;
+    toast(e.target.checked ? (b.status === 'approved' ? 'Now on the street every day.' : 'Saved. It will be on the street every day once approved.') : 'Back in the normal rotation.');
+  });
   $('#pin-add').addEventListener('click', async () => {
     const from = $('#pin-from').value, to = $('#pin-to').value;
     if (!from || !to || to < from) { toast('Choose a start date and an end date on or after it.', true); return; }
@@ -333,6 +345,9 @@ async function loadRotation() {
   $('#count-out').textContent = settings.count;
   const names = new Map();
   preview.days.forEach((d) => d.featured.forEach((f) => names.set(f.id, f.name)));
+  $('#always-list').innerHTML = (settings.always || []).length
+    ? settings.always.map((id) => `<li>${esc(names.get(id) || id)} <button type="button" class="link-button" data-always="${esc(id)}">Remove</button></li>`).join('')
+    : '<li class="hint">None. Tick “Always on the street” on a business to add it.</li>';
   $('#pins').innerHTML = settings.pins.length
     ? settings.pins.map((p, i) => `<li>${esc(names.get(p.id) || p.id)} · ${esc(p.from)} → ${esc(p.to)} <button type="button" class="link-button" data-pin="${i}">Remove</button></li>`).join('')
     : '<li class="hint">No manual pins. Pin a business from its application.</li>';
@@ -352,6 +367,13 @@ $('#rotation-form').addEventListener('submit', async (e) => {
 $('#reshuffle').addEventListener('click', async () => {
   state.settings = (await guard(() => A.saveSettings({ ...state.settings, seed: Math.random().toString(36).slice(2, 10) }))).settings;
   toast('New order saved. Fair rotation restarts from this order.');
+  loadRotation();
+});
+$('#always-list').addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-always]');
+  if (!b) return;
+  const always = (state.settings.always || []).filter((id) => id !== b.dataset.always);
+  state.settings = (await guard(() => A.saveSettings({ ...state.settings, always }))).settings;
   loadRotation();
 });
 $('#pins').addEventListener('click', async (e) => {

@@ -41,15 +41,18 @@
     <div class="admin-panel" data-panel="rotation" role="tabpanel" hidden>
       <p class="section-text">Each day the street shows a fair rotation of approved businesses (<span id="approved-count">0</span> approved). Pinned businesses come first, new businesses get a welcome boost, then everyone else takes turns. Nobody repeats before everyone has had a turn.</p>
       <form id="rotation-form" class="rotation-form">
-        <div class="field"><label for="r-count">Businesses on the street each day: <output id="count-out" for="r-count">8</output></label><input id="r-count" name="count" type="range" min="1" max="10" step="1"></div>
+        <div class="field"><label for="r-count">Rotating businesses on the street each day: <output id="count-out" for="r-count">10</output></label><input id="r-count" name="count" type="range" min="1" max="10" step="1"></div>
         <div class="field"><label for="r-newdays">Welcome boost for new businesses (days)</label><input id="r-newdays" name="newDays" type="number" min="0" max="90"></div>
         <div class="field"><label for="r-newmax">New businesses boosted per day, at most</label><input id="r-newmax" name="newMax" type="number" min="0" max="10"></div>
         <div class="form-actions"><button type="submit" class="btn">Save rotation</button><button type="button" class="btn btn-ghost" id="reshuffle">Reshuffle the order</button></div>
       </form>
+      <h2 class="admin-sub">Always on the street</h2>
+      <p class="hint">Shown every day in a different spot, on top of the businesses above.</p>
+      <ul id="always-list" class="pin-list"></ul>
       <h2 class="admin-sub">Manual pins</h2>
       <ul id="pins" class="pin-list"></ul>
       <h2 class="admin-sub">Next 7 days</h2>
-      <p class="legend"><span class="feat feat-pinned">pinned</span> <span class="feat feat-new">new</span> <span class="feat feat-rotation">rotation</span></p>
+      <p class="legend"><span class="feat feat-always">always</span> <span class="feat feat-pinned">pinned</span> <span class="feat feat-new">new</span> <span class="feat feat-rotation">rotation</span></p>
       <div class="table-wrap"><table class="admin-table"><tbody id="rotation-preview"></tbody></table></div>
     </div>
 

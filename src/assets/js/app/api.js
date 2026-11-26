@@ -187,7 +187,11 @@ const demo = {
     if (v.name.length < 2) errors.name = 'Enter your business name.';
     if (!KIND_BY_ID[v.kind]) errors.kind = 'Choose what you offer.';
     if (v.summary.length < 10) errors.summary = 'Write one sentence about what you make or do.';
-    if (!CITIES.includes(v.city)) errors.city = 'Choose your city.';
+    if (v.city === 'Other') {
+      const other = g('city_other');
+      if (other.length < 2) errors.city_other = 'Tell us which city.';
+      else v.city = other;
+    } else if (!CITIES.includes(v.city)) errors.city = 'Choose your city.';
     if (v.area.length < 3) errors.area = 'Say where you serve customers (no street address needed).';
     if (v.first_name.length < 1) errors.first_name = 'Enter your first name.';
     if (![v.public_email, v.public_phone, v.website, v.order_url, v.instagram, v.facebook, v.tiktok].some(Boolean)) {

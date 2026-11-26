@@ -67,7 +67,7 @@ function renderDirectory(all, featuredIds) {
 
   // fill selects
   $('#f-kind').insertAdjacentHTML('beforeend', KINDS.map((k) => `<option value="${k.id}">${esc(k.label)}</option>`).join(''));
-  const cities = CITIES.filter((c) => c === 'Other' || all.some((b) => b.city === c));
+  const cities = CITIES.filter((c) => (c === 'Other' ? all.some((b) => !CITIES.includes(b.city)) : all.some((b) => b.city === c)));
   $('#f-city').insertAdjacentHTML('beforeend', cities.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join(''));
 
   // restore filters from the address (shareable searches)
@@ -90,7 +90,7 @@ function renderDirectory(all, featuredIds) {
     shown = all.filter((b) =>
       (!c || b.category === c) &&
       (!kind || b.kind === kind) &&
-      (!city || b.city === city) &&
+      (!city || b.city === city || (city === 'Other' && !CITIES.includes(b.city))) &&
       (!today || featuredIds.has(b.id)) &&
       (!q || norm([b.name, b.type, b.summary, b.description, b.area, b.city].join(' ')).includes(q)));
     results.innerHTML = shown.length

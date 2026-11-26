@@ -27,6 +27,14 @@ if (CONFIG.TURNSTILE_SITE_KEY && !DEMO_MODE) {
   document.head.appendChild(s);
 }
 
+// "Other" city → ask which one
+form.city.addEventListener('change', () => {
+  const other = form.city.value === 'Other';
+  $('#city-other-field').hidden = !other;
+  form.city_other.required = other;
+  if (other) form.city_other.focus();
+});
+
 // licensing answer → guidance
 function updateGuidance() {
   const v = (form.querySelector('input[name="license_status"]:checked') || {}).value;

@@ -1,11 +1,15 @@
 <!--{"path":"get-listed/","title":"Get Listed","description":"Apply for a free listing on Front Street Makers: home-based businesses and independent micro-businesses in Temecula, Murrieta and nearby.","nav":"getlisted","page":"get-listed","module":"get-listed.js"}-->
 <section class="intro wrap">
   <p class="kicker">Get listed · free</p>
-  <h1>Take a stall on Front Street.</h1>
+  <h1>Take a stall on Front Street. It's free.</h1>
   <p class="lead">Listing your business is free: no subscription, commission or paid ranking. We review every application by hand, then your business joins the directory and takes turns on the illustrated street.</p>
 </section>
 
 <div class="rubrics wrap">
+  <div class="free-banner" role="note">
+    <span class="free-big">100% free</span>
+    <p><strong>Your stall costs nothing. Ever.</strong> No sign-up fee, no subscription, no commission on your sales, no paid ranking. Every approved business gets the same chance on the street.</p>
+  </div>
   <section aria-labelledby="who-title">
     <div class="section-head"><h2 id="who-title">Who can apply</h2></div>
     <div class="cat-cards">
@@ -49,6 +53,7 @@
         <div class="field"><label for="description">Tell neighbors more <span class="opt">(optional)</span></label><textarea id="description" name="description" rows="5" maxlength="1500" data-max="1500" placeholder="What makes your work special, how ordering works, seasons, custom orders…"></textarea></div>
         <div class="field-row">
           <div class="field"><label for="city">City <span class="req">*</span></label><select id="city" name="city" required><option value="">Choose your city</option></select></div>
+          <div class="field" id="city-other-field" hidden><label for="city_other">Which city? <span class="req">*</span></label><input id="city_other" name="city_other" maxlength="40" autocomplete="address-level2"></div>
           <div class="field"><label for="area">Where do customers find you? <span class="req">*</span></label><input id="area" name="area" required maxlength="160" placeholder="Porch pickup in Temecula, ships in the valley…"><p class="hint">Never your street address: home addresses are never published.</p></div>
         </div>
       </fieldset>
@@ -59,6 +64,9 @@
         <div class="field-row">
           <div class="field"><label for="website">Website</label><input id="website" name="website" inputmode="url" placeholder="yourbusiness.com"></div>
           <div class="field"><label for="order_url">Ordering or booking link</label><input id="order_url" name="order_url" inputmode="url" placeholder="Square, Etsy, Calendly…"></div>
+        </div>
+        <div class="website-offer">
+          <p><strong>No website yet?</strong> That's fine: your free listing and an Instagram or Facebook page are enough to start. If you'd like your own simple website too, we can build a first one for a one-time <strong>$100</strong>. It's optional and separate from your free listing. Ask us at hello@frontstreetmakers.com.</p>
         </div>
         <div class="field-row">
           <div class="field"><label for="instagram">Instagram</label><input id="instagram" name="instagram" placeholder="@yourbusiness"></div>

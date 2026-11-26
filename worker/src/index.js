@@ -270,7 +270,11 @@ async function createApplication(request, env) {
   if (v.name.length < 2) errors.name = 'Enter your business name.';
   if (!KIND_BY_ID[v.kind]) errors.kind = 'Choose what you offer.';
   if (v.summary.length < 10) errors.summary = 'Write one sentence about what you make or do.';
-  if (!CITIES.includes(v.city)) errors.city = 'Choose your city.';
+  if (v.city === 'Other') {
+    const other = text(form.get('city_other'), 40);
+    if (other.length < 2) errors.city_other = 'Tell us which city.';
+    else v.city = other;
+  } else if (!CITIES.includes(v.city)) errors.city = 'Choose your city.';
   if (v.area.length < 3) errors.area = 'Say where you serve customers (no street address needed).';
   if (v.public_email && !isEmail(v.public_email)) errors.public_email = 'This email address does not look right.';
   if (v.first_name.length < 1) errors.first_name = 'Enter your first name.';
@@ -395,7 +399,10 @@ async function adminUpdate(request, env, id) {
   }
   if ('category' in body) { if (CATEGORIES[body.category]) set.category = body.category; else errors.category = 'Unknown category.'; }
   if ('kind' in body) { if (KIND_BY_ID[body.kind]) set.kind = body.kind; else errors.kind = 'Unknown kind.'; }
-  if ('city' in body) { if (CITIES.includes(body.city)) set.city = body.city; else errors.city = 'Unknown city.'; }
+  if ('city' in body) {
+    const c = text(body.city, 40);
+    if (c.length >= 2 && c !== 'Other') set.city = c; else errors.city = 'Enter a city.';
+  }
   if ('license_status' in body) { if (LICENSE_OPTIONS.some((o) => o.id === body.license_status)) set.license_status = body.license_status; else errors.license_status = 'Unknown answer.'; }
   if ('wants_help' in body) set.wants_help = body.wants_help ? 1 : 0;
   if ('stall' in body && body.stall) {

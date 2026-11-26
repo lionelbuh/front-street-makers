@@ -5,6 +5,8 @@
  * a date, decide which businesses stand on the illustrated street that day.
  *
  * Fairness rules
+ *   0. "Always on the street" businesses (chosen by the admin) appear every day,
+ *      on top of the daily count.
  *   1. Manual pins first: the admin can feature a business on chosen dates.
  *   2. New businesses next: anyone approved in the last `newDays` days gets
  *      initial visibility (at most `newMax` of them per day, newest first).
@@ -15,8 +17,9 @@
  */
 
 export const STREET_SLOTS = 12;
-export const MAX_FEATURED = 10; // always leaves at least two "open stall" slots
-export const DEFAULT_SETTINGS = Object.freeze({ count: 8, newDays: 14, newMax: 3, seed: 'temecula', pins: [] });
+export const MAX_FEATURED = 10; // rotating businesses per day
+export const MAX_ALWAYS = 2; // "always on the street" businesses, on top of the rotation (at least one open stall remains)
+export const DEFAULT_SETTINGS = Object.freeze({ count: 10, newDays: 14, newMax: 3, seed: 'temecula', pins: [], always: [] });
 
 /** Small stable string hash (FNV-1a, 32 bit). */
 export function hash(str) {
@@ -53,6 +56,7 @@ export function normalizeSettings(s = {}) {
   out.newMax = Math.max(0, Math.min(out.count, Math.round(Number(out.newMax) || 0)));
   out.seed = String(out.seed || DEFAULT_SETTINGS.seed);
   out.pins = Array.isArray(out.pins) ? out.pins.filter((p) => p && p.id && p.from && p.to) : [];
+  out.always = Array.isArray(out.always) ? [...new Set(out.always.filter((id) => typeof id === 'string' && id))].slice(0, MAX_ALWAYS) : [];
   return out;
 }
 
@@ -67,6 +71,9 @@ export function featuredForDate(businesses, settings, date) {
   const byId = new Map(businesses.map((b) => [b.id, b]));
   const ids = [];
   const reasons = {};
+  // "always" businesses stand on the street every day, on top of the daily count
+  const always = s.always.filter((id) => byId.has(id));
+  for (const id of always) reasons[id] = 'always';
   const add = (id, why) => {
     if (ids.length < s.count && byId.has(id) && !reasons[id]) {
       ids.push(id);
@@ -101,7 +108,10 @@ export function featuredForDate(businesses, settings, date) {
     const start = ((dayNumber(date) * s.count) % n + n) % n;
     for (let k = 0; k < n && ids.length < s.count; k++) add(order[(start + k) % n], 'rotation');
   }
-  return { ids, reasons };
+  // everyone, "always" businesses included, stands in a different spot each day
+  const day = String(date);
+  const placed = [...always, ...ids].sort((a, b) => hash(day + '|' + a) - hash(day + '|' + b) || (a < b ? -1 : 1));
+  return { ids: placed, reasons };
 }
 
 /**
