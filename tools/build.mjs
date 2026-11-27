@@ -22,7 +22,7 @@ const part = (name) => readFileSync(src(`partials/${name}.html`), 'utf8');
 const today = new Date().toISOString().slice(0, 10);
 const DEFAULT_OG = `${SITE}/og-image.jpg`;
 
-const MARKET_SCRIPTS = ['market/sponsors.js', 'market/street-scene.js', 'market/stall.js', 'market/street.js', 'market/crowd.js'];
+const MARKET_SCRIPTS = ['market/sponsors.js', 'market/street-scene.js', 'market/stall.js', 'market/street.js', 'market/crowd.js', 'market/entrance.js'];
 const NAV = ['marketplace', 'community', 'startup', 'getlisted'];
 
 rmSync(out, { recursive: true, force: true });

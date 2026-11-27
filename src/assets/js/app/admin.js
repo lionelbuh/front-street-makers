@@ -7,7 +7,7 @@ import { $, $$, esc, root, bootChrome, showFieldErrors } from './ui.js';
 
 bootChrome();
 const A = api.admin;
-const DISPLAYS = [...new Set(KINDS.map((k) => k.display))];
+const DISPLAYS = [...new Set([...KINDS.map((k) => k.display), 'sweets'])];
 const STATUS_LABEL = Object.fromEntries(STATUSES.map((s) => [s.id, s.label]));
 const LICENSE_LABEL = Object.fromEntries(LICENSE_OPTIONS.map((o) => [o.id, o.label]));
 const fmtDate = (iso) => (iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—');
@@ -261,7 +261,7 @@ function updatePreview() {
   const p = formPatch(form);
   const b = state.current.business;
   const st = { ...(b.stall || {}), ...p.stall };
-  $('#stall-preview').innerHTML = window.TH.renderStall(forStall({ id: b.id, name: p.name || b.name, category: p.category, stall: st, isDemo: false }));
+  $('#stall-preview').innerHTML = window.TH.renderChalet(forStall({ id: b.id, name: p.name || b.name, category: p.category, stall: st, isDemo: false }));
 }
 function bindDetail() {
   const form = $('#detail-form');

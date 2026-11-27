@@ -25,7 +25,7 @@ const MAX_PHOTOS = 6;
 const MAX_PHOTO_BYTES = 3 * 1024 * 1024;
 const IMAGE_TYPES = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' };
 const SESSION_HOURS = 12;
-const DISPLAYS = ['bakery', 'honey', 'candles', 'soap', 'jewelry', 'ceramics', 'art', 'textiles', 'leather', 'plants', 'services'];
+const DISPLAYS = ['sweets', 'bakery', 'honey', 'candles', 'soap', 'jewelry', 'ceramics', 'art', 'textiles', 'leather', 'plants', 'services'];
 
 /* ------------------------------------------------------------------ utils */
 const nowIso = () => new Date().toISOString();

@@ -78,10 +78,14 @@ await check('home: street shows today\'s stalls and open stalls', async () => {
   const page = await newPage();
   await page.goto(`${base}/`);
   await page.waitForSelector('.stall');
-  assert.equal(await page.locator('.stall').count(), 12);
+  assert.equal(await page.locator('.stall').count(), 14, 'two rows of seven chalets');
   const open = await page.locator('.stall--open').count();
-  assert.ok(open >= 2, 'at least two open stalls');
-  assert.equal(await page.locator('#stall-list .biz-card').count(), 12 - open);
+  assert.ok(open >= 1, 'at least one open chalet');
+  assert.equal(await page.locator('#stall-list .biz-card').count(), 14 - open);
+  assert.ok(await page.isVisible('#entrance'), 'the visit starts at the arch');
+  await page.locator('#entrance').click({ position: { x: 30, y: 60 } }); // a house behind the arch walks in too
+  await page.waitForFunction(() => document.getElementById('entrance').hidden);
+  assert.ok(await page.isVisible('#to-arch'), 'a way back to the arch');
   await page.locator('.stall:not(.stall--open)').first().click({ force: true });
   await page.waitForSelector('#profile[open]');
   assert.ok((await page.textContent('#profile-title')).length > 2);

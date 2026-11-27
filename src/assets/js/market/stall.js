@@ -46,6 +46,31 @@
       s += circ(196, COUNTER_Y - 60, 3, 'fill="#b5302a"');
       return s;
     },
+    sweets() {
+      let s = '';
+      // kraft boxes of meringue kisses
+      [30, 118].forEach((bx) => {
+        s += rect(bx, COUNTER_Y - 30, 82, 30, 'rx="2" fill="#c59b6a"') + rect(bx, COUNTER_Y - 30, 82, 4, 'fill="rgba(0,0,0,.12)"');
+        for (let r = 0; r < 2; r++) for (let i = 0; i < 4; i++) {
+          const x = bx + 12 + i * 19, y = COUNTER_Y - 8 - r * 12;
+          s += `<path d="M${x - 8},${y} q0,-7 8,-15 q8,8 8,15 z" fill="#fbf7ee" stroke="#e2d6c2" stroke-width="1"/>`;
+          s += `<path d="M${x - 4},${y - 4} q4,-3 8,0" stroke="#e8decd" stroke-width="1" fill="none"/>`;
+        }
+      });
+      // tall glass jar
+      s += rect(206, COUNTER_Y - 46, 22, 46, 'rx="4" fill="rgba(255,255,255,.55)" stroke="rgba(90,60,40,.35)"');
+      for (let i = 0; i < 3; i++) s += ell(217, COUNTER_Y - 9 - i * 12, 7, 5, 'fill="#fbf7ee"');
+      s += rect(204, COUNTER_Y - 50, 26, 6, 'rx="2" fill="#b5302a"');
+      return s;
+    },
+    sweetsShelf() {
+      let s = '';
+      [44, 80, 116, 152, 188].forEach((x, i) => {
+        s += rect(x - 14, SHELF_Y - 18, 28, 18, `rx="2" fill="${i % 2 ? '#d4b58c' : '#f1e6d2'}" stroke="rgba(90,60,40,.3)"`);
+        s += rect(x - 3, SHELF_Y - 18, 6, 18, 'fill="#b5302a" opacity=".85"');
+      });
+      return s;
+    },
     bakeryShelf() {
       let s = '';
       [44, 74, 104, 134, 164, 194].forEach((x, i) => {
@@ -544,6 +569,101 @@
       <text x="120" y="170" text-anchor="middle" class="stall-small" font-size="8.4" fill="#6b4a32" letter-spacing="1">LISTINGS ARE ALWAYS FREE</text>
       ${line2(70, 88, 70, 118)}${line2(170, 88, 170, 118)}
     </svg>`;
+  };
+
+  /* ---------------- chalets ---------------- */
+  const poly = (pts, a = '') => `<polygon points="${pts.map((p) => n(p[0]) + ',' + n(p[1])).join(' ')}" ${a}/>`;
+  /* What each shop sells, at a glance: a word on the counter and a hanging
+     blade sign with a pictogram, one per type of business. */
+  const TYPE_SIGN = {
+    sweets: ['SWEETS', 'sweets'], bakery: ['BAKERY', 'bread'], honey: ['PANTRY', 'jar'], candles: ['CANDLES', 'candle'],
+    soap: ['SOAP & BODY', 'soap'], jewelry: ['JEWELRY', 'ring'], ceramics: ['POTTERY', 'vase'], art: ['ART', 'palette'],
+    textiles: ['TEXTILES', 'spool'], leather: ['LEATHER & WOOD', 'bag'], plants: ['PLANTS', 'sprout'], services: ['CLASSES', 'pencil']
+  };
+  const INK2 = 'stroke="#3b2f25" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"';
+  const ICONS = {
+    sweets: `<path d="M-9,7 q0,-9 9,-17 q9,8 9,17 z" fill="#fbf7ee" ${INK2}/><path d="M-4,2 q4,-3 8,0 M-2,-3 q2,-2 4,0" fill="none" ${INK2}/>`,
+    bread: `<ellipse cx="0" cy="2" rx="12" ry="7.5" fill="#d49a52" ${INK2}/><path d="M-6,-2 l3,5 M0,-3 l3,5 M6,-2 l3,5" fill="none" stroke="#8a5a2a" stroke-width="1.6" stroke-linecap="round"/>`,
+    jar: `<rect x="-8" y="-6" width="16" height="16" rx="3" fill="#e9b949" ${INK2}/><rect x="-9" y="-11" width="18" height="6" rx="2" fill="#b5302a" ${INK2}/><path d="M-4,1 h8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>`,
+    candle: `<rect x="-5" y="-4" width="10" height="15" rx="1.5" fill="#f1e6d2" ${INK2}/><path d="M0,-4 v-3" ${INK2}/><path d="M0,-14 q4,4 0,7 q-4,-3 0,-7 z" fill="#f2a33a" ${INK2}/>`,
+    soap: `<rect x="-11" y="-3" width="22" height="12" rx="4" fill="#e7a1a6" ${INK2}/><circle cx="-4" cy="-8" r="3" fill="#fff" ${INK2}/><circle cx="4" cy="-11" r="2.2" fill="#fff" ${INK2}/>`,
+    ring: `<circle cx="0" cy="3" r="8" fill="none" stroke="#d4b36a" stroke-width="3.4"/><circle cx="0" cy="3" r="8" fill="none" ${INK2} stroke-width="1"/><path d="M-4,-9 h8 l3,4 l-7,5 l-7,-5 z" fill="#9fd3e0" ${INK2}/>`,
+    vase: `<path d="M-4,-11 h8 v3 q8,5 6,13 q-2,6 -10,6 q-8,0 -10,-6 q-2,-8 6,-13 z" fill="#6f9bb0" ${INK2}/><path d="M-7,3 h14" stroke="#fff" stroke-opacity=".7" stroke-width="1.6"/>`,
+    palette: `<path d="M0,-11 q12,0 12,10 q0,6 -6,6 q-3,0 -3,3 q0,4 -4,4 q-11,0 -11,-11 q0,-12 12,-12 z" fill="#e9dcc0" ${INK2}/><circle cx="-5" cy="-4" r="2.2" fill="#c8423b"/><circle cx="1" cy="-6" r="2.2" fill="#3f6c8c"/><circle cx="6" cy="-2" r="2.2" fill="#e9c46a"/><circle cx="-6" cy="3" r="2.2" fill="#5c7f48"/>`,
+    spool: `<rect x="-9" y="-11" width="18" height="4" rx="1.5" fill="#b38a60" ${INK2}/><rect x="-9" y="8" width="18" height="4" rx="1.5" fill="#b38a60" ${INK2}/><rect x="-6" y="-7" width="12" height="15" fill="#c8423b" ${INK2}/><path d="M6,0 q8,2 6,9" fill="none" ${INK2}/>`,
+    bag: `<path d="M-6,-6 q0,-7 6,-7 q6,0 6,7" fill="none" ${INK2}/><rect x="-11" y="-6" width="22" height="17" rx="3" fill="#9a6a3e" ${INK2}/><path d="M-11,0 h22" ${INK2}/>`,
+    sprout: `<path d="M-8,3 h16 l-2,9 h-12 z" fill="#b8643f" ${INK2}/><path d="M0,3 v-8" ${INK2}/><path d="M0,-4 q-9,-1 -9,-8 q8,0 9,8 z M0,-6 q8,-1 9,-8 q-9,0 -9,8 z" fill="#7f9c6a" ${INK2}/>`,
+    pencil: `<path d="M-9,9 l3,-8 l11,-11 l5,5 l-11,11 z" fill="#e9c46a" ${INK2}/><path d="M-9,9 l3,-8 l5,5 z" fill="#f1e6d2" ${INK2}/><path d="M5,-10 l5,5" stroke="#e86f8a" stroke-width="3"/>`
+  };
+  function typeSign(display) { return TYPE_SIGN[display] || ['MAKER', 'sprout']; }
+
+  TH.renderChalet = function (b) {
+    const st = b, c = b.colors || ['#C8902E', '#F2E6CC', '#7C4A2A'];
+    const name = b.isDemo ? String(b.name).replace(/^Sample /, '') : String(b.name);
+    const fs = Math.min(17, 250 / Math.max(8, name.length));
+    const vign = TH.renderGoodsVignette(st).replace('<svg ', '<svg x="40" y="150" width="160" height="86" ');
+    let s = `<svg viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">`;
+    s += ell(120, 294, 122, 7, 'fill="rgba(30,20,10,.28)"');
+    // walls of vertical planks
+    s += rect(22, 112, 196, 178, 'fill="#8a6040"');
+    for (let x = 30; x < 218; x += 14) s += rect(x, 112, 1.6, 178, 'fill="rgba(0,0,0,.18)"');
+    // interior: the lit display window with the shop's own goods
+    s += rect(38, 148, 164, 90, 'fill="#3a2a1e"') + vign;
+    s += `<g class="chalet-glow"><rect x="38" y="148" width="164" height="90" fill="#ffcf7a" opacity=".2"/></g>`;
+    s += rect(34, 144, 172, 4, 'fill="#5a4130"') + rect(34, 144, 4, 96, 'fill="#5a4130"') + rect(202, 144, 4, 96, 'fill="#5a4130"');
+    // propped-up shutter awning
+    s += poly([[30, 128], [210, 128], [226, 152], [14, 152]], `fill="${c[0]}"`);
+    for (let i = 0; i < 6; i++) s += poly([[30 + i * 30 + 8, 128], [30 + i * 30 + 20, 128], [14 + i * 35.3 + 25, 152], [14 + i * 35.3 + 10, 152]], `fill="${c[1]}" opacity=".55"`);
+    s += rect(14, 150, 212, 4, 'fill="rgba(0,0,0,.25)"');
+    s += `<path d="M24,154 L16,170 M216,154 L224,170" stroke="#5a4130" stroke-width="3"/>`;
+    // counter with an alpine heart cut-out
+    s += rect(28, 236, 184, 10, 'fill="#b38a60"') + rect(28, 244, 184, 2, 'fill="rgba(0,0,0,.25)"');
+    s += rect(32, 246, 176, 44, `fill="${c[2]}"`);
+    const [word, icon] = typeSign(st.display);
+    const wfs = Math.min(17, 150 / Math.max(5, word.length * 0.72));
+    s += rect(44, 254, 152, 28, `rx="3" fill="none" stroke="${c[1]}" stroke-opacity=".6" stroke-width="2"`);
+    s += `<text x="120" y="${n(268 + wfs * 0.36)}" text-anchor="middle" font-size="${n(wfs)}" class="stall-small" fill="${c[1]}" letter-spacing="1.6">${word}</text>`;
+    s += `<path d="M120,288 C114,285 113,282 116,281 C118,280.5 119,281.5 120,282.5 C121,281.5 122,280.5 124,281 C127,282 126,285 120,288 Z" fill="${c[1]}" opacity=".8"/>`;
+    // steep roof, frosted
+    s += poly([[0, 120], [120, 18], [240, 120], [232, 126], [120, 32], [8, 126]], 'fill="#4a3426"');
+    s += poly([[16, 116], [120, 30], [224, 116], [216, 116], [120, 40], [24, 116]], 'fill="#3a291e"');
+    s += poly([[36, 114], [120, 44], [204, 114]], 'fill="#a77b52"');
+    for (let y = 60; y < 114; y += 9) s += rect(120 - (y - 44) * 1.2, y, (y - 44) * 2.4, 1.2, 'fill="rgba(0,0,0,.12)"');
+    s += `<path d="M-2,121 L120,16 L242,121 L236,124 q-6,8 -10,0 q-5,7 -10,-2 L120,30 L22,113 q-4,9 -10,2 q-5,7 -10,-1 Z" fill="#f7f5f0"/>`;
+    // carved name board in the gable
+    s += rect(46, 76, 148, 30, 'rx="4" fill="#efe3c8" stroke="#5a4130" stroke-width="3"');
+    s += `<text x="120" y="${n(91 + fs * 0.35)}" text-anchor="middle" font-size="${n(fs)}" class="stall-name">${esc(name)}</text>`;
+    // fir garland with red bows and bulbs along the eaves
+    let gar = 'M22,118', bul = '', bulG = '';
+    for (let i = 0; i < 4; i++) gar += ` q24.5,16 49,0`;
+    s += `<path d="${gar}" stroke="#2f5a37" stroke-width="8" fill="none" stroke-linecap="round"/><path d="${gar}" stroke="#4a7a50" stroke-width="3" stroke-dasharray="3 4" fill="none"/>`;
+    [22, 71, 120, 169, 218].forEach((x) => (s += `<path d="M${x - 7},114 l7,5 l7,-5 l-2,9 l-5,-4 l-5,4 Z" fill="#b5302a"/>`));
+    for (let i = 0; i < 8; i++) { const x = 34 + i * 24.5, y = 126 + (i % 2 ? 2 : 6); bul += ell(x, y, 3, 4, 'fill="#f4ecd2"'); bulG += circ(x, y, 12, 'fill="url(#halo)"') + ell(x, y, 2.8, 3.8, 'fill="#fff1c9"'); }
+    s += bul + `<g class="chalet-glow">${bulG}</g>`;
+    // hanging blade sign: a wrought-iron bracket and a round board with the type's pictogram
+    s += `<path d="M216,128 h30 M222,128 q10,10 20,0" stroke="#3a3632" stroke-width="2.6" fill="none"/><path d="M234,128 v8 M246,128 v8" stroke="#3a3632" stroke-width="1.4"/>`;
+    s += `<g class="blade"><circle cx="240" cy="156" r="20" fill="#efe3c8" stroke="#5a4130" stroke-width="3.4"/><g transform="translate(240,157)">${ICONS[icon]}</g></g>`;
+    // category flag
+    s += circ(222, 268, 9, `fill="${b.category === 'home' ? '#4f6b45' : '#7a2a3a'}" stroke="#f4efe4" stroke-width="2"`);
+    if (b.isDemo) s += `<g transform="translate(176,58)"><rect width="38" height="14" rx="2" class="demo-chip"/><text x="19" y="10.2" text-anchor="middle" font-size="8.5" class="stall-small demo-chip-text" letter-spacing="1.4">DEMO</text></g>`;
+    return s + '</svg>';
+  };
+
+  /* An open chalet: shows that the street has room, and that listings are free. */
+  TH.renderEmptyChalet = function () {
+    let s = `<svg viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">`;
+    s += ell(120, 294, 122, 7, 'fill="rgba(30,20,10,.18)"');
+    s += rect(22, 112, 196, 178, 'fill="#8a6040" opacity=".55"');
+    for (let x = 30; x < 218; x += 14) s += rect(x, 112, 1.6, 178, 'fill="rgba(0,0,0,.12)"');
+    s += poly([[0, 120], [120, 18], [240, 120], [232, 126], [120, 32], [8, 126]], 'fill="#4a3426" opacity=".7"');
+    s += poly([[36, 114], [120, 44], [204, 114]], 'fill="#a77b52" opacity=".6"');
+    s += `<path d="M-2,121 L120,16 L242,121 L236,124 q-6,8 -10,0 q-5,7 -10,-2 L120,30 L22,113 q-4,9 -10,2 q-5,7 -10,-1 Z" fill="#f7f5f0"/>`;
+    s += `<rect x="40" y="150" width="160" height="84" rx="6" fill="#efe3c8" stroke="${WOOD_DK}" stroke-width="4"/>`;
+    s += `<text x="120" y="184" text-anchor="middle" class="stall-name" font-size="19">Your shop here</text>`;
+    s += `<text x="120" y="210" text-anchor="middle" class="stall-small" font-size="9" fill="#6b4a32" letter-spacing="1.2">THIS CHALET IS OPEN</text>`;
+    s += rect(28, 236, 184, 10, 'fill="#b38a60" opacity=".8"') + rect(32, 246, 176, 44, 'fill="#7a5638" opacity=".75"');
+    s += `<text x="120" y="274" text-anchor="middle" class="stall-small" font-size="14" fill="#f4ecd2" letter-spacing="1.6">FREE STALL</text>`;
+    return s + '</svg>';
   };
 
   /* Larger product illustration for the profile's photo placeholders. */

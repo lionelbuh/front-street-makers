@@ -16,10 +16,10 @@
  * Every approved business stays in the directory whether featured or not.
  */
 
-export const STREET_SLOTS = 12;
-export const MAX_FEATURED = 10; // rotating businesses per day
-export const MAX_ALWAYS = 2; // "always on the street" businesses, on top of the rotation (at least one open stall remains)
-export const DEFAULT_SETTINGS = Object.freeze({ count: 10, newDays: 14, newMax: 3, seed: 'temecula', pins: [], always: [] });
+export const STREET_SLOTS = 14; // two rows of seven chalets
+export const MAX_FEATURED = 13; // rotating businesses per day
+export const MAX_ALWAYS = 2; // "always on the street" businesses, on top of the rotation (the total never exceeds STREET_SLOTS)
+export const DEFAULT_SETTINGS = Object.freeze({ count: 13, newDays: 14, newMax: 3, seed: 'temecula', pins: [], always: [] });
 
 /** Small stable string hash (FNV-1a, 32 bit). */
 export function hash(str) {
@@ -74,8 +74,9 @@ export function featuredForDate(businesses, settings, date) {
   // "always" businesses stand on the street every day, on top of the daily count
   const always = s.always.filter((id) => byId.has(id));
   for (const id of always) reasons[id] = 'always';
+  const room = Math.min(s.count, STREET_SLOTS - always.length);
   const add = (id, why) => {
-    if (ids.length < s.count && byId.has(id) && !reasons[id]) {
+    if (ids.length < room && byId.has(id) && !reasons[id]) {
       ids.push(id);
       reasons[id] = why;
     }
@@ -106,7 +107,7 @@ export function featuredForDate(businesses, settings, date) {
   const n = order.length;
   if (n) {
     const start = ((dayNumber(date) * s.count) % n + n) % n;
-    for (let k = 0; k < n && ids.length < s.count; k++) add(order[(start + k) % n], 'rotation');
+    for (let k = 0; k < n && ids.length < room; k++) add(order[(start + k) % n], 'rotation');
   }
   // everyone, "always" businesses included, stands in a different spot each day
   const day = String(date);

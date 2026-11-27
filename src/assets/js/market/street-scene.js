@@ -19,18 +19,27 @@
   const BASE = 470; // bottom of building facades / top of boardwalk
   const WALK_H = 18;
   const GATE_W = 1500; // width of the gateway (perspective) panel
-  const SLOT_COUNT = 12;
-  const SLOT_START = 1880;
-  const SLOT_GAP = 400;
-  const STALL_W = 240;
-  const STALL_H = 320;
+  // Two rows of chalets, seven columns: the front row stands on the promenade,
+  // the back row a little further away, offset half a column and never quite
+  // aligned (a small fixed jitter), like a real market square.
+  const COLS = 7;
+  const COL_START = 380;
+  const COL_GAP = 640;
+  const STALL_W = 240; // front-row chalet
+  const STALL_H = 300;
   const STALL_BOTTOM = 706;
-  const W = SLOT_START + (SLOT_COUNT - 1) * SLOT_GAP + 860; // 7140
+  const BACK_W = 190, BACK_H = 238, BACK_BOTTOM = 598;
+  const W = COL_START + 320 + (COLS - 1) * COL_GAP + 600; // 5140
+  const JIT = [[-18, 4], [22, -6], [-10, 8], [26, 0], [-24, -4], [12, 6], [-6, -8], [20, 3], [-22, 7], [8, -3], [16, 5], [-14, -7], [24, 2], [-8, 6]];
+  const slotsList = [];
+  for (let c = 0; c < COLS; c++) {
+    [['front', 0, STALL_W, STALL_H, STALL_BOTTOM], ['back', 320, BACK_W, BACK_H, BACK_BOTTOM]].forEach(([row, dx, w, h, bottom]) => {
+      const i = slotsList.length, [jx, jy] = JIT[i];
+      slotsList.push({ index: i, row, col: c, x: COL_START + c * COL_GAP + dx + jx, bottom: bottom + jy, w, h });
+    });
+  }
 
-  TH.STREET = {
-    W, H, BASE, GATE_W, STALL_W, STALL_H, STALL_BOTTOM,
-    slots: Array.from({ length: SLOT_COUNT }, (_, i) => ({ index: i, x: SLOT_START + i * SLOT_GAP }))
-  };
+  TH.STREET = { W, H, BASE, STALL_W, STALL_H, STALL_BOTTOM, COL_START, COL_GAP, slots: slotsList };
 
   /* ---------- tiny SVG helpers ---------- */
   const n = (v) => Math.round(v * 10) / 10;
@@ -1277,6 +1286,13 @@
      ASSEMBLE
      ===================================================================== */
   const FG_W = 1900;
+  /* Pieces the entrance view (entrance.js) reuses to build its 3D lane. */
+  TH.SCENE_KIT = {
+    BASE, H, n, rect, poly, circ, ell, gatewayArch, tree, twinLamp, falseFront,
+    hotelTemecula, mercantile, bank1914, weltyStore, machadoStore, westernBalcony, victorianGrey, theaterRow, woodClock,
+    lights: () => LIGHTS.join(''), resetLights: () => { LIGHTS = []; }
+  };
+
   TH.renderStreet = function (archSvg, lightsSvg, fgSvg) {
     LIGHTS = [];
     let s = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1306,19 +1322,15 @@
       </linearGradient>
     </defs>`;
 
-    /* --- gateway panel --- */
-    s += `<g class="gateway">${perspectiveStreet()}</g>`;
-
-    /* --- elevation street --- */
-    const x0 = GATE_W - 120;
-    // ground: boardwalk + street
+    /* --- the market square (the gateway arch is its own view: entrance.js) --- */
+    const x0 = 0;
+    // ground: boardwalk along the facades, then the paved square
     s += rect(x0, BASE, W - x0, WALK_H, 'fill="#9c7c5a"');
     s += rect(x0, BASE, W - x0, WALK_H, 'fill="url(#planks)"');
     s += rect(x0, BASE + WALK_H - 3, W - x0, 3, `fill="${WOOD_DK}"`);
-    s += rect(x0, BASE + WALK_H, W - x0, H - BASE - WALK_H, 'class="road"');
+    s += rect(x0, BASE + WALK_H, W - x0, H - BASE - WALK_H, 'class="promenade"');
+    s += rect(x0, BASE + WALK_H, W - x0, H - BASE - WALK_H, 'fill="url(#pavers)"');
     s += rect(x0, BASE + WALK_H, W - x0, H - BASE - WALK_H, 'fill="url(#streetFade)"');
-    // blend the seam between the perspective road and the elevation street
-    s += rect(GATE_W - 150, 620, 300, H - 620, 'class="road"');
     // the promenade: a wider, paved band between the visitor and the stalls
     s += rect(x0, STALL_BOTTOM + 6, W - x0, H - STALL_BOTTOM - 6, 'class="promenade"');
     s += rect(x0, STALL_BOTTOM + 6, W - x0, H - STALL_BOTTOM - 6, 'fill="url(#pavers)"');
@@ -1341,7 +1353,7 @@
       ['tree', 180],
       ['ff', 240, { color: '#d8cdb6', parapet: 'peak' }]
     ];
-    let x = GATE_W;
+    let x = 0;
     let seed = 3;
     seq.forEach(([type, w, o]) => {
       if (type === 'ff') s += falseFront(x, w, o);
@@ -1364,18 +1376,18 @@
     s += tree(x + 60, 260, 91, { top: 150 });
     s += tree(x + 360, 220, 92, { top: 175 });
 
-    // boardwalk props in the gaps between stalls
-    TH.STREET.slots.forEach((slot, i) => {
-      const gx = slot.x + SLOT_GAP / 2;
-      if (i % 3 === 0) s += planter(gx - 40, ['#c8423b', '#e7a1a6', '#f2c14e'][i % 3]);
-      if (i % 4 === 1) s += bench(gx - 60);
-      if (i === 6) s += wagonWheel(gx + 40, BASE - 30, 30);
-    });
-    s += planter(SLOT_START - 200, '#c8423b');
+    // boardwalk props along the facades
+    for (let c = 0; c < COLS; c++) {
+      const gx = COL_START + c * COL_GAP + 160;
+      if (c % 2 === 0) s += planter(gx - 40, ['#c8423b', '#e7a1a6', '#f2c14e'][c % 3]);
+      if (c % 3 === 1) s += bench(gx - 60);
+      if (c === 3) s += wagonWheel(gx + 40, BASE - 30, 30);
+    }
+    s += planter(COL_START - 220, '#c8423b');
 
-    // lamp posts between stalls, with festoon lights strung between them
-    const lamps = [SLOT_START - SLOT_GAP / 2];
-    TH.STREET.slots.forEach((slot) => lamps.push(slot.x + SLOT_GAP / 2));
+    // lamp posts between the front-row chalets, with festoon lights strung high between them
+    const lamps = [COL_START - 200];
+    for (let c = 0; c < COLS; c++) lamps.push(COL_START + c * COL_GAP + 165);
     lamps.forEach((lx, i) => {
       s += twinLamp(lx, STALL_BOTTOM, 334);
       if (i < lamps.length - 1) s += stringLights(lx, 318, lamps[i + 1], 318, 34, 14);
@@ -1393,20 +1405,8 @@
     archSvg.innerHTML = s;
 
     /* --- foreground: the arch and the seam tree sit above the evening lights --- */
-    let fg = `<svg viewBox="0 0 ${FG_W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">`;
-    // seam: large pepper tree + wooden way-sign
-    fg += tree(GATE_W - 150, 280, 55, { top: 120 });
-    fg += rect(GATE_W + 58, 470, 8, 236, `fill="${WOOD_DK}"`);
-    fg += rect(GATE_W - 22, 560, 168, 44, `rx="4" fill="${WOOD_DK}"`) + rect(GATE_W - 17, 565, 158, 34, `rx="3" fill="#efe3c8"`);
-    fg += `<text x="${GATE_W + 62}" y="589" text-anchor="middle" class="sign-paint" font-size="14.5" fill="#3b2f25">Front Street Makers</text>`;
-    fg += poly([[GATE_W - 2, 612], [GATE_W + 128, 612], [GATE_W + 148, 630], [GATE_W + 128, 648], [GATE_W - 2, 648]], `fill="${WOOD_LT}"`);
-    fg += `<text x="${GATE_W + 66}" y="636" text-anchor="middle" class="sign-small" font-size="13" fill="#3b2f25" letter-spacing="1">STALLS THIS WAY →</text>`;
+    fgSvg.innerHTML = ''; // the arch and its lamps now belong to the entrance view
 
-    fg += twinLamp(120, 706, 360) + twinLamp(1380, 706, 360);
-    fg += gatewayArch();
-    fgSvg.innerHTML = fg + '</svg>';
-    fgSvg.style.width = (FG_W / W) * 100 + '%';
-    fgSvg.style.right = 'auto';
 
     lightsSvg.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs><radialGradient id="halo"><stop offset="0" stop-color="#ffd27a" stop-opacity=".75"/><stop offset=".35" stop-color="#ffb24a" stop-opacity=".25"/><stop offset="1" stop-color="#ff9a3a" stop-opacity="0"/></radialGradient></defs>

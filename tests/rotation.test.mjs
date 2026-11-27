@@ -69,7 +69,14 @@ test('"always" businesses appear every day, on top of the count, in a moving spo
   }
   assert.ok(spots.size > 3, 'its position changes from day to day');
   const plan = streetPlan(11);
-  assert.equal(plan.filter((x) => x === null).length, 1, 'one open stall remains');
+  assert.equal(plan.filter((x) => x === null).length, 3, 'three open chalets remain');
+});
+
+test('the street never holds more than its 14 chalets', () => {
+  const r = featuredForDate(biz(30), { count: 13, newDays: 0, always: ['b05', 'b07'] }, '2026-11-24');
+  assert.equal(r.ids.length, 14, 'twelve rotating plus the two always businesses');
+  assert.ok(r.ids.includes('b05') && r.ids.includes('b07'));
+  assert.equal(streetPlan(r.ids.length).filter((x) => x === null).length, 0);
 });
 
 test('settings are clamped to sane values', () => {
@@ -81,14 +88,14 @@ test('settings are clamped to sane values', () => {
 });
 
 test('street plan spreads open stalls between businesses', () => {
-  for (let k = 0; k <= 10; k++) {
+  for (let k = 0; k <= 14; k++) {
     const plan = streetPlan(k);
-    assert.equal(plan.length, 12);
-    assert.equal(plan.filter((x) => x === null).length, 12 - k);
+    assert.equal(plan.length, 14);
+    assert.equal(plan.filter((x) => x === null).length, 14 - k);
     assert.deepEqual(plan.filter((x) => x !== null), Array.from({ length: k }, (_, i) => i));
   }
   const plan = streetPlan(10);
-  assert.ok(plan.indexOf(null) > 0 && plan.indexOf(null) < 11, 'an open stall sits mid-street, not only at the end');
+  assert.ok(plan.indexOf(null) > 0 && plan.indexOf(null) < 13, 'an open stall sits mid-street, not only at the end');
 });
 
 test('dayNumber and addDays agree', () => {

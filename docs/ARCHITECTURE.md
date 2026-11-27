@@ -19,7 +19,9 @@ Files live in `src/assets/js/market/` (street, stalls, crowd, sponsors) and `src
 
 ## Street and stalls are separate
 
-- `street-scene.js` draws the architecture and publishes `TH.STREET.slots`: 12 positions along the street. It never reads business data.
+- `entrance.js` draws the first view: the Temecula arch, centred, with a 3D lane of today's chalets. "Walk in" (or a click anywhere behind the arch) zooms through the arch and reveals the market square. Its unchanging background is a picture made with `node tools/render-entrance.mjs`; rerun it after changing the architecture.
+- `street-scene.js` draws the market square and publishes `TH.STREET.slots`: 14 chalet positions in two staggered rows of seven. It never reads business data.
+- `stall.js` draws each business as a chalet (`TH.renderChalet`): name board, goods in the window, the type on the counter and a hanging sign with the type's pictogram.
 - `stall.js` draws a stall from one business record: awning or gable roof, stripe colors, signboard, illustrated goods, category tag and DEMO chip. It never reads the street.
 - `marketplace.js` assigns today's businesses to slots in order. Unused slots show an "open stall". In Phase 2 the ordered list comes from the daily featured rotation.
 

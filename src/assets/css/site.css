@@ -180,6 +180,7 @@ button { font: inherit; color: inherit; }
 .market { position: relative; }
 .street {
   position: relative;
+  isolation: isolate; /* keeps the crowd's z-index inside the street, under the entrance view */
   height: var(--street-h);
   overflow-x: auto;
   overflow-y: hidden;
@@ -196,7 +197,7 @@ button { font: inherit; color: inherit; }
 .track {
   position: relative;
   height: 100%;
-  width: calc(var(--street-h) * 7140 / 820);
+  width: calc(var(--street-h) * 5140 / 820);
   background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 32%, var(--sky-3) 50%, var(--sky-4) 62%, var(--sky-4) 100%);
 }
 .layer { position: absolute; inset: 0; }
@@ -340,7 +341,47 @@ button { font: inherit; color: inherit; }
 }
 .enter-hint:hover { background: var(--accent); }
 .enter-hint span { display: inline-block; animation: nudge 1.6s ease-in-out infinite; }
-body.past-gate .enter-hint { opacity: 0; transform: translateY(8px); pointer-events: none; }
+body:not(.at-arch) .enter-hint { opacity: 0; transform: translateY(8px); pointer-events: none; }
+.enter-hint { z-index: 4; transition: opacity .3s, transform .3s; }
+
+/* ---------- entrance: the arch first, then the market square ---------- */
+.entrance {
+  position: absolute; left: 0; right: 0; top: 0; height: var(--street-h); z-index: 3;
+  overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  background: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 26%, var(--sky-3) 40%, var(--sky-4) 46%);
+}
+.entrance:focus-visible { outline: 3px solid var(--focus); outline-offset: -4px; }
+.entrance-stage { position: absolute; left: 0; top: 0; width: 2600px; height: 1000px; transform-origin: 0 0; perspective: 1300px; perspective-origin: 1300px 500px; }
+.ent-sky, .ent-bg { position: absolute; left: 0; top: 0; width: 2600px; height: 1000px; max-width: none; }
+.ent-sky svg { width: 100%; height: 100%; display: block; }
+.ent-bg--evening, .market[data-scene="evening"] .ent-bg--day { display: none; }
+.market[data-scene="evening"] .ent-bg--evening { display: block; }
+.ent-world { position: absolute; left: 1300px; top: 720px; width: 0; height: 0; transform-style: preserve-3d; }
+.ent-world > * { position: absolute; }
+.ent-world svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.ent-world svg svg { overflow: hidden; }
+.ent-floor { background-color: var(--promenade); background-image: linear-gradient(90deg, rgba(70,50,35,.18) 3px, transparent 3px), linear-gradient(rgba(70,50,35,.2) 3px, transparent 3px), linear-gradient(90deg, transparent 49.6%, rgba(70,50,35,.25) 49.6% 50.4%, transparent 50.4%); background-size: 76px 44px, 76px 44px, 100% 100%; }
+.ent-walk { background-color: #9c7c5a; background-image: repeating-linear-gradient(rgba(40,25,15,.28) 0 3px, transparent 3px 34px), linear-gradient(90deg, rgba(0,0,0,.18) 0 6px, transparent 6px); }
+.ent-plane { filter: var(--fg-filter); }
+.ent-chalet { transform-origin: 50% 100%; filter: var(--stall-filter); }
+.ent-glow { opacity: var(--lights-o); pointer-events: none; }
+.ent-person { transform-origin: 50% 100%; }
+.ent-arch { position: absolute; top: 0; height: 1000px; filter: var(--fg-filter); pointer-events: none; }
+.ent-arch svg { width: 100%; height: 100%; display: block; }
+.ent-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: ent-sway 6s ease-in-out infinite alternate; }
+@keyframes ent-sway { from { transform: rotate(-.8deg); } to { transform: rotate(.8deg); } }
+.entrance.entering { pointer-events: none; }
+.entrance.entering .ent-world { transition: transform 1.6s cubic-bezier(.55,0,.25,1); transform: translateZ(1150px); }
+.entrance.entering .ent-bg { transition: transform 1.6s cubic-bezier(.55,0,.25,1), opacity .8s .6s; transform: scale(2.4); transform-origin: 50% 50%; opacity: 0; }
+.entrance.entering .ent-arch { transition: transform 1.45s cubic-bezier(.55,0,.25,1), opacity .8s .55s; transform: scale(3.4); transform-origin: 50% 48%; opacity: 0; }
+.entrance.entering { transition: opacity .55s 1.15s; opacity: 0; }
+.chalet-glow { opacity: var(--lights-o); }
+.stall svg svg { overflow: hidden; }
+.blade { transform-box: view-box; transform-origin: 240px 136px; animation: blade 4s ease-in-out infinite alternate; }
+@keyframes blade { from { transform: rotate(-3deg); } to { transform: rotate(3deg); } }
+.to-arch { border: 1px solid var(--ink); background: transparent; border-radius: 4px; padding: 7px 12px; font: 600 .8rem/1 var(--body); cursor: pointer; color: var(--ink); }
+.to-arch:hover { background: var(--ink); color: var(--surface); }
+@media (prefers-reduced-motion: reduce) { .ent-sway, .blade { animation: none; } .entrance.entering, .entrance.entering * { transition: none !important; } }
 @keyframes nudge { 50% { transform: translateX(4px); } }
 
 /* ---------- controls ---------- */
@@ -363,7 +404,6 @@ body.past-gate .enter-hint { opacity: 0; transform: translateY(8px); pointer-eve
 .map-dot--home { background: var(--cat-home); }
 .map-dot--micro { background: var(--cat-micro); }
 .map-dot--open { background: transparent; border: 1.5px dashed var(--muted); }
-.map-arch { position: absolute; top: 50%; width: 16px; height: 12px; margin: -9px 0 0 -8px; border: 2.5px solid var(--ink); border-bottom: 0; border-radius: 10px 10px 0 0; }
 .help-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; padding-block: 0 8px; }
 .help { margin: 0; font-size: .85rem; color: var(--muted); min-width: 0; flex: 1 1 22rem; }
 .scene-switch { display: inline-flex; border: 1px solid var(--ink); border-radius: 4px; padding: 2px; gap: 2px; }
@@ -738,7 +778,8 @@ a { color: var(--lake); }
 .kv dt { color: var(--muted); }
 .kv dd { margin: 0; overflow-wrap: anywhere; }
 .stall-editor { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 16px; align-items: start; }
-.stall-preview { background: linear-gradient(#cfe3ee, #e8eedf 70%, #c6b9a3 70%); border-radius: 2px; padding: 8px; aspect-ratio: 240 / 330; }
+.stall-preview { background: linear-gradient(#cfe3ee, #e8eedf 70%, #c6b9a3 70%); border-radius: 2px; padding: 8px 18px 8px 8px; aspect-ratio: 260 / 310; }
+.stall-preview svg svg { overflow: hidden; }
 .stall-preview svg { display: block; width: 100%; height: 100%; }
 .palette { border: 0; padding: 0; margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 6px; }
 .palette legend { font-weight: 600; font-size: .9rem; margin-bottom: 6px; padding: 0; }

@@ -24,7 +24,7 @@
     const street = $('#street');
     const track = $('#track');
     if (!street || !track) return null;
-    const { W, H, STALL_W, STALL_H, STALL_BOTTOM, slots } = TH.STREET;
+    const { W, H, slots } = TH.STREET;
 
     TH.renderMountains($('#layer-mountains'));
     TH.renderHills($('#layer-hills'));
@@ -39,19 +39,19 @@
       const b = bi == null ? null : businesses[bi];
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'stall' + (b ? '' : ' stall--open');
-      btn.style.left = ((slot.x - STALL_W / 2) / W) * 100 + '%';
-      btn.style.top = ((STALL_BOTTOM - STALL_H) / H) * 100 + '%';
-      btn.style.width = (STALL_W / W) * 100 + '%';
-      btn.style.height = (STALL_H / H) * 100 + '%';
+      btn.className = 'stall stall--' + slot.row + (b ? '' : ' stall--open');
+      btn.style.left = ((slot.x - slot.w / 2) / W) * 100 + '%';
+      btn.style.top = ((slot.bottom - slot.h) / H) * 100 + '%';
+      btn.style.width = (slot.w / W) * 100 + '%';
+      btn.style.height = (slot.h / H) * 100 + '%';
       if (b) {
-        btn.innerHTML = TH.renderStall(b);
+        btn.innerHTML = TH.renderChalet(b);
         btn.setAttribute('aria-label', `${b.name}, ${CATEGORY_SHORT[b.category] || ''}, ${b.type}.${b.isDemo ? ' Demo listing.' : ''} Open profile.`);
         btn.dataset.id = b.id;
         btn.addEventListener('click', () => onOpen(b));
       } else {
-        btn.innerHTML = TH.renderEmptyStall();
-        btn.setAttribute('aria-label', 'Open stall. Listings are free. Learn how to get listed.');
+        btn.innerHTML = TH.renderEmptyChalet();
+        btn.setAttribute('aria-label', 'Open chalet. Listings are free. Learn how to get listed.');
         btn.addEventListener('click', () => onOpenFree());
       }
       placed.push({ slot, b, el: btn, index: i });
@@ -95,9 +95,7 @@
           const d = Math.abs(centerOf(p.slot) - c);
           if (d < bd) { bd = d; best = p; }
         });
-        const atGate = c < centerOf(slots[0]) - 380 * scale();
-        if (nowName) nowName.textContent = atGate ? 'The gateway arch' : best && best.b ? best.b.name : 'An open stall';
-        document.body.classList.toggle('past-gate', x > Math.max(40, 750 * scale() - street.clientWidth / 2 + 40));
+        if (nowName && !document.body.classList.contains('at-arch')) nowName.textContent = best && best.b ? best.b.name : 'An open chalet';
         ticking = false;
       });
     }
@@ -113,10 +111,6 @@
         dot.style.left = (p.slot.x / W) * 100 + '%';
         map.appendChild(dot);
       });
-      const arch = document.createElement('span');
-      arch.className = 'map-arch';
-      arch.style.left = (750 / W) * 100 + '%';
-      map.appendChild(arch);
       map.addEventListener('click', (e) => {
         const r = map.getBoundingClientRect();
         const f = (e.clientX - r.left) / r.width;
@@ -127,14 +121,13 @@
     /* ---------- step buttons and keyboard ---------- */
     function step(dir) {
       const c = street.scrollLeft + street.clientWidth / 2;
-      const centers = [750 * scale(), ...placed.map((p) => centerOf(p.slot))];
+      const centers = placed.map((p) => centerOf(p.slot)).sort((a, b) => a - b);
       const target = dir > 0 ? centers.find((x) => x > c + 12) : [...centers].reverse().find((x) => x < c - 12);
       if (target == null) return;
       street.scrollTo({ left: target - street.clientWidth / 2, behavior: behavior() });
     }
     $('#prev') && $('#prev').addEventListener('click', () => step(-1));
     $('#next') && $('#next').addEventListener('click', () => step(1));
-    $('#enter') && $('#enter').addEventListener('click', () => step(1));
     street.addEventListener('keydown', (e) => {
       if (e.target !== street) return;
       if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
@@ -208,9 +201,21 @@
       try { sessionStorage.setItem('th-scene', b.dataset.scene); } catch (e) { /* optional */ }
     }));
 
-    // phones: open with the arch centred instead of its left pillar
-    if (street.clientWidth < 1500 * scale()) street.scrollLeft = 750 * scale() - street.clientWidth / 2;
     onScroll();
+
+    /* ---------- the entrance: the arch first, then a walk into the square ---------- */
+    if (TH.mountEntrance) {
+      TH.mountEntrance({
+        businesses: placed.map((p) => p.b),
+        onWalkIn() {
+          street.scrollLeft = 0;
+          onScroll();
+          if (!reduceMotion.matches) setTimeout(() => street.scrollTo({ left: 260 * scale(), behavior: 'smooth' }), 450);
+          street.focus({ preventScroll: true });
+        },
+        onBack() { if (nowName) nowName.textContent = 'The gateway arch'; }
+      });
+    }
 
     return {
       focusBusiness(id) {

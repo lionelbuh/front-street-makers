@@ -104,6 +104,46 @@
     return s + '</g>';
   }
 
+
+  /* Visitors are drawn in the "storybook" style: round, outlined, a friendly
+     three-quarter face. Same rig as person() (lg1/lg2, ar1/ar2), so the
+     walking animation is shared. Sponsor carriers keep person(). */
+  function storyPerson(o) {
+    const k = o.kind === 'child' ? 0.7 : 1;
+    const O = 'stroke="#33261d" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"';
+    const legH = 36 * k, bodyH = 60 * k, bodyW = 42 * k, hr = 20 * k;
+    const bodyTop = -legH - bodyH + 8 * k, hx = 3 * k, hy = bodyTop - hr + 7 * k;
+    const old = o.cane || o.hair === '#d6d3cc' || o.hair === '#cfcac0';
+    let s = `<g transform="translate(${n(o.x)},0)">`;
+    const leg = (cls, dx, col) => `<g class="${cls}"><rect x="${n(dx - 5.5 * k)}" y="${n(-legH - 4)}" width="${n(11 * k)}" height="${n(legH)}" rx="${n(5 * k)}" fill="${col}" ${O}/><ellipse cx="${n(dx + 3 * k)}" cy="-4" rx="${n(9 * k)}" ry="${n(5 * k)}" fill="#3b2f25"/></g>`;
+    const arm = (cls, col, dx) => `<g class="${cls}"><rect x="${n(dx - 5 * k)}" y="${n(bodyTop + 10 * k)}" width="${n(11 * k)}" height="${n(36 * k)}" rx="${n(5.5 * k)}" fill="${col}" ${O}/><circle cx="${n(dx + 0.5 * k)}" cy="${n(bodyTop + 48 * k)}" r="${n(6 * k)}" fill="${o.skin}" ${O}/></g>`;
+    if (!o.raiseBack) s += arm('ar2', darker(o.top, 0.12), -8 * k);
+    s += leg('lg2', -5 * k, darker(o.bottom, 0.15)) + leg('lg1', 5 * k, o.bottom);
+    if (o.dress) s += `<path d="M${n(-bodyW / 2 + 4 * k)},${n(bodyTop + 6 * k)} Q0,${n(bodyTop - 4 * k)} ${n(bodyW / 2 - 4 * k)},${n(bodyTop + 6 * k)} L${n(bodyW / 2 + 8 * k)},${n(-legH * 0.55)} Q0,${n(-legH * 0.35)} ${n(-bodyW / 2 - 8 * k)},${n(-legH * 0.55)} Z" fill="${o.top}" ${O}/>`;
+    else s += `<rect x="${n(-bodyW / 2)}" y="${n(bodyTop)}" width="${n(bodyW)}" height="${n(bodyH)}" rx="${n(bodyW * 0.42)}" fill="${o.top}" ${O}/>`;
+    if (o.stripe) s += `<path d="M${n(-bodyW / 2 + 3)},${n(bodyTop + bodyH * 0.45)} H${n(bodyW / 2 - 3)}" stroke="${o.stripe}" stroke-opacity=".75" stroke-width="${n(5 * k)}"/>`;
+    if (o.bag) {
+      s += `<path d="M${n(-bodyW / 2 - 10 * k)},${n(bodyTop + 30 * k)} h${n(22 * k)} l${n(-3 * k)},${n(26 * k)} h${n(-16 * k)} Z" fill="${o.bag}" ${O}/><path d="M${n(-bodyW / 2 + 2)},${n(bodyTop + 6)} L${n(-bodyW / 2 - 4 * k)},${n(bodyTop + 30 * k)}" ${O} fill="none"/>`;
+      if (o.bagFlowers) for (let i = 0; i < 3; i++) s += `<circle cx="${n(-bodyW / 2 - 6 * k + i * 5 * k)}" cy="${n(bodyTop + 28 * k - (i % 2) * 3)}" r="${n(2.6 * k)}" fill="${['#e86f8a', '#f2c14e', '#f4efe4'][i]}"/>`;
+    }
+    // head and face, turned three-quarters toward the direction of walking
+    if (o.hairStyle === 'long') s += `<rect x="${n(hx - hr - 2)}" y="${n(hy - 4)}" width="${n(hr * 1.3)}" height="${n(hr * 1.9)}" rx="${n(hr * 0.6)}" fill="${o.hair}" ${O}/>`;
+    s += `<circle cx="${n(hx)}" cy="${n(hy)}" r="${n(hr)}" fill="${o.skin}" ${O}/>`;
+    if (o.hairStyle !== 'bald') s += `<path d="M${n(hx - hr - 1)},${n(hy + 4)} A${n(hr + 1)},${n(hr + 1)} 0 0 1 ${n(hx + hr + 1)},${n(hy - 4)} Q${n(hx + 6 * k)},${n(hy - hr * 0.5)} ${n(hx - hr * 0.15)},${n(hy - hr * 0.28)} Q${n(hx - hr * 0.55)},${n(hy)} ${n(hx - hr * 0.55)},${n(hy + hr * 0.62)} Z" fill="${o.hair}" ${O}/>`;
+    else s += `<path d="M${n(hx - hr * 0.95)},${n(hy + 2)} A${n(hr)},${n(hr)} 0 0 1 ${n(hx - hr * 0.2)},${n(hy - hr * 0.9)}" stroke="${o.hair}" stroke-width="3" fill="none"/>`;
+    if (o.hairStyle === 'bun' || o.hairStyle === 'pony') s += `<circle cx="${n(hx - hr * 0.7)}" cy="${n(hy - hr * 0.8)}" r="${n(hr * 0.42)}" fill="${o.hair}" ${O}/>`;
+    s += `<circle cx="${n(hx + hr * 0.22)}" cy="${n(hy + 2 * k)}" r="${n(2.4 * k)}" fill="#2a2420"/><circle cx="${n(hx + hr * 0.64)}" cy="${n(hy + 2 * k)}" r="${n(2.4 * k)}" fill="#2a2420"/>`;
+    s += `<circle cx="${n(hx + hr * 0.5)}" cy="${n(hy + hr * 0.45)}" r="${n(4.4 * k)}" fill="#ec8b7b" opacity=".55"/>`;
+    s += `<path d="M${n(hx + hr * 0.28)},${n(hy + hr * 0.5)} q${n(hr * 0.16)},${n(hr * 0.2)} ${n(hr * 0.34)},0" stroke="#2a2420" stroke-width="${n(1.8 * k)}" fill="none" stroke-linecap="round"/>`;
+    if (o.glasses || old) s += `<g fill="none" stroke="#2a2420" stroke-width="1.6"><circle cx="${n(hx + hr * 0.22)}" cy="${n(hy + 2 * k)}" r="${n(5 * k)}"/><circle cx="${n(hx + hr * 0.64)}" cy="${n(hy + 2 * k)}" r="${n(5 * k)}"/></g>`;
+    if (o.hat === 'sun') s += `<ellipse cx="${n(hx)}" cy="${n(hy - hr * 0.55)}" rx="${n(hr * 1.55)}" ry="${n(4.5 * k)}" fill="${o.hatColor || '#e8d7a8'}" ${O}/><path d="M${n(hx - hr * 0.75)},${n(hy - hr * 0.55)} Q${n(hx)},${n(hy - hr * 1.65)} ${n(hx + hr * 0.75)},${n(hy - hr * 0.55)} Z" fill="${o.hatColor || '#e8d7a8'}" ${O}/><path d="M${n(hx - hr * 0.72)},${n(hy - hr * 0.75)} h${n(hr * 1.44)}" stroke="${o.hatBand || '#c8573f'}" stroke-width="${n(3.5 * k)}"/>`;
+    if (o.hat === 'cap') s += `<path d="M${n(hx - hr)},${n(hy - 2)} A${n(hr)},${n(hr)} 0 0 1 ${n(hx + hr)},${n(hy - 2)} Z" fill="${o.hatColor || '#2f5a4a'}" ${O}/><path d="M${n(hx + hr * 0.6)},${n(hy - 3)} h${n(hr * 0.9)} q2,4 -3,4 h${n(-hr * 0.9)} Z" fill="${o.hatColor || '#2f5a4a'}" ${O}/>`;
+    if (o.hat === 'cowboy') s += `<path d="M${n(hx - hr * 1.7)},${n(hy - hr * 0.4)} Q${n(hx)},${n(hy - hr * 0.1)} ${n(hx + hr * 1.7)},${n(hy - hr * 0.4)} Q${n(hx)},${n(hy - hr * 0.8)} ${n(hx - hr * 1.7)},${n(hy - hr * 0.4)} Z M${n(hx - hr * 0.8)},${n(hy - hr * 0.55)} Q${n(hx - hr * 0.6)},${n(hy - hr * 1.6)} ${n(hx)},${n(hy - hr * 1.3)} Q${n(hx + hr * 0.6)},${n(hy - hr * 1.6)} ${n(hx + hr * 0.8)},${n(hy - hr * 0.55)} Z" fill="${o.hatColor || '#8a6142'}" ${O}/>`;
+    s += arm('ar1', o.top, 9 * k);
+    if (o.cane) s += `<path d="M${n(9 * k + 1)},${n(bodyTop + 48 * k)} L${n(14 * k)},0 M${n(9 * k + 1)},${n(bodyTop + 48 * k)} q0,-6 6,-6" stroke="#5a4130" stroke-width="2.6" fill="none"/>`;
+    return s + '</g>';
+  }
+
   function dog(x, r) {
     const fur = pick(r, ['#c9a063', '#3a2e28', '#f2efe4', '#8a5a3a']);
     let s = `<g transform="translate(${x},0)">`;
@@ -170,8 +210,8 @@
     const maxX = Math.max(...parts.map((p) => p.x)) + (type === 'dog' ? 100 : type === 'stroller' ? 80 : 30);
     const minX = Math.min(...parts.map((p) => p.x)) - 30;
     // draw back to front: the person farthest forward last
-    const svg = extra + parts.sort((a, b) => a.x - b.x).map(person).join('');
-    return { svg, minX, maxX, top: -170, bottom: 6 };
+    const svg = extra + parts.sort((a, b) => a.x - b.x).map(storyPerson).join('');
+    return { svg, minX, maxX, top: -150, bottom: 6 };
   }
 
   /* ------------------------------------------------------------------
@@ -224,6 +264,9 @@
   /* ------------------------------------------------------------------
      Layer + animation
      ------------------------------------------------------------------ */
+  // the entrance view (entrance.js) draws its strollers with the same kit
+  TH.crowdKit = { makeGroup, rng };
+
   TH.mountCrowd = function mountCrowd(opts = {}) {
   const layer = document.getElementById('layer-crowd');
   const track = document.getElementById('track');
@@ -274,7 +317,7 @@
     const footY = LANE_FAR + r() * (LANE_NEAR - LANE_FAR - 26);
     const g = {
       shape, footY, depth: 0.86 + ((footY - LANE_FAR) / (LANE_NEAR - LANE_FAR)) * 0.2,
-      x: 1650 + r() * (W - 2100), speed: (type === 'grand' ? 34 : type === 'family' ? 46 : 52) + r() * 22,
+      x: 100 + r() * (W - 300), speed: (type === 'grand' ? 34 : type === 'family' ? 46 : 52) + r() * 22,
       stopUntil: 0, lastSlot: -1, ad: false
     };
     g.el = createEl(shape, false);
@@ -295,7 +338,7 @@
        60 s   the balloon kid sets off from the entrance (left), walking the other way
        then   every 2 minutes, alternating: juggler from the right, kid from the left
      Each carrier walks the whole street, pausing in front of a few stalls. */
-  const STREET_START = 1450; // just past the gateway
+  const STREET_START = 120; // the start of the square
   const STREET_END = W - 420;
   const FIRST_BALLOON_MS = 60000;
   let adCount = 0;
@@ -407,7 +450,7 @@
 
   /* ---------- a vintage hanging sign on the first lamp post after the arch ----------
      Wrought-iron bracket, enamel-style board in the sponsor's colours. */
-  const POST_X = slots[0].x - 200; // the first street lamp
+  const POST_X = TH.STREET.COL_START - 200; // the first street lamp
   function postSign(sp) {
     const brand = sp.colors.brand, cream = sp.colors.cream, gold = '#d6bf84';
     const a = document.createElement('a');
