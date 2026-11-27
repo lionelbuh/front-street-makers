@@ -16,6 +16,8 @@
 
   const LANE_FAR = STALL_BOTTOM + 34; // feet of the farthest lane (just in front of the counters)
   const LANE_NEAR = H - 8; // feet of the nearest lane
+  const LANE_BACK = 628; // feet of the lane between the two rows of chalets
+  const COL_START = TH.STREET.COL_START, COL_GAP = TH.STREET.COL_GAP;
   const AD_EVERY_MS = 120000;
 
   const SKIN = ['#f1c9a5', '#e0ac85', '#c68a62', '#9a6544', '#6e4630', '#f5d6bd', '#b47a55'];
@@ -183,6 +185,46 @@
     }, extra);
   }
 
+
+  /* ------------------------------------------------------------------
+     Street performers: a little string band, a juggler and a bubble
+     maker. They stand still (no walking), only their hands move.
+     ------------------------------------------------------------------ */
+  const PO = 'stroke="#33261d" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"';
+  function performerShape(kind, r) {
+    let s = '';
+    const me = (o) => storyPerson(Object.assign(adult(r, { x: 0, bag: null }), o));
+    if (kind === 'band') {
+      // fiddler, guitarist and accordion player side by side, an open case for tips
+      s += `<g transform="translate(-40,0)"><path d="M-22,0 l6,-14 h34 l6,14 z" fill="#5a3a26" ${PO}/><path d="M-14,-6 h28" stroke="#b5302a" stroke-width="5"/><circle cx="-4" cy="-9" r="2.4" fill="#e9c46a"/><circle cx="5" cy="-8" r="2.4" fill="#e9c46a"/></g>`;
+      // fiddler
+      s += `<g transform="translate(0,0)">${me({ hat: 'cowboy', top: '#2a9d8f' })}
+        <g transform="translate(22,-92) rotate(-28)"><ellipse cx="0" cy="0" rx="12" ry="7" fill="#a0522d" ${PO}/><path d="M10,0 h22" ${PO} stroke-width="3"/></g>
+        <g class="pf-bow"><path d="M2,-64 L40,-100" stroke="#3b2f25" stroke-width="2.2"/></g></g>`;
+      // guitarist
+      s += `<g transform="translate(70,0)">${me({ hat: r() < 0.5 ? 'cap' : null, top: '#e9c46a' })}
+        <g transform="translate(8,-58) rotate(-24)"><ellipse cx="-4" cy="2" rx="16" ry="12" fill="#c98943" ${PO}/><ellipse cx="10" cy="-1" rx="11" ry="9" fill="#c98943" ${PO}/><circle cx="2" cy="1" r="3.6" fill="#3b2f25"/><path d="M18,-2 h34" ${PO} stroke-width="4"/><rect x="50" y="-5" width="9" height="7" rx="2" fill="#5a3a26"/></g>
+        <g class="pf-strum"><circle cx="8" cy="-56" r="5.5" fill="#e0ac85" ${PO}/></g></g>`;
+      // accordion player
+      s += `<g transform="translate(140,0)">${me({ top: '#e76f51', hat: 'sun' })}
+        <g transform="translate(8,-62)"><rect x="-17" y="-14" width="9" height="28" rx="2" fill="#2b2d42" ${PO}/><g class="pf-squeeze"><rect x="-8" y="-12" width="16" height="24" fill="#e9dcc0" ${PO}/><path d="M-4,-12 v24 M0,-12 v24 M4,-12 v24" stroke="#b5302a" stroke-width="1.4"/></g><rect x="8" y="-14" width="9" height="28" rx="2" fill="#2b2d42" ${PO}/></g></g>`;
+      // music notes drifting up
+      s += `<g class="pf-notes"><text x="40" y="-150" font-size="22" fill="#3b2f25">♪</text><text x="110" y="-160" font-size="18" fill="#3b2f25">♫</text><text x="170" y="-150" font-size="20" fill="#3b2f25">♪</text></g>`;
+      return { svg: s, minX: -70, maxX: 200, top: -200, bottom: 6 };
+    }
+    if (kind === 'juggler') {
+      s += me({ top: '#b5302a', stripe: '#f4efe4', hat: null, hairStyle: 'short' });
+      s += `<g class="ad-balls"><circle class="b1" cx="10" cy="-140" r="6" fill="#e9c46a" ${PO}/><circle class="b2" cx="20" cy="-160" r="6" fill="#2a9d8f" ${PO}/><circle class="b3" cx="0" cy="-155" r="6" fill="#e76f51" ${PO}/></g>`;
+      s += `<path d="M-30,0 l4,-10 h22 l4,10 z" fill="#5a3a26" ${PO}/>`;
+      return { svg: s, minX: -40, maxX: 50, top: -190, bottom: 6 };
+    }
+    // bubble maker: a child with a wand, bubbles floating away
+    s += storyPerson(Object.assign(kid(r), { x: 0 }));
+    s += `<path d="M10,-40 L26,-74" stroke="#3b2f25" stroke-width="2"/><circle cx="28" cy="-80" r="6" fill="none" stroke="#3b2f25" stroke-width="2"/>`;
+    s += `<g class="pf-bubbles">${[[40, -96, 11], [60, -122, 9], [34, -134, 7], [72, -100, 8]].map(([x, y, rr], i) => `<circle class="bb${i}" cx="${x}" cy="${y}" r="${rr}" fill="#ffffff" fill-opacity=".75" stroke="#4f9fb8" stroke-width="2.2"/>`).join('')}</g>`;
+    return { svg: s, minX: -30, maxX: 90, top: -160, bottom: 6 };
+  }
+
   function makeGroup(type, r) {
     const parts = [];
     let extra = '';
@@ -311,12 +353,13 @@
     g.el.classList.toggle('walking', on && !reduceMotion.matches);
   }
 
-  function spawnVisitor(i, r) {
+  function spawnVisitor(i, r, back) {
     const type = pick(r, ['single', 'single', 'couple', 'couple', 'family', 'family', 'grand', 'dog', 'stroller']);
     const shape = makeGroup(type, r);
-    const footY = LANE_FAR + r() * (LANE_NEAR - LANE_FAR - 26);
+    // the front lane runs in front of the front row; the back lane between the two rows
+    const footY = back ? LANE_BACK + r() * 22 : LANE_FAR + r() * (LANE_NEAR - LANE_FAR - 26);
     const g = {
-      shape, footY, depth: 0.86 + ((footY - LANE_FAR) / (LANE_NEAR - LANE_FAR)) * 0.2,
+      shape, footY, depth: back ? 0.74 + r() * 0.04 : 0.86 + ((footY - LANE_FAR) / (LANE_NEAR - LANE_FAR)) * 0.2,
       x: 100 + r() * (W - 300), speed: (type === 'grand' ? 34 : type === 'family' ? 46 : 52) + r() * 22,
       stopUntil: 0, lastSlot: -1, ad: false
     };
@@ -328,8 +371,19 @@
   }
 
   const r0 = rng(2026);
-  const VISITORS = 14;
-  for (let i = 0; i < VISITORS; i++) spawnVisitor(i, r0);
+  const VISITORS = 12, BACK_VISITORS = 8;
+  for (let i = 0; i < VISITORS; i++) spawnVisitor(i, r0, false);
+  for (let i = 0; i < BACK_VISITORS; i++) spawnVisitor(i, r0, true);
+
+  // street performers, standing in the gaps between the front-row chalets
+  [['band', 2 * COL_GAP + COL_START + 300, LANE_FAR + 26], ['juggler', COL_START + 330, LANE_FAR + 40], ['bubbles', 4 * COL_GAP + COL_START + 330, LANE_FAR + 30]].forEach(([kind, x, footY]) => {
+    const shape = performerShape(kind, r0);
+    const g = { shape, footY, depth: 1.25, x, ad: false, performer: true, walking: false, stopUntil: Infinity };
+    g.el = createEl(shape, false);
+    g.el.classList.add('performer');
+    place(g);
+    groups.push(g);
+  });
 
   /* ---------- ad carriers ----------
      Timeline from the visitor's arrival:
@@ -392,6 +446,7 @@
     const sc = track.clientWidth / W;
     for (let i = groups.length - 1; i >= 0; i--) {
       const g = groups[i];
+      if (g.performer) { g.el.style.transform = `translate3d(${n((g.x + g.shape.minX * g.depth) * sc)}px,0,0)`; continue; }
       if (!g.walking) {
         if (g.stopUntil && now > g.stopUntil) { g.stopUntil = 0; setWalking(g, true); }
       } else {
@@ -412,8 +467,8 @@
           const done = g.dir < 0 ? g.x < STREET_START - 250 : g.x > STREET_END + 250;
           if (done || now - g.born > 240000) { removeGroup(g); continue; }
         } else {
-          if (g.x < 1560 && g.dir < 0) setDir(g, 1);
-          if (g.x > W - 380 && g.dir > 0) setDir(g, -1);
+          if (g.x < 60 && g.dir < 0) setDir(g, 1);
+          if (g.x > W - 260 && g.dir > 0) setDir(g, -1);
         }
       }
       g.el.style.transform = `translate3d(${n((g.x + g.shape.minX * g.depth) * sc)}px,0,0)`;

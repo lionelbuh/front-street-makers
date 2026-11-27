@@ -44,6 +44,7 @@
       btn.style.top = ((slot.bottom - slot.h) / H) * 100 + '%';
       btn.style.width = (slot.w / W) * 100 + '%';
       btn.style.height = (slot.h / H) * 100 + '%';
+      btn.style.zIndex = String(Math.round(slot.bottom)); // depth order with the crowd (crowd.js uses foot height)
       if (b) {
         btn.innerHTML = TH.renderChalet(b);
         btn.setAttribute('aria-label', `${b.name}, ${CATEGORY_SHORT[b.category] || ''}, ${b.type}.${b.isDemo ? ' Demo listing.' : ''} Open profile.`);

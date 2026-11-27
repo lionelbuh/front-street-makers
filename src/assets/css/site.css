@@ -303,6 +303,19 @@ button { font: inherit; color: inherit; }
   75% { transform: translate(-8px, 10px); }
   100% { transform: translate(0, 0); }
 }
+.pf-bow { transform-box: view-box; transform-origin: 2px -64px; animation: pf-bow .5s ease-in-out infinite alternate; }
+@keyframes pf-bow { from { transform: rotate(-10deg); } to { transform: rotate(12deg); } }
+.pf-strum { transform-box: fill-box; transform-origin: center; animation: pf-strum .35s ease-in-out infinite alternate; }
+@keyframes pf-strum { from { transform: translateY(-3px); } to { transform: translateY(4px); } }
+.pf-squeeze { transform-box: fill-box; transform-origin: center; animation: pf-squeeze 1.1s ease-in-out infinite alternate; }
+@keyframes pf-squeeze { from { transform: scaleX(.55); } to { transform: scaleX(1.15); } }
+.pf-notes text { animation: pf-note 3s ease-out infinite; opacity: 0; }
+.pf-notes text:nth-child(2) { animation-delay: 1s; } .pf-notes text:nth-child(3) { animation-delay: 2s; }
+@keyframes pf-note { 0% { opacity: 0; transform: translateY(20px); } 25% { opacity: .9; } 100% { opacity: 0; transform: translateY(-40px) translateX(10px); } }
+.pf-bubbles circle { animation: pf-bubble 4s ease-in infinite; }
+.pf-bubbles .bb1 { animation-delay: -1s; } .pf-bubbles .bb2 { animation-delay: -2s; } .pf-bubbles .bb3 { animation-delay: -3s; }
+@keyframes pf-bubble { 0% { opacity: 0; transform: translate(-20px, 40px) scale(.4); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(30px, -60px) scale(1.2); } }
+@media (prefers-reduced-motion: reduce) { .pf-bow, .pf-strum, .pf-squeeze, .pf-notes text, .pf-bubbles circle { animation: none; } .pf-notes text { opacity: .8; } }
 .ad-balloon { transform-box: view-box; transform-origin: 18px -96px; animation: bob-balloon 3.2s ease-in-out infinite alternate; }
 @keyframes bob-balloon { from { transform: rotate(-4deg) translateY(0); } to { transform: rotate(4deg) translateY(-8px); } }
 .post-sign { position: absolute; display: block; pointer-events: auto; z-index: 1; filter: var(--crowd-filter); }
