@@ -597,8 +597,42 @@
   };
   function typeSign(display) { return TYPE_SIGN[display] || ['MAKER', 'sprout']; }
 
+  // a business is "new" for 30 days after it was first published (same as the site's New badge)
+  function isNewListing(b) {
+    if (!b.publishedAt) return false;
+    const age = (Date.now() - Date.parse(b.publishedAt)) / 86400000;
+    return age >= 0 && age < 30;
+  }
+  // the hanging edge of a canvas awning: scallops, a fringe or pointed flags
+  function valanceEdge(x1, x2, y, c, valance) {
+    const cnt = 10, w = (x2 - x1) / cnt;
+    let s = '';
+    for (let i = 0; i < cnt; i++) {
+      const x = x1 + i * w, col = i % 2 ? c[1] : c[0];
+      if (valance === 'points') s += `<path d="M${n(x)},${n(y)} h${n(w)} l${n(-w / 2)},11 Z" fill="${col}"/>`;
+      else if (valance === 'fringe') s += rect(x, y, w, 6, `fill="${col}"`);
+      else s += `<path d="M${n(x)},${n(y)} h${n(w)} q${n(-w / 2)},12 ${n(-w)},0 Z" fill="${col}"/>`;
+    }
+    if (valance === 'fringe') for (let x = x1 + 3; x < x2; x += 5) s += rect(x, y + 6, 1.6, 6, `fill="${c[2]}"`);
+    return s;
+  }
+  // "awning" roof: a striped canvas canopy instead of the wooden alpine roof
+  function canopyRoof(c, valance) {
+    let s = '';
+    const peak = [120, 34], eaveY = 122, L = -2, R = 242, cnt = 12;
+    for (let i = 0; i < cnt; i++) {
+      const x1 = L + ((R - L) / cnt) * i, x2 = L + ((R - L) / cnt) * (i + 1);
+      s += `<polygon points="${peak[0]},${peak[1]} ${n(x1)},${eaveY} ${n(x2)},${eaveY}" fill="${i % 2 ? c[1] : c[0]}"/>`;
+    }
+    s += `<polygon points="${peak[0]},${peak[1]} ${R},${eaveY} ${peak[0]},${eaveY}" fill="rgba(0,0,0,.08)"/>`;
+    s += valanceEdge(L, R, eaveY, c, valance);
+    s += circ(120, 31, 5, `fill="${WOOD_DK}"`) + `<path d="M120,26 v-14" stroke="${WOOD_DK}" stroke-width="2.5"/><path d="M121,12 l14,4 l-14,4 Z" fill="${c[0]}"/>`;
+    return s;
+  }
+
   TH.renderChalet = function (b) {
     const st = b, c = b.colors || ['#C8902E', '#F2E6CC', '#7C4A2A'];
+    const canopy = b.roof === 'awning';
     const name = b.isDemo ? String(b.name).replace(/^Sample /, '') : String(b.name);
     const fs = Math.min(17, 250 / Math.max(8, name.length));
     const vign = TH.renderGoodsVignette(st).replace('<svg ', '<svg x="40" y="150" width="160" height="86" ');
@@ -615,6 +649,7 @@
     s += poly([[30, 128], [210, 128], [226, 152], [14, 152]], `fill="${c[0]}"`);
     for (let i = 0; i < 6; i++) s += poly([[30 + i * 30 + 8, 128], [30 + i * 30 + 20, 128], [14 + i * 35.3 + 25, 152], [14 + i * 35.3 + 10, 152]], `fill="${c[1]}" opacity=".55"`);
     s += rect(14, 150, 212, 4, 'fill="rgba(0,0,0,.25)"');
+    if (!canopy) s += valanceEdge(14, 226, 153, c, b.valance);
     s += `<path d="M24,154 L16,170 M216,154 L224,170" stroke="#5a4130" stroke-width="3"/>`;
     // counter with an alpine heart cut-out
     s += rect(28, 236, 184, 10, 'fill="#b38a60"') + rect(28, 244, 184, 2, 'fill="rgba(0,0,0,.25)"');
@@ -624,20 +659,23 @@
     s += rect(44, 254, 152, 28, `rx="3" fill="none" stroke="${c[1]}" stroke-opacity=".6" stroke-width="2"`);
     s += `<text x="120" y="${n(268 + wfs * 0.36)}" text-anchor="middle" font-size="${n(wfs)}" class="stall-small" fill="${c[1]}" letter-spacing="1.6">${word}</text>`;
     s += `<path d="M120,288 C114,285 113,282 116,281 C118,280.5 119,281.5 120,282.5 C121,281.5 122,280.5 124,281 C127,282 126,285 120,288 Z" fill="${c[1]}" opacity=".8"/>`;
-    // steep roof, frosted
-    s += poly([[0, 120], [120, 18], [240, 120], [232, 126], [120, 32], [8, 126]], 'fill="#4a3426"');
-    s += poly([[16, 116], [120, 30], [224, 116], [216, 116], [120, 40], [24, 116]], 'fill="#3a291e"');
-    s += poly([[36, 114], [120, 44], [204, 114]], 'fill="#a77b52"');
-    for (let y = 60; y < 114; y += 9) s += rect(120 - (y - 44) * 1.2, y, (y - 44) * 2.4, 1.2, 'fill="rgba(0,0,0,.12)"');
-    s += `<path d="M-2,121 L120,16 L242,121 L236,124 q-6,8 -10,0 q-5,7 -10,-2 L120,30 L22,113 q-4,9 -10,2 q-5,7 -10,-1 Z" fill="#f7f5f0"/>`;
+    if (canopy) s += canopyRoof(c, b.valance);
+    else {
+      // steep roof, frosted
+      s += poly([[0, 120], [120, 18], [240, 120], [232, 126], [120, 32], [8, 126]], 'fill="#4a3426"');
+      s += poly([[16, 116], [120, 30], [224, 116], [216, 116], [120, 40], [24, 116]], 'fill="#3a291e"');
+      s += poly([[36, 114], [120, 44], [204, 114]], 'fill="#a77b52"');
+      for (let y = 60; y < 114; y += 9) s += rect(120 - (y - 44) * 1.2, y, (y - 44) * 2.4, 1.2, 'fill="rgba(0,0,0,.12)"');
+      s += `<path d="M-2,121 L120,16 L242,121 L236,124 q-6,8 -10,0 q-5,7 -10,-2 L120,30 L22,113 q-4,9 -10,2 q-5,7 -10,-1 Z" fill="#f7f5f0"/>`;
+    }
     // carved name board in the gable
     s += rect(46, 76, 148, 30, 'rx="4" fill="#efe3c8" stroke="#5a4130" stroke-width="3"');
     s += `<text x="120" y="${n(91 + fs * 0.35)}" text-anchor="middle" font-size="${n(fs)}" class="stall-name">${esc(name)}</text>`;
     // fir garland with red bows and bulbs along the eaves
     let gar = 'M22,118', bul = '', bulG = '';
     for (let i = 0; i < 4; i++) gar += ` q24.5,16 49,0`;
-    s += `<path d="${gar}" stroke="#2f5a37" stroke-width="8" fill="none" stroke-linecap="round"/><path d="${gar}" stroke="#4a7a50" stroke-width="3" stroke-dasharray="3 4" fill="none"/>`;
-    [22, 71, 120, 169, 218].forEach((x) => (s += `<path d="M${x - 7},114 l7,5 l7,-5 l-2,9 l-5,-4 l-5,4 Z" fill="#b5302a"/>`));
+    if (!canopy) s += `<path d="${gar}" stroke="#2f5a37" stroke-width="8" fill="none" stroke-linecap="round"/><path d="${gar}" stroke="#4a7a50" stroke-width="3" stroke-dasharray="3 4" fill="none"/>`;
+    if (!canopy) [22, 71, 120, 169, 218].forEach((x) => (s += `<path d="M${x - 7},114 l7,5 l7,-5 l-2,9 l-5,-4 l-5,4 Z" fill="#b5302a"/>`));
     for (let i = 0; i < 8; i++) { const x = 34 + i * 24.5, y = 126 + (i % 2 ? 2 : 6); bul += ell(x, y, 3, 4, 'fill="#f4ecd2"'); bulG += circ(x, y, 12, 'fill="url(#halo)"') + ell(x, y, 2.8, 3.8, 'fill="#fff1c9"'); }
     s += bul + `<g class="chalet-glow">${bulG}</g>`;
     // hanging blade sign: a wrought-iron bracket and a round board with the type's pictogram
@@ -645,6 +683,12 @@
     s += `<g class="blade"><circle cx="240" cy="156" r="20" fill="#efe3c8" stroke="#5a4130" stroke-width="3.4"/><g transform="translate(240,157)">${ICONS[icon]}</g></g>`;
     // category flag
     s += circ(222, 268, 9, `fill="${b.category === 'home' ? '#4f6b45' : '#7a2a3a'}" stroke="#f4efe4" stroke-width="2"`);
+    if (b.chalk) {
+      s += `<g transform="translate(-44,244)"><path d="M4,52 L12,0 M44,52 L36,0" stroke="${WOOD_DK}" stroke-width="3"/><rect x="6" y="2" width="36" height="32" rx="2" fill="#2f3431" stroke="${WOOD_LT}" stroke-width="3"/>`;
+      String(b.chalk).split(' ').slice(0, 2).forEach((w, i) => (s += `<text x="24" y="${n(15 + i * 11)}" text-anchor="middle" font-size="${n(Math.min(9, 62 / Math.max(1, w.length)))}" class="chalk">${esc(w)}</text>`));
+      s += '</g>';
+    }
+    if (isNewListing(b)) s += `<g transform="translate(24,56) rotate(-8)"><rect width="40" height="16" rx="2" fill="#b3121a" stroke="#f4efe4" stroke-width="1.5"/><text x="20" y="11.6" text-anchor="middle" font-size="9.5" class="stall-small" fill="#fff" letter-spacing="1.6">NEW</text></g>`;
     if (b.isDemo) s += `<g transform="translate(176,58)"><rect width="38" height="14" rx="2" class="demo-chip"/><text x="19" y="10.2" text-anchor="middle" font-size="8.5" class="stall-small demo-chip-text" letter-spacing="1.4">DEMO</text></g>`;
     return s + '</svg>';
   };
