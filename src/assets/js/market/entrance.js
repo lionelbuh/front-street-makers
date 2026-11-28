@@ -104,7 +104,8 @@
       [-1, 1].forEach((side) => {
         const b = businesses[side < 0 ? i * 2 : i * 2 + 1];
         const d = (side < 0 ? 220 : 570) + i * SP;
-        world.appendChild(el('ent-chalet', { left: side * 540 - CW / 2 + 'px', top: -CH + 'px', width: CW + 'px', height: CH + 'px', transform: `translateZ(${-d}px) rotateY(${-side * 62}deg)` },
+        const k = CW / TH.CHALET.width, BW = TH.CHALET.box * k, BL = TH.CHALET.left * k;
+        world.appendChild(el('ent-chalet', { left: side * 540 - CW / 2 - BL + 'px', top: -CH + 'px', width: BW + 'px', height: CH + 'px', transformOrigin: `${((BL + CW / 2) / BW) * 100}% 100%`, transform: `translateZ(${-d}px) rotateY(${-side * 62}deg)` },
           b ? TH.renderChalet(b) : TH.renderEmptyChalet()));
         const ld = d + SP / 2;
         if (ld > FAR - 400) return;

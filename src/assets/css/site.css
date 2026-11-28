@@ -791,7 +791,7 @@ a { color: var(--lake); }
 .kv dt { color: var(--muted); }
 .kv dd { margin: 0; overflow-wrap: anywhere; }
 .stall-editor { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 16px; align-items: start; }
-.stall-preview { background: linear-gradient(#cfe3ee, #e8eedf 70%, #c6b9a3 70%); border-radius: 2px; padding: 8px 18px 8px 8px; aspect-ratio: 260 / 310; }
+.stall-preview { background: linear-gradient(#cfe3ee, #e8eedf 70%, #c6b9a3 70%); border-radius: 2px; padding: 8px; aspect-ratio: 340 / 310; }
 .stall-preview svg svg { overflow: hidden; }
 .stall-preview svg { display: block; width: 100%; height: 100%; }
 .palette { border: 0; padding: 0; margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 6px; }

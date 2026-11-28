@@ -630,13 +630,17 @@
     return s;
   }
 
+  // The chalet is 240 x 300; its drawing box adds room on the left for the chalkboard
+  // and on the right for the hanging sign (Safari clips anything outside the box).
+  const CHALET_BOX = '-50 0 340 300';
+  TH.CHALET = { width: 240, left: 50, box: 340 };
   TH.renderChalet = function (b) {
     const st = b, c = b.colors || ['#C8902E', '#F2E6CC', '#7C4A2A'];
     const canopy = b.roof === 'awning';
     const name = b.isDemo ? String(b.name).replace(/^Sample /, '') : String(b.name);
     const fs = Math.min(17, 250 / Math.max(8, name.length));
     const vign = TH.renderGoodsVignette(st).replace('<svg ', '<svg x="40" y="150" width="160" height="86" ');
-    let s = `<svg viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">`;
+    let s = `<svg viewBox="${CHALET_BOX}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">`;
     s += ell(120, 294, 122, 7, 'fill="rgba(30,20,10,.28)"');
     // walls of vertical planks
     s += rect(22, 112, 196, 178, 'fill="#8a6040"');
@@ -695,7 +699,7 @@
 
   /* An open chalet: shows that the street has room, and that listings are free. */
   TH.renderEmptyChalet = function () {
-    let s = `<svg viewBox="0 0 240 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">`;
+    let s = `<svg viewBox="${CHALET_BOX}" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">`;
     s += ell(120, 294, 122, 7, 'fill="rgba(30,20,10,.18)"');
     s += rect(22, 112, 196, 178, 'fill="#8a6040" opacity=".55"');
     for (let x = 30; x < 218; x += 14) s += rect(x, 112, 1.6, 178, 'fill="rgba(0,0,0,.12)"');

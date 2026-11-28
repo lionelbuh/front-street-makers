@@ -40,9 +40,10 @@
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'stall stall--' + slot.row + (b ? '' : ' stall--open');
-      btn.style.left = ((slot.x - slot.w / 2) / W) * 100 + '%';
+      const k = slot.w / TH.CHALET.width; // the drawing box is wider than the chalet itself
+      btn.style.left = ((slot.x - slot.w / 2 - TH.CHALET.left * k) / W) * 100 + '%';
       btn.style.top = ((slot.bottom - slot.h) / H) * 100 + '%';
-      btn.style.width = (slot.w / W) * 100 + '%';
+      btn.style.width = ((TH.CHALET.box * k) / W) * 100 + '%';
       btn.style.height = (slot.h / H) * 100 + '%';
       btn.style.zIndex = String(Math.round(slot.bottom)); // depth order with the crowd (crowd.js uses foot height)
       if (b) {
