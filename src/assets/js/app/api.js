@@ -61,6 +61,7 @@ const remote = {
     settings: () => request('/api/admin/settings', { admin: true }),
     saveSettings: (s) => request('/api/admin/settings', { method: 'PUT', body: s, admin: true }),
     rotation: (days = 7) => request(`/api/admin/rotation?days=${days}`, { admin: true }),
+    testEmail: () => request('/api/admin/test-email', { method: 'POST', admin: true }),
     stories: () => request('/api/admin/stories', { admin: true }),
     updateStory: (id, status) => request(`/api/admin/stories/${id}`, { method: 'PATCH', body: { status }, admin: true }),
     photoUrl: (url) => `${url}${url.includes('?') ? '&' : '?'}t=${encodeURIComponent(adminToken())}`
@@ -293,6 +294,7 @@ const demo = {
       saveDemo(db);
       return { ok: true };
     },
+    async testEmail() { return { ok: false, error: 'Demo mode: emails are only sent by the live service.' }; },
     async settings() { return { settings: normalizeSettings(demoDb().settings) }; },
     async saveSettings(s) {
       const db = demoDb();

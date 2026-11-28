@@ -361,15 +361,30 @@ async function savePhotos(env, businessId, files, altBase) {
   return saved;
 }
 async function notifyAdmin(env, subject, body) {
-  if (!env.RESEND_API_KEY || !env.NOTIFY_EMAIL) return;
-  try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { authorization: `Bearer ${env.RESEND_API_KEY}`, "content-type": "application/json" },
-      body: JSON.stringify({ from: env.FROM_EMAIL || "Front Street Makers <onboarding@resend.dev>", to: [env.NOTIFY_EMAIL], subject, text: body })
-    });
-  } catch {
+  const key = String(env.RESEND_API_KEY || "").trim(), to = String(env.NOTIFY_EMAIL || "").trim();
+  if (!key || !to) {
+    console.log("email alert skipped: RESEND_API_KEY or NOTIFY_EMAIL is not set");
+    return { ok: false, error: `Not configured: ${!key ? "RESEND_API_KEY " : ""}${!to ? "NOTIFY_EMAIL" : ""}is missing on the worker.` };
   }
+  const from = String(env.FROM_EMAIL || "").trim() || "Front Street Makers <onboarding@resend.dev>";
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { authorization: `Bearer ${key}`, "content-type": "application/json" },
+      body: JSON.stringify({ from, to: [to], subject, text: body })
+    });
+    if (res.ok) return { ok: true, to, from };
+    const detail = await res.text();
+    console.log(`email alert failed: HTTP ${res.status} ${detail}`);
+    return { ok: false, error: `Resend answered HTTP ${res.status}: ${detail.slice(0, 300)}`, to, from };
+  } catch (err) {
+    console.log(`email alert failed: ${err.message}`);
+    return { ok: false, error: `Could not reach Resend: ${err.message}`, to, from };
+  }
+}
+async function adminTestEmail(env) {
+  const r = await notifyAdmin(env, "Front Street Makers: test email", "This is a test from the admin dashboard. New applications and community stories will send an email like this one.");
+  return json(r, 200);
 }
 async function createApplication(request, env) {
   const form = await readForm(request);
@@ -705,6 +720,7 @@ async function handle(request, env) {
     if (m === "DELETE" && (match = path.match(/^\/api\/admin\/businesses\/([0-9a-f-]+)\/photos\/([0-9a-f-]+)$/))) return adminDeletePhoto(env, match[1], match[2]);
     if (path === "/api/admin/settings" && (m === "GET" || m === "PUT")) return adminSettings(request, env);
     if (m === "GET" && path === "/api/admin/rotation") return adminRotation(env, url);
+    if (m === "POST" && path === "/api/admin/test-email") return adminTestEmail(env);
     if (path === "/api/admin/stories" && m === "GET") return adminStories(request, env, null);
     if ((match = path.match(/^\/api\/admin\/stories\/([0-9a-f-]+)$/)) && m === "PATCH") return adminStories(request, env, match[1]);
   }

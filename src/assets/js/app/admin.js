@@ -364,6 +364,12 @@ $('#rotation-form').addEventListener('submit', async (e) => {
   toast('Rotation saved.');
   loadRotation();
 });
+$('#test-email').addEventListener('click', async () => {
+  const out = $('#test-email-result');
+  out.textContent = 'Sending…';
+  const r = await guard(() => A.testEmail());
+  out.textContent = r.ok ? `Sent to ${r.to} from ${r.from}. Check the inbox (and spam).` : r.error;
+});
 $('#reshuffle').addEventListener('click', async () => {
   state.settings = (await guard(() => A.saveSettings({ ...state.settings, seed: Math.random().toString(36).slice(2, 10) }))).settings;
   toast('New order saved. Fair rotation restarts from this order.');

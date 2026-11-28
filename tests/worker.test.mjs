@@ -184,3 +184,27 @@ test('CORS: unknown origins get no CORS headers', async () => {
   const res = await worker.fetch(new Request(API + '/api/health', { headers: { origin: 'https://evil.example' } }), env);
   assert.equal(res.headers.get('access-control-allow-origin'), null);
 });
+
+test('admin test email: explains what is missing, then sends through Resend', async () => {
+  const env = fakeEnv();
+  const token = await login(env);
+  let r = await jsonOf(await call(env, 'POST', '/api/admin/test-email', { token }));
+  assert.equal(r.ok, false);
+  assert.match(r.error, /RESEND_API_KEY/);
+  const sent = [];
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (url, init) => { sent.push({ url: String(url), body: JSON.parse(init.body) }); return new Response('{"id":"x"}', { status: 200 }); };
+  try {
+    Object.assign(env, { RESEND_API_KEY: 're_test', NOTIFY_EMAIL: ' hello@frontstreetmakers.com ', FROM_EMAIL: 'Front Street Makers <notifications@frontstreetmakers.com>' });
+    r = await jsonOf(await call(env, 'POST', '/api/admin/test-email', { token }));
+    assert.equal(r.ok, true);
+    assert.equal(sent[0].url, 'https://api.resend.com/emails');
+    assert.deepEqual(sent[0].body.to, ['hello@frontstreetmakers.com'], 'stray spaces are trimmed');
+    globalThis.fetch = async () => new Response('{"message":"domain not verified"}', { status: 403 });
+    r = await jsonOf(await call(env, 'POST', '/api/admin/test-email', { token }));
+    assert.equal(r.ok, false);
+    assert.match(r.error, /403.*domain not verified/);
+  } finally { globalThis.fetch = realFetch; }
+  const anon = await call(env, 'POST', '/api/admin/test-email');
+  assert.equal(anon.status, 401);
+});
