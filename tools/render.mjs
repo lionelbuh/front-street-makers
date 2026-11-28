@@ -13,11 +13,15 @@ export const businessPath = (b) => `business/${b.slug}/`;
 const LINKS = [['website', 'Website'], ['order', 'Order online'], ['instagram', 'Instagram'], ['facebook', 'Facebook'], ['tiktok', 'TikTok'], ['email', 'Email'], ['phone', 'Call']];
 const linkHref = (k, v) => (k === 'email' ? `mailto:${v}` : k === 'phone' ? `tel:${String(v).replace(/[^0-9+]/g, '')}` : v);
 
+// Search results show about 60 characters of a title and 155 of a description.
+const clip = (str, max) => (str.length <= max ? str : str.slice(0, str.lastIndexOf(' ', max - 1)).replace(/[\s,.;:·-]+$/, '') + '…');
 export function businessTitle(b) {
-  return `${b.name} · ${b.type || (KIND_BY_ID[b.kind] || {}).label || 'Local maker'} in ${b.city}, CA`;
+  const what = String(b.type || (KIND_BY_ID[b.kind] || {}).label || 'Local maker').split(' · ')[0];
+  const full = `${b.name} · ${what} in ${b.city}, CA`;
+  return full.length <= 60 ? full : clip(`${b.name} · ${b.city}, CA`, 60);
 }
 export function businessDescription(b) {
-  return `${b.summary} ${b.name} is a local ${(CATEGORIES[b.category] || {}).short?.toLowerCase() || ''} business in ${b.city}, listed free on Front Street Makers.`.replace(/\s+/g, ' ').trim().slice(0, 300);
+  return clip(`${b.summary} ${b.name} is a local ${(CATEGORIES[b.category] || {}).short?.toLowerCase() || ''} business in ${b.city}, listed free on Front Street Makers.`.replace(/\s+/g, ' ').trim(), 155);
 }
 
 export function staticProfile(b, root) {

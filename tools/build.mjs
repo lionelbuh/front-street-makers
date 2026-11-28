@@ -151,7 +151,7 @@ for (const b of businesses) {
   const path = businessPath(b);
   const rootPath = rootFor(path);
   const meta = {
-    title: businessTitle(b), fullTitle: false, description: businessDescription(b), nav: 'marketplace', page: 'business',
+    title: businessTitle(b), fullTitle: true, description: businessDescription(b), nav: 'marketplace', page: 'business',
     stall: true, module: 'business-page.js', noindex: Boolean(b.isDemo)
   };
   const body = `<article id="business" class="wrap business-page" data-slug="${esc(b.slug)}">${staticProfile(b, rootPath)}</article>`;
