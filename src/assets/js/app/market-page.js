@@ -51,7 +51,10 @@ function renderToday(featured) {
     list.innerHTML = `<li class="empty-state">The first stalls are being set up. <a href="${root()}get-listed/">Apply for a free listing</a>.</li>`;
     return;
   }
-  list.innerHTML = featured.map((b) => `<li>${cardHtml(b, { featured: true })}</li>`).join('');
+  // a fresh order on every visit, so nobody is always first in the list
+  const shown = featured.slice();
+  for (let i = shown.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [shown[i], shown[j]] = [shown[j], shown[i]]; }
+  list.innerHTML = shown.map((b) => `<li>${cardHtml(b, { featured: true })}</li>`).join('');
   list.addEventListener('click', (e) => {
     const btn = e.target.closest('.biz-open');
     if (btn) openProfile(featured.find((b) => b.id === btn.dataset.id), featured);
